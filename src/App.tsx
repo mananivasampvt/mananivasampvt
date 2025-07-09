@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { LocationProvider } from "@/contexts/LocationContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import LoadingScreen from "@/components/LoadingScreen";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -73,35 +74,37 @@ const App = () => {
             <Toaster />
             <Sonner />
             <AuthProvider>
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/buy" element={<Buy />} />
-                  <Route path="/rent" element={<Rent />} />
-                  <Route path="/land" element={<Land />} />
-                  <Route path="/commercial" element={<Commercial />} />
-                  <Route path="/pg-hostels" element={<PGHostels />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/shortlist" element={<Shortlist />} />
-                  <Route path="/emi-calculator" element={<EMICalculator />} />
-                  <Route path="/property/:id" element={<PropertyDetails />} />
-                  <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route 
-                    path="/admin/dashboard" 
-                    element={
-                      <ProtectedRoute>
-                        <AdminDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                <BottomNavigation />
-              </BrowserRouter>
+              <LocationProvider>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/buy" element={<Buy />} />
+                    <Route path="/rent" element={<Rent />} />
+                    <Route path="/land" element={<Land />} />
+                    <Route path="/commercial" element={<Commercial />} />
+                    <Route path="/pg-hostels" element={<PGHostels />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/shortlist" element={<Shortlist />} />
+                    <Route path="/emi-calculator" element={<EMICalculator />} />
+                    <Route path="/property/:id" element={<PropertyDetails />} />
+                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route 
+                      path="/admin/dashboard" 
+                      element={
+                        <ProtectedRoute>
+                          <AdminDashboard />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                  <BottomNavigation />
+                </BrowserRouter>
+              </LocationProvider>
             </AuthProvider>
           </TooltipProvider>
         </QueryClientProvider>

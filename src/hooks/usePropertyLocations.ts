@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 
 interface LocationData {
   locations: string[];
+  areas: { [city: string]: string[] };
   propertyTypes: string[];
   categories: string[];
 }
@@ -12,6 +13,7 @@ interface LocationData {
 export const usePropertyLocations = () => {
   const [locationData, setLocationData] = useState<LocationData>({
     locations: [],
+    areas: {},
     propertyTypes: [],
     categories: []
   });
@@ -46,6 +48,7 @@ export const usePropertyLocations = () => {
           console.log('Real-time property search data update received');
           
           const locations = new Set<string>();
+          const areas = new Map<string, Set<string>>();
           const propertyTypes = new Set<string>();
           const categories = new Set<string>();
 
@@ -57,6 +60,30 @@ export const usePropertyLocations = () => {
               const cleanLocation = data.location.trim();
               if (cleanLocation) {
                 locations.add(cleanLocation);
+                
+                // Extract area/sub-location from location string
+                // Enhanced patterns: "Area, City" or "Area - City" or "Area in City" or "Area | City"
+                const locationParts = cleanLocation.split(/[,\-|]|in\s+|near\s+/i);
+                if (locationParts.length > 1) {
+                  const area = locationParts[0].trim();
+                  const city = locationParts[locationParts.length - 1].trim();
+                  
+                  if (area && city && area !== city) {
+                    if (!areas.has(city)) {
+                      areas.set(city, new Set<string>());
+                    }
+                    areas.get(city)?.add(area);
+                    
+                    // Also add the city itself as a main location
+                    locations.add(city);
+                  }
+                } else {
+                  // If no separator found, treat the entire location as a city
+                  // and add it to areas for potential sub-area filtering
+                  if (!areas.has(cleanLocation)) {
+                    areas.set(cleanLocation, new Set<string>());
+                  }
+                }
               }
             }
 
@@ -77,14 +104,22 @@ export const usePropertyLocations = () => {
             }
           });
 
+          // Convert areas Map to object with sorted arrays
+          const areasObject: { [city: string]: string[] } = {};
+          areas.forEach((areaSet, city) => {
+            areasObject[city] = Array.from(areaSet).sort();
+          });
+
           const result = {
             locations: Array.from(locations).sort(),
+            areas: areasObject,
             propertyTypes: Array.from(propertyTypes).sort(),
             categories: Array.from(categories).sort()
           };
 
           console.log('Real-time property search data extracted:', {
             locationsCount: result.locations.length,
+            areasCount: Object.keys(result.areas).length,
             typesCount: result.propertyTypes.length,
             categoriesCount: result.categories.length
           });
@@ -99,6 +134,7 @@ export const usePropertyLocations = () => {
           // Fallback to empty arrays if database fetch fails
           setLocationData({
             locations: [],
+            areas: {},
             propertyTypes: [],
             categories: []
           });
@@ -114,6 +150,7 @@ export const usePropertyLocations = () => {
       // Fallback to empty arrays if database fetch fails
       setLocationData({
         locations: [],
+        areas: {},
         propertyTypes: [],
         categories: []
       });

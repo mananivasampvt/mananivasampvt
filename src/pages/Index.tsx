@@ -5,10 +5,13 @@ import Hero from '@/components/Hero';
 import Categories from '@/components/Categories';
 import PropertyGrid from '@/components/PropertyGrid';
 import Footer from '@/components/Footer';
+import LocationPermissionModal from '@/components/LocationPermissionModal';
 import { SearchFilters } from '@/components/SearchBar';
+import { useLocation } from '@/contexts/LocationContext';
 
 const Index = () => {
   const [searchFilters, setSearchFilters] = useState<SearchFilters | null>(null);
+  const { setUserLocation, setUserCoordinates } = useLocation();
 
   const handleSearch = (filters: SearchFilters) => {
     console.log('Index page received search filters:', filters);
@@ -21,6 +24,35 @@ const Index = () => {
         propertiesSection.scrollIntoView({ behavior: 'smooth' });
       }
     }, 100);
+  };
+
+  const handleLocationDetected = (city: string) => {
+    console.log('Location detected in Index:', city);
+    setUserLocation(city);
+    
+    // Auto-search with detected location
+    const locationFilters: SearchFilters = {
+      location: city,
+      propertyType: '',
+      category: '',
+      subCategory: '',
+      manualLocation: city
+    };
+    
+    setSearchFilters(locationFilters);
+    
+    // Scroll to properties section to show filtered results
+    setTimeout(() => {
+      const propertiesSection = document.querySelector('#properties');
+      if (propertiesSection) {
+        propertiesSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 1000); // Increased delay to allow for better UX flow
+  };
+
+  const handleLocationDenied = () => {
+    console.log('Location access denied - user will browse manually');
+    // No action needed, user continues with manual browsing
   };
 
   return (
@@ -73,6 +105,12 @@ const Index = () => {
       
       {/* Categories section moved to bottom */}
       <Categories />
+      
+      {/* Location Permission Modal */}
+      <LocationPermissionModal
+        onLocationDetected={handleLocationDetected}
+        onLocationDenied={handleLocationDenied}
+      />
       
       <Footer />
     </div>

@@ -6,6 +6,7 @@ import { ChevronRight, MapPin, Square, Heart, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useRealtimeProperties } from '@/hooks/useRealtimeProperties';
+import { useLocation } from '@/contexts/LocationContext';
 import EnhancedShareMenu from '@/components/EnhancedShareMenu';
 import { useShortlist } from '@/hooks/useShortlist';
 
@@ -43,6 +44,9 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ searchFilters }) => {
   
   // Add shortlist functionality
   const { isShortlisted, toggleShortlist, isLoading: shortlistLoading } = useShortlist();
+  
+  // Add location context
+  const { userLocation, isLocationSet } = useLocation();
 
   // Use the optimized real-time properties hook
   const { properties, loading, error, refetch } = useRealtimeProperties({
@@ -80,6 +84,13 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ searchFilters }) => {
             property.price.toLowerCase().includes(searchTerm);
           
           matches = matches && propertyMatches;
+        }
+
+        // Area-specific filter (if area is selected, filter by specific area within the location)
+        if (searchFilters.area && searchFilters.area.trim() !== '') {
+          const areaTerm = searchFilters.area.toLowerCase();
+          const areaMatches = property.location.toLowerCase().includes(areaTerm);
+          matches = matches && areaMatches;
         }
 
         // Property type filter
