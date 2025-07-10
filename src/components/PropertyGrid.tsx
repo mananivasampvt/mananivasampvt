@@ -9,6 +9,7 @@ import { useRealtimeProperties } from '@/hooks/useRealtimeProperties';
 import { useLocation } from '@/contexts/LocationContext';
 import EnhancedShareMenu from '@/components/EnhancedShareMenu';
 import { useShortlist } from '@/hooks/useShortlist';
+import { useContactOwner } from '@/hooks/useContactOwner';
 
 interface Property {
   id: string;
@@ -47,6 +48,9 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ searchFilters }) => {
   
   // Add location context
   const { userLocation, isLocationSet } = useLocation();
+
+  // Add contact owner hook
+  const { handleContactOwner } = useContactOwner();
 
   // Use the optimized real-time properties hook
   const { properties, loading, error, refetch } = useRealtimeProperties({
@@ -185,12 +189,6 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ searchFilters }) => {
     if (!isInteractiveElement) {
       navigate(`/property/${propertyId}`);
     }
-  };
-
-  // Helper function to handle contact owner call
-  const handleContactOwner = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.location.href = 'tel:9121055512';
   };
 
   const handleShareClick = (e: React.MouseEvent, propertyId: string) => {

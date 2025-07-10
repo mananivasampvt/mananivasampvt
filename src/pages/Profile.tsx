@@ -12,6 +12,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useContactOwner } from '@/hooks/useContactOwner';
 
 interface UserProfile {
   username: string;
@@ -43,6 +44,7 @@ const Profile = () => {
   const [shortlistedProperties, setShortlistedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProfilePopup, setShowProfilePopup] = useState(false);
+  const { handleContactOwner } = useContactOwner();
 
   useEffect(() => {
     if (!currentUser) {
@@ -183,19 +185,6 @@ const Profile = () => {
 
   const handleExploreProperties = () => {
     navigate('/#properties');
-  };
-
-  const handleContactOwner = () => {
-    const phoneNumber = '9121055512';
-    if (navigator.userAgent.match(/iPhone|iPad|iPod|Android/i)) {
-      window.location.href = `tel:${phoneNumber}`;
-    } else {
-      navigator.clipboard.writeText(phoneNumber);
-      toast({
-        title: "Phone number copied",
-        description: `${phoneNumber} copied to clipboard`,
-      });
-    }
   };
 
   const handleShare = async (property: Property) => {

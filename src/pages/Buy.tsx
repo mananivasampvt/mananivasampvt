@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { usePropertyLocations } from '@/hooks/usePropertyLocations';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useShortlist } from '@/hooks/useShortlist';
+import { useContactOwner } from '@/hooks/useContactOwner';
 import EnhancedShareMenu from '@/components/EnhancedShareMenu';
 
 interface Property {
@@ -42,6 +43,7 @@ const Buy = () => {
   const { locationData } = usePropertyLocations();
   const isMobile = useIsMobile();
   const { isShortlisted, toggleShortlist, isLoading: shortlistLoading } = useShortlist();
+  const { handleContactOwner } = useContactOwner();
 
   // Scroll to top on component mount
   useEffect(() => {
@@ -125,7 +127,7 @@ const Buy = () => {
     setShowAllOnMobile(false);
   };
 
-  const handleContactOwner = (e: React.MouseEvent) => {
+  const handleContactOwnerClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     window.location.href = 'tel:9121055512';
   };
@@ -455,7 +457,7 @@ const Buy = () => {
                                 View Details
                               </Button>
                               <Button 
-                                onClick={handleContactOwner}
+                                onClick={handleContactOwnerClick}
                                 className="flex-1 h-7 text-xs bg-red-600 hover:bg-red-700 text-white rounded-2xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                               >
                                 Contact Owner

@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Phone, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useContactOwner } from '@/hooks/useContactOwner';
 
 interface PropertyContactShareProps {
   property: {
@@ -16,19 +17,7 @@ interface PropertyContactShareProps {
 
 const PropertyContactShare: React.FC<PropertyContactShareProps> = ({ property }) => {
   const { toast } = useToast();
-
-  const handleContactOwner = () => {
-    const phoneNumber = '9121055512';
-    if (navigator.userAgent.match(/iPhone|iPad|iPod|Android/i)) {
-      window.location.href = `tel:${phoneNumber}`;
-    } else {
-      navigator.clipboard.writeText(phoneNumber);
-      toast({
-        title: "Phone number copied",
-        description: `${phoneNumber} copied to clipboard`,
-      });
-    }
-  };
+  const { handleContactOwner } = useContactOwner({ propertyId: property.id });
 
   const handleShare = async () => {
     const shareData = {

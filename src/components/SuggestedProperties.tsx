@@ -6,6 +6,7 @@ import { Heart, ChevronRight, MapPin, Square, Phone, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useShortlist } from '@/hooks/useShortlist';
+import { useContactOwner } from '@/hooks/useContactOwner';
 import EnhancedShareMenu from '@/components/EnhancedShareMenu';
 
 interface Property {
@@ -38,6 +39,7 @@ const SuggestedProperties: React.FC<SuggestedPropertiesProps> = ({
   const [shareMenuProperty, setShareMenuProperty] = useState<Property | null>(null);
   const navigate = useNavigate();
   const { isShortlisted, toggleShortlist } = useShortlist();
+  const { handleContactOwner: handleContactOwnerHook } = useContactOwner();
 
   useEffect(() => {
     fetchSuggestedProperties();
@@ -112,8 +114,8 @@ const SuggestedProperties: React.FC<SuggestedPropertiesProps> = ({
 
   const handleContactOwner = (e: React.MouseEvent, propertyId: string) => {
     e.stopPropagation();
-    // Open phone dialer with the specified number
-    window.location.href = 'tel:9121055512';
+    // Use the hook function with the property ID as context
+    handleContactOwnerHook(e);
   };
 
   const handleShareClick = (e: React.MouseEvent, property: Property) => {

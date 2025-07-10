@@ -90,9 +90,9 @@ const Footer = () => {
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-gray-300">123 Business District</p>
-                  <p className="text-gray-300">Hyderabad, Telangana</p>
-                  <p className="text-gray-400 text-sm">500032, India</p>
+                  <p className="text-gray-300">Kakinada District</p>
+                  <p className="text-gray-300">Kakinada, Andhra Pradesh</p>
+                  <p className="text-gray-400 text-sm">533005, India</p>
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@ const Footer = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm mb-4 md:mb-0">
-              © 2024 Mana Nivasam. All rights reserved.
+              © 2025 Mana Nivasam. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">

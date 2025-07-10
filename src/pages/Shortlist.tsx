@@ -12,6 +12,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useContactOwner } from '@/hooks/useContactOwner';
 
 interface Property {
   id: string;
@@ -34,6 +35,7 @@ const Shortlist = () => {
   const navigate = useNavigate();
   const [shortlistedProperties, setShortlistedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const { handleContactOwner } = useContactOwner();
 
   useEffect(() => {
     if (!currentUser) {
@@ -84,20 +86,6 @@ const Shortlist = () => {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleContactOwner = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const phoneNumber = '9121055512';
-    if (navigator.userAgent.match(/iPhone|iPad|iPod|Android/i)) {
-      window.location.href = `tel:${phoneNumber}`;
-    } else {
-      navigator.clipboard.writeText(phoneNumber);
-      toast({
-        title: "Phone number copied",
-        description: `${phoneNumber} copied to clipboard`,
-      });
     }
   };
 

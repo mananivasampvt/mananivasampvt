@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { usePropertyLocations } from '@/hooks/usePropertyLocations';
 import { useShortlist } from '@/hooks/useShortlist';
+import { useContactOwner } from '@/hooks/useContactOwner';
 
 interface Property {
   id: string;
@@ -42,6 +43,7 @@ const PGHostels = () => {
   const navigate = useNavigate();
   const { locationData } = usePropertyLocations();
   const { isShortlisted, toggleShortlist } = useShortlist();
+  const { handleContactOwner } = useContactOwner();
 
   useEffect(() => {
     const unsubscribe = setupRealtimeListener();
@@ -179,11 +181,6 @@ const PGHostels = () => {
 
   const handleCardClick = (propertyId: string) => {
     navigate(`/property/${propertyId}`);
-  };
-
-  const handleContactOwner = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.location.href = 'tel:9121055512';
   };
 
   const handleShareClick = (e: React.MouseEvent, propertyId: string) => {

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,6 +20,7 @@ const Signup = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,7 +77,19 @@ const Signup = () => {
         description: "Welcome to Mana Nivasam",
       });
       
-      navigate('/');
+      // Check if there's a redirect location from contact owner attempt
+      const from = location.state?.from || location.state?.returnTo || '/';
+      const redirectData = location.state;
+      
+      // If user was trying to contact owner, show success message and redirect
+      if (redirectData?.action === 'contact') {
+        toast({
+          title: "Account created! You can now contact the property owner",
+          description: "Welcome to Mana Nivasam",
+        });
+      }
+      
+      navigate(from, { replace: true });
     } catch (error: any) {
       let errorMessage = "Failed to create account";
       
