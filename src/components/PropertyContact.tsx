@@ -11,6 +11,7 @@ interface PropertyContactProps {
   contactEmail?: string;
   propertyTitle: string;
   propertyLocation: string;
+  propertyFullAddress?: string;
 }
 
 const PropertyContact: React.FC<PropertyContactProps> = ({
@@ -18,13 +19,15 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
   contactPhone,
   contactEmail,
   propertyTitle,
-  propertyLocation
+  propertyLocation,
+  propertyFullAddress
 }) => {
+  const locationForMessage = propertyFullAddress || propertyLocation;
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
-    message: `Hi, I'm interested in "${propertyTitle}" in ${propertyLocation}. Please share more details.`
+    message: `Hi, I'm interested in "${propertyTitle}" in ${locationForMessage}. Please share more details.`
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -8,6 +8,7 @@ interface Property {
   title: string;
   price: string;
   location: string;
+  fullAddress?: string;
   type: string;
   category: string;
   subCategory?: string;
@@ -79,6 +80,7 @@ export const useRealtimeProperties = (options: UseRealtimePropertiesOptions = {}
               title: data.title || '',
               price: data.price || '',
               location: data.location || '',
+              fullAddress: data.fullAddress || '',
               type: data.type || 'Property',
               category: data.category || 'For Sale',
               subCategory: data.subCategory || '',

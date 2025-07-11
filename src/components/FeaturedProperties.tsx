@@ -13,6 +13,7 @@ interface Property {
   title: string;
   price: string;
   location: string;
+  fullAddress?: string;
   type: string;
   category: string;
   images: string[];

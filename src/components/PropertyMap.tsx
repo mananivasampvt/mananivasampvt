@@ -6,10 +6,13 @@ import { Button } from '@/components/ui/button';
 interface PropertyMapProps {
   location: string;
   title: string;
+  fullAddress?: string;
 }
 
-const PropertyMap: React.FC<PropertyMapProps> = ({ location, title }) => {
-  const encodedLocation = encodeURIComponent(`${location}, India`);
+const PropertyMap: React.FC<PropertyMapProps> = ({ location, title, fullAddress }) => {
+  // Use fullAddress if available, otherwise fallback to location
+  const addressForMap = fullAddress || location;
+  const encodedLocation = encodeURIComponent(`${addressForMap}, India`);
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
   // Using the standard Google Maps embed URL that doesn't require API key
   const embedUrl = `https://www.google.com/maps?q=${encodedLocation}&output=embed`;

@@ -7,6 +7,7 @@ interface Property {
   title: string;
   price: string;
   location: string;
+  fullAddress?: string;
   type: string;
   category: string;
   bedrooms?: number;
@@ -92,6 +93,20 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({ property }) => {
             </span>
           </div>
         </div>
+        
+        {/* Full Address Section */}
+        {property.fullAddress && (
+          <div className="mt-4 sm:mt-6">
+            <div className="flex flex-col gap-2">
+              <span className="text-gray-600 font-medium text-xs sm:text-sm">Full Address:</span>
+              <div className="bg-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-gray-100 shadow-elegant">
+                <span className="text-gray-900 font-medium text-xs sm:text-sm leading-relaxed">
+                  {property.fullAddress}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Description with Modern Typography - Mobile Responsive */}

@@ -64,11 +64,12 @@ const Signup = () => {
         displayName: username
       });
 
-      // Store user data in Firestore
+      // Store user data in Firestore with default role
       await setDoc(doc(db, 'users', user.uid), {
         uid: user.uid,
         username: username,
         email: email,
+        role: 'user', // Default role for new users
         createdAt: serverTimestamp()
       });
 

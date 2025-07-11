@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,9 +15,18 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, currentUser, isAdmin, roleLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Redirect if already logged in as admin
+  useEffect(() => {
+    if (currentUser && !roleLoading) {
+      if (isAdmin) {
+        navigate('/admin/dashboard');
+      }
+    }
+  }, [currentUser, isAdmin, roleLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,15 +43,34 @@ const AdminLogin = () => {
     setLoading(true);
     try {
       await login(email, password);
-      toast({
-        title: "Success",
-        description: "Logged in successfully",
-      });
-      navigate('/admin/dashboard');
+      
+      // Wait a bit for role to be fetched
+      setTimeout(() => {
+        toast({
+          title: "Success",
+          description: "Logged in successfully",
+        });
+        navigate('/admin/dashboard');
+      }, 500);
+      
     } catch (error: any) {
+      let errorMessage = "Invalid credentials";
+      
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = "No account found with this email";
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = "Incorrect password";
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = "Invalid email address";
+      } else if (error.code === 'auth/user-disabled') {
+        errorMessage = "This account has been disabled";
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = "Too many failed attempts. Please try again later";
+      }
+      
       toast({
         title: "Login Failed",
-        description: error.message || "Invalid credentials",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

@@ -26,6 +26,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
     title: '',
     price: '',
     location: '',
+    fullAddress: '',
     type: '',
     category: '',
     subCategory: '',
@@ -111,6 +112,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         title: property.title || '',
         price: property.price || '',
         location: property.location || '',
+        fullAddress: property.fullAddress || '',
         type: property.type || '',
         category: property.category || '',
         subCategory: property.subCategory || '',
@@ -375,6 +377,18 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
                   onChange={handleInputChange}
                   required
                   placeholder="Enter location"
+                  className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="fullAddress">Full Address</Label>
+                <Input
+                  id="fullAddress"
+                  name="fullAddress"
+                  value={formData.fullAddress}
+                  onChange={handleInputChange}
+                  placeholder="Enter complete address with landmarks"
                   className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
                 />
               </div>

@@ -20,6 +20,7 @@ interface Property {
   title: string;
   price: string;
   location: string;
+  fullAddress?: string;
   type: string;
   category: string;
   images: string[];
@@ -231,7 +232,11 @@ const PropertyDetails = () => {
                   
                   <TabsContent value="map" className="p-0 mt-3 sm:mt-2">
                     <div className="min-h-[300px] sm:h-80 lg:h-96">
-                      <PropertyMap location={property.location} title={property.title} />
+                      <PropertyMap 
+                        location={property.location} 
+                        title={property.title} 
+                        fullAddress={property.fullAddress}
+                      />
                     </div>
                   </TabsContent>
                   
@@ -242,6 +247,7 @@ const PropertyDetails = () => {
                       contactEmail={property.contactEmail}
                       propertyTitle={property.title}
                       propertyLocation={property.location}
+                      propertyFullAddress={property.fullAddress}
                     />
                   </TabsContent>
                 </Tabs>

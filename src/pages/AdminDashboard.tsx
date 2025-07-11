@@ -75,7 +75,7 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [propertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
-  const { logout, currentUser } = useAuth();
+  const { logout, currentUser, isAdmin, userRole } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -485,7 +485,7 @@ const AdminDashboard = () => {
                   Mana Nivasam
                 </h1>
                 <p className="text-xs text-white/90 drop-shadow">
-                  Welcome back, {currentUser?.email?.split('@')[0]}
+                  Welcome back, {currentUser?.email?.split('@')[0]} ({userRole === 'admin' ? 'Admin' : 'User'})
                 </p>
               </div>
             </div>
@@ -624,7 +624,10 @@ const AdminDashboard = () => {
                     </h1>
                     <p className="text-sm sm:text-base text-gray-600 flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
-                      Welcome back, {currentUser?.email?.split('@')[0]}
+                      Welcome back, {currentUser?.email?.split('@')[0]} 
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {userRole === 'admin' ? 'Admin' : 'User'}
+                      </span>
                     </p>
                   </div>
                 </div>

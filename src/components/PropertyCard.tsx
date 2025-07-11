@@ -13,6 +13,7 @@ interface PropertyCardProps {
     title: string;
     price: string;
     location: string;
+    fullAddress?: string;
     type: string;
     images: string[];
     videos?: string[];

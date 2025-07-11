@@ -8,6 +8,7 @@ export interface Property {
   title: string;
   price: string;
   location: string;
+  fullAddress?: string;
   type: string;
   category: string;
   images: string[];
@@ -35,6 +36,7 @@ export const searchProperties = (properties: Property[], searchQuery: string): P
   return properties.filter(property =>
     property.title.toLowerCase().includes(searchTerm) ||
     property.location.toLowerCase().includes(searchTerm) ||
+    property.fullAddress?.toLowerCase().includes(searchTerm) ||
     property.category.toLowerCase().includes(searchTerm) ||
     property.type.toLowerCase().includes(searchTerm) ||
     property.description?.toLowerCase().includes(searchTerm) ||
