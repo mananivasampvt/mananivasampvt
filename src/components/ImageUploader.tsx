@@ -1,10 +1,10 @@
+
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Upload, X, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import ImageUrlInput from './ImageUrlInput';
-import { isImageFile, getImageFormatFromFile, getSupportedImageFormats } from '@/lib/mediaUtils';
 
 interface ImageUploaderProps {
   onImagesUpload: (images: string[]) => void;
@@ -34,17 +34,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
     formData.append('folder', 'real_estate');
     
-    // Add specific parameters for better image handling
-    formData.append('quality', 'auto');
-    formData.append('fetch_format', 'auto');
-    
     console.log('Uploading to Cloudinary:', {
       cloudName: CLOUDINARY_CLOUD_NAME,
       preset: CLOUDINARY_UPLOAD_PRESET,
       fileName: file.name,
-      fileSize: file.size,
-      fileType: file.type,
-      supportedFormat: isImageFile(file) ? 'Yes' : 'No'
+      fileSize: file.size
     });
     
     const response = await fetch(
@@ -60,19 +54,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       console.error('Cloudinary API Error:', {
         status: response.status,
         statusText: response.statusText,
-        errorText,
-        fileName: file.name,
-        fileType: file.type,
-        cloudName: CLOUDINARY_CLOUD_NAME,
-        preset: CLOUDINARY_UPLOAD_PRESET
+        errorText
       });
       
       if (response.status === 401) {
         throw new Error('Cloudinary authentication failed. Check your upload preset configuration.');
       } else if (response.status === 400) {
-        throw new Error(`Invalid upload request for ${file.name}. Check if the file format is supported by Cloudinary.`);
+        throw new Error('Invalid upload request. Check file format and size limits.');
       } else {
-        throw new Error(`Cloudinary upload failed for ${file.name}: ${response.status} ${response.statusText}`);
+        throw new Error(`Cloudinary upload failed: ${response.status} ${response.statusText}`);
       }
     }
     
@@ -81,8 +71,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       url: data.secure_url,
       publicId: data.public_id,
       format: data.format,
-      bytes: data.bytes,
-      originalFileName: file.name
+      bytes: data.bytes
     });
     
     return data.secure_url;
@@ -114,33 +103,18 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         
-        console.log(`Processing file ${i + 1}/${files.length}:`, {
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          lastModified: file.lastModified
-        });
+        // Check if file is an image - be more flexible with image types
+        const isValidImage = file.type.startsWith('image/') || 
+                            file.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|bmp|tiff|tif|heic|heif|raw)$/);
         
-        // Enhanced image format validation
-        if (!isImageFile(file)) {
-          const detectedFormat = getImageFormatFromFile(file);
-          const supportedFormats = getSupportedImageFormats().join(', ');
-          console.warn(`File ${file.name} rejected: unsupported format. Detected: ${detectedFormat}, Type: ${file.type}`);
-          toast.error(`${file.name} is not a supported image format${detectedFormat ? ` (detected: ${detectedFormat})` : ''}. Supported formats: ${supportedFormats}`);
+        if (!isValidImage) {
+          toast.error(`${file.name} is not a valid image file`);
           errorCount++;
           continue;
         }
 
         if (file.size > 10 * 1024 * 1024) {
-          console.warn(`File ${file.name} rejected: too large (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
           toast.error(`${file.name} is too large. Maximum size is 10MB`);
-          errorCount++;
-          continue;
-        }
-
-        if (file.size === 0) {
-          console.warn(`File ${file.name} rejected: empty file`);
-          toast.error(`${file.name} appears to be empty or corrupted`);
           errorCount++;
           continue;
         }
@@ -158,7 +132,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           console.log(`Successfully uploaded: ${file.name} -> ${imageUrl}`);
         } catch (error) {
           console.error('Error uploading file:', file.name, error);
-          handleUploadError(error, file.name);
+          toast.error(`Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
           errorCount++;
         }
       }
@@ -219,131 +193,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     console.log('URL images updated:', urls);
   };
 
-  // Add configuration status checking
-  const getConfigStatus = () => {
-    const hasCloudName = !!CLOUDINARY_CLOUD_NAME;
-    const hasPreset = !!CLOUDINARY_UPLOAD_PRESET;
-    const isConfigured = hasCloudName && hasPreset;
-    
-    return {
-      isConfigured,
-      status: isConfigured ? 'ready' : 'incomplete',
-      message: isConfigured 
-        ? '✅ Cloudinary configured'
-        : '❌ Missing configuration'
-    };
-  };
-
-  // Add debugging helper for Cloudinary configuration
-  const testCloudinaryConfig = () => {
-    console.log('🔧 Cloudinary Configuration Test:', {
-      cloudName: CLOUDINARY_CLOUD_NAME,
-      uploadPreset: CLOUDINARY_UPLOAD_PRESET,
-      endpoint: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      timestamp: new Date().toISOString()
-    });
-  };
-
-  // Test configuration on component mount
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      testCloudinaryConfig();
-    }
-  }, []);
-
-  // Add test upload function for debugging
-  const testUpload = async () => {
-    console.log('🧪 Testing Cloudinary connection...');
-    
-    // Create a small test image blob
-    const canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.fillStyle = '#ff0000';
-      ctx.fillRect(0, 0, 1, 1);
-    }
-    
-    return new Promise<void>((resolve, reject) => {
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          console.error('❌ Failed to create test blob');
-          reject(new Error('Failed to create test image'));
-          return;
-        }
-        
-        const testFile = new File([blob], 'test.png', { type: 'image/png' });
-        console.log('🧪 Created test file:', testFile);
-        
-        try {
-          const url = await uploadToCloudinary(testFile);
-          console.log('✅ Cloudinary test upload successful:', url);
-          toast.success('Cloudinary configuration is working correctly!');
-          resolve();
-        } catch (error) {
-          console.error('❌ Cloudinary test upload failed:', error);
-          toast.error(`Cloudinary test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-          reject(error);
-        }
-      }, 'image/png');
-    });
-  };
-
-  // Enhanced error handling with detailed diagnostics
-  const handleUploadError = (error: any, fileName: string) => {
-    console.error('📊 Upload Error Analysis:', {
-      fileName,
-      error: error.message,
-      cloudName: CLOUDINARY_CLOUD_NAME,
-      preset: CLOUDINARY_UPLOAD_PRESET,
-      timestamp: new Date().toISOString()
-    });
-
-    // Provide specific error messages based on error type
-    if (error.message.includes('authentication')) {
-      toast.error('❌ Authentication Error: Please check if the upload preset "kkdrealestate" exists and is set to "Unsigned" in your Cloudinary dashboard.');
-    } else if (error.message.includes('Invalid upload request')) {
-      toast.error(`❌ Format Error: ${fileName} format is not supported by your Cloudinary preset. Try a different image format.`);
-    } else if (error.message.includes('400')) {
-      toast.error('❌ Bad Request: Check file format and size. Maximum 10MB allowed.');
-    } else if (error.message.includes('401')) {
-      toast.error('❌ Unauthorized: Upload preset configuration issue. Check Cloudinary settings.');
-    } else if (error.message.includes('413')) {
-      toast.error('❌ File Too Large: Reduce image size to under 10MB.');
-    } else {
-      toast.error(`❌ Upload Failed: ${error.message}`);
-    }
-  };
-
   const allImages = getAllImages();
 
   return (
     <div className="space-y-4">
-      {/* Development Mode: Cloudinary Test Button */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-yellow-800">Development Mode</p>
-              <p className="text-xs text-yellow-600">
-                {getConfigStatus().message} | Cloud: {CLOUDINARY_CLOUD_NAME} | Preset: {CLOUDINARY_UPLOAD_PRESET}
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={testUpload}
-              disabled={uploading || !getConfigStatus().isConfigured}
-              className="text-yellow-700 border-yellow-300 hover:bg-yellow-100"
-            >
-              Test Upload
-            </Button>
-          </div>
-        </div>
-      )}
-
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="upload" className="flex items-center gap-2">
@@ -367,13 +220,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             <p className="text-gray-600 mb-3 text-sm">
               Drag and drop images here, or click to select files
             </p>
-            <p className="text-xs text-gray-500 mb-3">
-              All image formats supported: JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC, HEIF, RAW, SVG and all camera RAW formats
-            </p>
             <input
               type="file"
               multiple
-              accept="image/*,.heic,.heif,.raw,.tiff,.tif,.bmp,.dng,.cr2,.nef,.orf,.arw,.rw2,.crw,.erf,.3fr,.dcr,.k25,.kdc,.mrw,.raf,.sr2,.srf,.x3f"
+              accept="image/*,.jpeg,.jpg,.png,.gif,.webp,.bmp,.tiff,.tif,.heic,.heif,.raw"
               onChange={handleFileInput}
               className="hidden"
               id="image-upload"
@@ -390,10 +240,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               {uploading ? 'Uploading...' : 'Select Images'}
             </Button>
             <p className="text-xs text-gray-500 mt-2">
-              Supported formats: JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC, HEIF, RAW, SVG and all camera RAW formats
-            </p>
-            <p className="text-xs text-gray-500">
               Maximum {maxImages} images, up to 10MB each
+              <br />
+              Supported formats: JPEG, JPG, PNG, GIF, WebP, BMP, TIFF, HEIC, HEIF, RAW
             </p>
           </div>
         </TabsContent>

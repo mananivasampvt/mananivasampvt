@@ -12,6 +12,7 @@ export interface Property {
   type: string;
   category: string;
   images: string[];
+  videos?: string[];
   bedrooms?: number;
   bathrooms?: number;
   area?: string;

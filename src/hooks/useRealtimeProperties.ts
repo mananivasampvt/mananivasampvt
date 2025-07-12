@@ -13,6 +13,7 @@ interface Property {
   category: string;
   subCategory?: string;
   images: string[];
+  videos?: string[];
   bedrooms?: number;
   bathrooms?: number;
   area: string;
@@ -75,6 +76,20 @@ export const useRealtimeProperties = (options: UseRealtimePropertiesOptions = {}
               });
             }
             
+            // Ensure videos is always an array with valid URLs
+            let validVideos: string[] = [];
+            if (Array.isArray(data.videos)) {
+              validVideos = data.videos.filter(video => {
+                if (!video || typeof video !== 'string') return false;
+                // Accept valid HTTPS URLs for videos
+                return video.startsWith('https://') || 
+                       video.includes('cloudinary.com') ||
+                       video.includes('youtube.com') ||
+                       video.includes('youtu.be') ||
+                       video.includes('vimeo.com');
+              });
+            }
+            
             return {
               id: doc.id,
               title: data.title || '',
@@ -85,6 +100,7 @@ export const useRealtimeProperties = (options: UseRealtimePropertiesOptions = {}
               category: data.category || 'For Sale',
               subCategory: data.subCategory || '',
               images: validImages.length > 0 ? validImages : ['https://images.unsplash.com/photo-1721322800607-8c38375eef04?q=80&w=500'],
+              videos: validVideos.length > 0 ? validVideos : [],
               bedrooms: data.bedrooms,
               bathrooms: data.bathrooms,
               area: data.area || 'N/A',
