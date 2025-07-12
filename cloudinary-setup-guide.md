@@ -33,7 +33,7 @@ To ensure uploads work correctly, verify your Cloudinary upload preset settings:
 4. Ensure the following settings:
    - **Signing Mode**: `Unsigned` (crucial for frontend uploads)
    - **Resource Type**: `Image`
-   - **Allowed Formats**: `jpg,png,jpeg,webp,gif`
+   - **Allowed Formats**: `jpg,png,jpeg,webp,gif,bmp,tiff,tif,heic,heif,raw,svg`
    - **Max File Size**: `10MB` or higher
    - **Folder**: `real_estate` (optional, for organization)
 

@@ -32,12 +32,20 @@ const ImageUrlInput: React.FC<ImageUrlInputProps> = ({
       return false;
     }
     
-    // Check if URL ends with image extension
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    // Check if URL ends with image extension - expanded to support all formats
+    const imageExtensions = [
+      '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', 
+      '.tiff', '.tif', '.heic', '.heif', '.raw', '.svg',
+      '.dng', '.cr2', '.crw', '.nef', '.orf', '.arw', '.rw2',
+      '.3fr', '.dcr', '.k25', '.kdc', '.mrw', '.raf', '.sr2',
+      '.srf', '.x3f', '.erf'
+    ];
     const urlLower = url.toLowerCase();
     return imageExtensions.some(ext => urlLower.includes(ext)) || 
            url.includes('cloudinary.com') || 
-           url.includes('unsplash.com');
+           url.includes('unsplash.com') ||
+           url.includes('images.') ||
+           url.includes('/image/');
   };
 
   const handleUrlChange = (index: number, value: string) => {
@@ -87,7 +95,7 @@ const ImageUrlInput: React.FC<ImageUrlInputProps> = ({
 
   const handleUrlBlur = async (index: number, url: string) => {
     if (url.trim() && !validateImageUrl(url)) {
-      toast.error('Please enter a valid image URL (jpg, png, webp, gif)');
+      toast.error('Please enter a valid image URL (supported formats: JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC, HEIF, RAW, SVG)');
     } else if (url.trim()) {
       // Optional: Validate URL accessibility
       const isValid = await validateUrl(url);
@@ -179,7 +187,7 @@ const ImageUrlInput: React.FC<ImageUrlInputProps> = ({
       )}
 
       <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
-        <strong>Supported formats:</strong> JPG, PNG, WebP, GIF<br />
+        <strong>Supported formats:</strong> JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC, HEIF, RAW, SVG<br />
         <strong>Tip:</strong> Use direct image URLs from trusted sources like Cloudinary, Unsplash, or your own CDN
       </div>
     </div>
