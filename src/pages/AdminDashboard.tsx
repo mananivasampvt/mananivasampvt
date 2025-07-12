@@ -161,25 +161,12 @@ const AdminDashboard = () => {
     const defaultImage = 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?q=80&w=200';
     
     if (!property.images || !Array.isArray(property.images) || property.images.length === 0) {
-      console.log('No images found for property:', property.title);
       return defaultImage;
     }
     
     const validImages = property.images.filter(img => {
-      const isValid = img && typeof img === 'string' && !img.startsWith('blob:') && 
-             (img.startsWith('data:image/') || img.startsWith('https://') || img.startsWith('http://') || img.includes('cloudinary.com'));
-      if (!isValid) {
-        console.log('Invalid image URL filtered out:', img);
-      }
-      return isValid;
-    });
-    
-    console.log('Property images:', {
-      title: property.title,
-      totalImages: property.images.length,
-      validImages: validImages.length,
-      firstValidImage: validImages[0] || 'none',
-      allImages: property.images
+      return img && typeof img === 'string' && !img.startsWith('blob:') && 
+             (img.startsWith('data:image/') || img.startsWith('https://'));
     });
     
     return validImages.length > 0 ? validImages[0] : defaultImage;

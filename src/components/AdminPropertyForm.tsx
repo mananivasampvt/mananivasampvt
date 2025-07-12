@@ -9,7 +9,6 @@ import { X } from 'lucide-react';
 import ImageUploader from './ImageUploader';
 import VideoUploader from './VideoUploader';
 import AdminMediaPreview from './AdminMediaPreview';
-import CloudinaryTester from './CloudinaryTester';
 import { toast } from 'sonner';
 
 interface AdminPropertyFormProps {
@@ -191,13 +190,6 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
 
   const handleImageUpload = (uploadedImages: string[]) => {
     console.log('Images updated in form:', uploadedImages.length, 'images');
-    console.log('Image URLs received:', uploadedImages);
-    
-    // Validate URLs in development mode
-    if (process.env.NODE_ENV === 'development' && uploadedImages.length > 0) {
-      validateImageUrls(uploadedImages);
-    }
-    
     setImages(uploadedImages);
   };
 
@@ -285,8 +277,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
 
       console.log('Final property data being submitted:', {
         ...propertyData,
-        images: `${validImages.length} valid images`,
-        imageUrls: validImages // Log the actual URLs
+        images: `${validImages.length} valid images`
       });
 
       if (property?.id) {
@@ -327,26 +318,6 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
 
   // PG/Hostels subcategory options
   const pgSubCategories = ['For Boys', 'For Girls', 'Co-Living'];
-
-  // Add image URL validation for debugging
-  const validateImageUrls = async (urls: string[]) => {
-    console.log('🔍 Validating image URLs:', urls);
-    
-    for (const url of urls) {
-      try {
-        const response = await fetch(url, { method: 'HEAD' });
-        console.log(`✅ URL ${url} - Status: ${response.status}`);
-        
-        const img = new Image();
-        img.onload = () => console.log(`✅ Image loads: ${url}`);
-        img.onerror = () => console.error(`❌ Image fails to load: ${url}`);
-        img.src = url;
-        
-      } catch (error) {
-        console.error(`❌ URL ${url} - Error:`, error);
-      }
-    }
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -700,14 +671,6 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
             {/* Image Upload with initial images and deletion */}
             <div>
               <Label>Property Images</Label>
-              
-              {/* Development Mode: Cloudinary Troubleshooter */}
-              {process.env.NODE_ENV === 'development' && (
-                <div className="mb-4">
-                  <CloudinaryTester />
-                </div>
-              )}
-              
               <ImageUploader 
                 onImagesUpload={handleImageUpload} 
                 initialImages={images}

@@ -187,8 +187,7 @@ const ImageUrlInput: React.FC<ImageUrlInputProps> = ({
       )}
 
       <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
-        <strong>Supported formats:</strong> JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC*, HEIF*, RAW, SVG<br />
-        <span className="text-blue-600">*HEIC/HEIF URLs may not display properly - upload files for automatic conversion</span><br />
+        <strong>Supported formats:</strong> JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC, HEIF, RAW, SVG<br />
         <strong>Tip:</strong> Use direct image URLs from trusted sources like Cloudinary, Unsplash, or your own CDN
       </div>
     </div>
