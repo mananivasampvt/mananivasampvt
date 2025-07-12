@@ -95,6 +95,39 @@ const AdminMediaPreview: React.FC<AdminMediaPreviewProps> = ({
                     className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                     onError={(e) => {
                       console.error('Failed to load image:', mediaItem.url);
+                      console.error('AdminMediaPreview image load error:', {
+                        src: mediaItem.url,
+                        type: mediaItem.type,
+                        index: index,
+                        timestamp: new Date().toISOString()
+                      });
+                      
+                      // Check if this is a HEIC-related issue
+                      const isHeicUrl = mediaItem.url.includes('.heic') || mediaItem.url.includes('heic');
+                      if (isHeicUrl) {
+                        console.warn('⚠️ HEIC format detected in URL - should have been converted to JPEG');
+                      }
+                      
+                      // Try to fetch the image to get more details
+                      fetch(mediaItem.url, { method: 'HEAD' })
+                        .then(response => {
+                          console.log('AdminMediaPreview HEAD response:', {
+                            status: response.status,
+                            headers: Object.fromEntries(response.headers.entries()),
+                            url: mediaItem.url,
+                            contentType: response.headers.get('content-type')
+                          });
+                          
+                          // Special handling for HEIC content type
+                          const contentType = response.headers.get('content-type');
+                          if (contentType && contentType.includes('heic')) {
+                            console.warn('⚠️ Server is serving HEIC content type - conversion may have failed');
+                          }
+                        })
+                        .catch(err => {
+                          console.error('AdminMediaPreview HEAD request failed:', err);
+                        });
+                      
                       e.currentTarget.style.backgroundColor = '#f3f4f6';
                       e.currentTarget.style.display = 'flex';
                       e.currentTarget.style.alignItems = 'center';

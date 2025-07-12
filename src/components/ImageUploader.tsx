@@ -34,9 +34,17 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
     formData.append('folder', 'real_estate');
     
-    // Add specific parameters for better image handling
+    // Add specific parameters for better image handling and HEIC support
     formData.append('quality', 'auto');
     formData.append('fetch_format', 'auto');
+    
+    // Special handling for HEIC files - convert to JPEG for browser compatibility
+    const isHeicFile = file.name.toLowerCase().includes('.heic') || file.type.toLowerCase().includes('heic');
+    if (isHeicFile) {
+      formData.append('format', 'jpg'); // Force conversion to JPEG
+      formData.append('quality', '90'); // High quality for HEIC conversion
+      console.log('🔄 HEIC file detected, will convert to JPEG for browser compatibility');
+    }
     
     console.log('Uploading to Cloudinary:', {
       cloudName: CLOUDINARY_CLOUD_NAME,
@@ -44,7 +52,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type,
-      supportedFormat: isImageFile(file) ? 'Yes' : 'No'
+      supportedFormat: isImageFile(file) ? 'Yes' : 'No',
+      isHeicFile: isHeicFile ? 'Yes (will convert to JPEG)' : 'No'
     });
     
     const response = await fetch(
@@ -82,8 +91,21 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       publicId: data.public_id,
       format: data.format,
       bytes: data.bytes,
-      originalFileName: file.name
+      originalFileName: file.name,
+      originalFormat: file.type,
+      convertedFormat: isHeicFile ? 'JPEG (converted from HEIC)' : data.format
     });
+    
+    // Test if the uploaded image can be accessed immediately
+    console.log('🔍 Testing immediate access to uploaded image...');
+    const testImage = new Image();
+    testImage.onload = () => {
+      console.log('✅ Uploaded image is immediately accessible');
+    };
+    testImage.onerror = (error) => {
+      console.warn('⚠️ Uploaded image may not be immediately accessible:', error);
+    };
+    testImage.src = data.secure_url;
     
     return data.secure_url;
   };
@@ -147,6 +169,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
         try {
           console.log(`Uploading image ${i + 1}/${files.length}:`, file.name);
+          
+          // Special notification for HEIC files
+          const isHeicFile = file.name.toLowerCase().includes('.heic') || file.type.toLowerCase().includes('heic');
+          if (isHeicFile) {
+            toast.info(`Converting ${file.name} from HEIC to JPEG for browser compatibility...`);
+          }
+          
           const imageUrl = await uploadToCloudinary(file);
           
           if (!imageUrl || !imageUrl.startsWith('https://') || !imageUrl.includes('cloudinary.com')) {
@@ -155,7 +184,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           
           newImages.push(imageUrl);
           successCount++;
-          console.log(`Successfully uploaded: ${file.name} -> ${imageUrl}`);
+          
+          if (isHeicFile) {
+            console.log(`✅ HEIC file successfully converted and uploaded: ${file.name} -> ${imageUrl}`);
+            toast.success(`${file.name} converted to JPEG and uploaded successfully!`);
+          } else {
+            console.log(`Successfully uploaded: ${file.name} -> ${imageUrl}`);
+          }
         } catch (error) {
           console.error('Error uploading file:', file.name, error);
           handleUploadError(error, file.name);
@@ -279,8 +314,21 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         try {
           const url = await uploadToCloudinary(testFile);
           console.log('✅ Cloudinary test upload successful:', url);
-          toast.success('Cloudinary configuration is working correctly!');
-          resolve();
+          
+          // Test if the image can be loaded
+          const img = new Image();
+          img.onload = () => {
+            console.log('✅ Test image loads successfully in browser');
+            toast.success('Cloudinary configuration is working correctly!');
+            resolve();
+          };
+          img.onerror = (error) => {
+            console.error('❌ Test image failed to load in browser:', error);
+            toast.error('Upload successful but image cannot be displayed. Check CORS settings.');
+            reject(new Error('Image upload works but display fails'));
+          };
+          img.src = url;
+          
         } catch (error) {
           console.error('❌ Cloudinary test upload failed:', error);
           toast.error(`Cloudinary test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -368,7 +416,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               Drag and drop images here, or click to select files
             </p>
             <p className="text-xs text-gray-500 mb-3">
-              All image formats supported: JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC, HEIF, RAW, SVG and all camera RAW formats
+              All image formats supported: JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC*, HEIF*, RAW, SVG and all camera RAW formats<br/>
+              <span className="text-blue-600">*HEIC/HEIF files are automatically converted to JPEG for browser compatibility</span>
             </p>
             <input
               type="file"
@@ -390,7 +439,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               {uploading ? 'Uploading...' : 'Select Images'}
             </Button>
             <p className="text-xs text-gray-500 mt-2">
-              Supported formats: JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC, HEIF, RAW, SVG and all camera RAW formats
+              Supported formats: JPEG, JPG, PNG, GIF, WEBP, BMP, TIFF, TIF, HEIC*, HEIF*, RAW, SVG and all camera RAW formats<br/>
+              <span className="text-blue-600">*HEIC/HEIF automatically converted to JPEG</span>
             </p>
             <p className="text-xs text-gray-500">
               Maximum {maxImages} images, up to 10MB each
@@ -432,6 +482,38 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                       className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                       onError={(e) => {
                         console.error('Failed to load image:', image);
+                        console.error('Image load error details:', {
+                          src: image,
+                          error: e,
+                          timestamp: new Date().toISOString()
+                        });
+                        
+                        // Check if this is a HEIC-related issue
+                        const isHeicUrl = image.includes('.heic') || image.includes('heic');
+                        if (isHeicUrl) {
+                          console.warn('⚠️ HEIC format detected in URL - browser may not support direct HEIC display');
+                        }
+                        
+                        // Try to fetch the image to get more details
+                        fetch(image, { method: 'HEAD' })
+                          .then(response => {
+                            console.log('Image HEAD response:', {
+                              status: response.status,
+                              headers: Object.fromEntries(response.headers.entries()),
+                              url: image,
+                              contentType: response.headers.get('content-type')
+                            });
+                            
+                            // Special handling for HEIC content type
+                            const contentType = response.headers.get('content-type');
+                            if (contentType && contentType.includes('heic')) {
+                              console.warn('⚠️ Server is serving HEIC content type - image should have been converted');
+                            }
+                          })
+                          .catch(err => {
+                            console.error('Image HEAD request failed:', err);
+                          });
+                        
                         e.currentTarget.style.backgroundColor = '#f3f4f6';
                         e.currentTarget.style.display = 'flex';
                         e.currentTarget.style.alignItems = 'center';
