@@ -27,6 +27,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import PropertyDetails from "./pages/PropertyDetails";
 import EMICalculator from "./pages/EMICalculator";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -90,6 +91,7 @@ const App = () => {
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/shortlist" element={<Shortlist />} />
                     <Route path="/emi-calculator" element={<EMICalculator />} />
+                    <Route path="/privacypolicy" element={<PrivacyPolicy />} />
                     <Route path="/property/:id" element={<PropertyDetails />} />
                     <Route path="/admin/login" element={<AdminLogin />} />
                     <Route 

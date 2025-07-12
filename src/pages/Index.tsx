@@ -110,6 +110,7 @@ const Index = () => {
       <LocationPermissionModal
         onLocationDetected={handleLocationDetected}
         onLocationDenied={handleLocationDenied}
+        showOnAllDevices={true}
       />
       
       <Footer />
