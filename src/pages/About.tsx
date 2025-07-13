@@ -93,13 +93,21 @@ const About = () => {
   ];
 
   const handlePhoneCall = () => {
-    window.location.href = 'tel:9121055512';
+    window.location.href = 'tel:8985816481';
   };
 
   const handleWhatsAppContact = () => {
     const message = encodeURIComponent("Hello, I'm interested in real estate services.");
-    const whatsappUrl = `https://wa.me/9121055512?text=${message}`;
+    const whatsappUrl = `https://wa.me/918985816481?text=${message}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleEmailContact = () => {
+    const emailAddress = 'mananivasam@gmail.com';
+    const subject = encodeURIComponent('Inquiry about Real Estate Services');
+    const body = encodeURIComponent("Hello,\n\nI'm interested in learning more about your real estate services. Please contact me at your earliest convenience.\n\nThank you!");
+    const mailtoUrl = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
+    window.location.href = mailtoUrl;
   };
 
   return (
@@ -288,6 +296,7 @@ const About = () => {
               </Button>
               <Button 
                 variant="outline" 
+                onClick={handleEmailContact}
                 className="border-2 border-white bg-transparent text-white hover:bg-white hover:text-purple-900 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg"
               >
                 <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
