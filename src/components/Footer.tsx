@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Home, Phone, Mail, MapPin, Facebook, Instagram, Youtube } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-6">
               <div className="w-10 h-10 bg-premium-gradient rounded-xl flex items-center justify-center">
                 <Home className="w-6 h-6 text-white" />
@@ -23,42 +23,145 @@ const Footer = () => {
               with a commitment to excellence and personalized service.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors duration-300">
+              <a 
+                href="https://www.facebook.com/share/16ovnVhmA8/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-12 h-12 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-blue-600/20 transition-colors duration-300 touch-target"
+                aria-label="Follow us on Facebook"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors duration-300">
+              <a 
+                href="https://www.instagram.com/mananivasampvt?igsh=MmQ3ZnF5MHB4N2pl" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-12 h-12 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-pink-600/20 transition-colors duration-300 touch-target"
+                aria-label="Follow us on Instagram"
+              >
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors duration-300">
-                <Twitter className="w-5 h-5" />
+              <a 
+                href="https://youtube.com/@mananivasampvt?si=rMOK60xL8lfWuNW7" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-12 h-12 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-red-600/20 transition-colors duration-300 touch-target"
+                aria-label="Subscribe to our YouTube channel"
+              >
+                <Youtube className="w-5 h-5" />
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Get the App Section */}
           <div>
-            <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Buy Property</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Rent Property</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Commercial Space</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">PG & Hostels</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">About Us</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Contact</a></li>
-            </ul>
+            <h4 className="text-lg font-semibold mb-6">Get the App</h4>
+            <div className="space-y-4">
+              <div className="group">
+                <div 
+                  onClick={(e) => {
+                    // Get the button's position for relative tooltip placement
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    
+                    // Create tooltip with better styling
+                    const tooltip = document.createElement('div');
+                    tooltip.innerHTML = `
+                      <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>App coming soon to Google Play!</span>
+                      </div>
+                    `;
+                    
+                    tooltip.className = 'fixed bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 py-3 rounded-xl text-sm z-[9999] pointer-events-none shadow-2xl border border-gray-600 backdrop-blur-sm';
+                    
+                    // Position tooltip above the button
+                    tooltip.style.left = `${rect.left + rect.width / 2}px`;
+                    tooltip.style.top = `${rect.top - 10}px`;
+                    tooltip.style.transform = 'translate(-50%, -100%)';
+                    tooltip.style.opacity = '0';
+                    tooltip.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                    tooltip.style.animation = 'none';
+                    
+                    document.body.appendChild(tooltip);
+                    
+                    // Trigger animation
+                    requestAnimationFrame(() => {
+                      tooltip.style.opacity = '1';
+                      tooltip.style.transform = 'translate(-50%, -100%) translateY(-8px) scale(1)';
+                    });
+                    
+                    // Remove tooltip with fade out
+                    setTimeout(() => {
+                      if (document.body.contains(tooltip)) {
+                        tooltip.style.opacity = '0';
+                        tooltip.style.transform = 'translate(-50%, -100%) translateY(-4px) scale(0.95)';
+                        setTimeout(() => {
+                          if (document.body.contains(tooltip)) {
+                            document.body.removeChild(tooltip);
+                          }
+                        }, 300);
+                      }
+                    }, 2500);
+                  }}
+                  className="relative transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer select-none group"
+                  style={{ minHeight: '48px', minWidth: '48px' }}
+                >
+                  {/* Official Google Play Badge */}
+                  <div className="relative">
+                    <img 
+                      src="https://camo.githubusercontent.com/899b11c87da7fe33fedafd4a4cf80f9e63831b91b298465c28c411871591e7aa/68747470733a2f2f706c61792e676f6f676c652e636f6d2f696e746c2f656e5f67622f6261646765732f696d616765732f67656e657269632f656e5f62616467655f7765625f67656e657269632e706e67"
+                      alt="Get it on Google Play"
+                      className="h-[80px] md:h-[72px] w-auto opacity-90 hover:opacity-100 transition-opacity duration-300"
+                    />
+                    
+                    {/* Coming Soon Badge - Hidden on mobile */}
+                    <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg border-2 border-white hidden md:block">
+                      Coming Soon
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-3 text-center">
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    Download our mobile app for a better property browsing experience
+                  </p>
+                  <p className="text-gray-500 text-xs mt-1 font-medium">
+                    Coming Soon
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Property Types */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6">Property Types</h4>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Houses for Sale</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Flats for Sale</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Land for Sale</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Houses for Rent</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Flats for Rent</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors duration-300">Office Spaces</a></li>
-            </ul>
+          {/* Quick Links and Property Types Container - Side by side on mobile */}
+          <div className="lg:col-span-2 grid grid-cols-2 gap-4 md:gap-8">
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-lg font-semibold mb-6">Quick Links</h4>
+              <ul className="space-y-3">
+                <li><a href="/buy" className="text-gray-300 hover:text-white transition-colors duration-300">Buy Property</a></li>
+                <li><a href="/rent" className="text-gray-300 hover:text-white transition-colors duration-300">Rent Property</a></li>
+                <li><a href="/commercial" className="text-gray-300 hover:text-white transition-colors duration-300">Commercial Space</a></li>
+                <li><a href="/pg-hostels" className="text-gray-300 hover:text-white transition-colors duration-300">PG & Hostels</a></li>
+                <li><a href="/about" className="text-gray-300 hover:text-white transition-colors duration-300">About Us</a></li>
+                <li><a href="/contact" className="text-gray-300 hover:text-white transition-colors duration-300">Contact</a></li>
+              </ul>
+            </div>
+
+            {/* Property Types */}
+            <div>
+              <h4 className="text-lg font-semibold mb-6">Property Types</h4>
+              <ul className="space-y-3">
+                <li><a href="/buy" className="text-gray-300 hover:text-white transition-colors duration-300">Houses for Sale</a></li>
+                <li><a href="/buy" className="text-gray-300 hover:text-white transition-colors duration-300">Flats for Sale</a></li>
+                <li><a href="/land" className="text-gray-300 hover:text-white transition-colors duration-300">Land for Sale</a></li>
+                <li><a href="/rent" className="text-gray-300 hover:text-white transition-colors duration-300">Houses for Rent</a></li>
+                <li><a href="/rent" className="text-gray-300 hover:text-white transition-colors duration-300">Flats for Rent</a></li>
+                <li><a href="/commercial" className="text-gray-300 hover:text-white transition-colors duration-300">Office Spaces</a></li>
+              </ul>
+            </div>
           </div>
 
           {/* Contact Info */}
@@ -70,7 +173,7 @@ const Footer = () => {
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-gray-300">+91 91210 55512</p>
+                  <p className="text-gray-300">+91 89858 16481</p>
                   <p className="text-gray-400 text-sm">Mon-Sat 9AM-7PM</p>
                 </div>
               </div>
@@ -80,7 +183,7 @@ const Footer = () => {
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-gray-300">info@mana-nivasam.com</p>
+                  <p className="text-gray-300">mananivasam@gmail.com</p>
                   <p className="text-gray-400 text-sm">24/7 Support</p>
                 </div>
               </div>
@@ -102,13 +205,13 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-700">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 md:pb-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm mb-4 md:mb-0">
               © 2025 Mana Nivasam. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">
+              <a href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors duration-300">
                 Privacy Policy
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">

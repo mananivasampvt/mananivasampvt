@@ -50,18 +50,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       setRoleLoading(true);
+      
+      // Check if we're online before making the request
+      if (!navigator.onLine) {
+        console.log('📱 Offline mode: Using cached user role or default');
+        const cachedRole = localStorage.getItem(`userRole_${user.uid}`);
+        setUserRole(cachedRole || 'user');
+        return;
+      }
+      
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        setUserRole(userData.role || 'user');
+        const role = userData.role || 'user';
+        setUserRole(role);
+        
+        // Cache the role for offline use
+        localStorage.setItem(`userRole_${user.uid}`, role);
       } else {
         // If user document doesn't exist, treat as regular user
         setUserRole('user');
+        localStorage.setItem(`userRole_${user.uid}`, 'user');
       }
-    } catch (error) {
-      console.error('Error fetching user role:', error);
-      setUserRole('user'); // Default to regular user on error
+    } catch (error: any) {
+      console.error('🔥 Error fetching user role:', error);
+      
+      // Handle offline scenarios
+      if (error.code === 'failed-precondition' || error.code === 'unavailable' || !navigator.onLine) {
+        console.log('📡 Connection issue detected, using cached role');
+        const cachedRole = localStorage.getItem(`userRole_${user.uid}`);
+        setUserRole(cachedRole || 'user');
+      } else {
+        setUserRole('user'); // Default to regular user on other errors
+      }
     } finally {
       setRoleLoading(false);
     }

@@ -30,13 +30,37 @@ const Header = () => {
 
   const fetchUserProfile = async () => {
     if (!currentUser) return;
+    
     try {
+      // Check if we're online before making the request
+      if (!navigator.onLine) {
+        console.log('📱 Offline mode: Using cached user profile');
+        const cachedProfile = localStorage.getItem(`userProfile_${currentUser.uid}`);
+        if (cachedProfile) {
+          setUserProfile(JSON.parse(cachedProfile));
+        }
+        return;
+      }
+      
       const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
       if (userDoc.exists()) {
-        setUserProfile(userDoc.data());
+        const profileData = userDoc.data();
+        setUserProfile(profileData);
+        
+        // Cache the profile for offline use
+        localStorage.setItem(`userProfile_${currentUser.uid}`, JSON.stringify(profileData));
       }
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
+    } catch (error: any) {
+      console.error('🔥 Error fetching user profile:', error);
+      
+      // Handle offline scenarios
+      if (error.code === 'failed-precondition' || error.code === 'unavailable' || !navigator.onLine) {
+        console.log('📡 Connection issue detected, using cached profile');
+        const cachedProfile = localStorage.getItem(`userProfile_${currentUser.uid}`);
+        if (cachedProfile) {
+          setUserProfile(JSON.parse(cachedProfile));
+        }
+      }
     }
   };
 

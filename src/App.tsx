@@ -8,6 +8,7 @@ import { LocationProvider } from "@/contexts/LocationContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import LoadingScreen from "@/components/LoadingScreen";
 import BottomNavigation from "@/components/BottomNavigation";
+import NetworkStatus from "@/components/NetworkStatus";
 import { useState, useEffect } from "react";
 
 // Pages
@@ -105,6 +106,7 @@ const App = () => {
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <BottomNavigation />
+                  <NetworkStatus />
                 </BrowserRouter>
               </LocationProvider>
             </AuthProvider>

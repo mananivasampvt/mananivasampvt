@@ -159,7 +159,7 @@ Message: ${formData.message}`;
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">Phone</p>
-                        <p className="text-gray-600">+91 9121055512</p>
+                        <p className="text-gray-600">+91 8985816481</p>
                       </div>
                     </div>
                     
@@ -169,7 +169,7 @@ Message: ${formData.message}`;
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">Email</p>
-                        <p className="text-gray-600">info@mana-nivasam.com</p>
+                        <p className="text-gray-600">mananivasam@gmail.com</p>
                       </div>
                     </div>
                     
@@ -179,7 +179,7 @@ Message: ${formData.message}`;
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">Office</p>
-                        <p className="text-gray-600">Mumbai, Maharashtra, India</p>
+                        <p className="text-gray-600">Kakinada, Andhra Pradesh, India</p>
                       </div>
                     </div>
                   </div>

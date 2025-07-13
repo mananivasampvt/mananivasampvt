@@ -142,6 +142,19 @@
   .drop-shadow-md {
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
   }
+  
+  /* Touch target for better mobile accessibility */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  @media (max-width: 768px) {
+    .touch-target {
+      min-height: 48px;
+      min-width: 48px;
+    }
+  }
 }
 
 @layer utilities {
