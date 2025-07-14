@@ -86,10 +86,10 @@ const About = () => {
   };
 
   const stats = [
-    { icon: Building, value: '500+', label: 'Properties Listed' },
-    { icon: Users, value: '1000+', label: 'Happy Clients' },
-    { icon: MapPin, value: '50+', label: 'Locations Covered' },
-    { icon: Award, value: '99%', label: 'Satisfaction Rate' },
+    { icon: Building, value: '', label: 'Properties Listed' },
+    { icon: Users, value: '', label: 'Happy Clients' },
+    { icon: MapPin, value: '', label: 'Locations Covered' },
+    { icon: Award, value: '', label: 'Satisfaction Rate' },
   ];
 
   const handlePhoneCall = () => {
@@ -126,7 +126,7 @@ const About = () => {
               </span>
             </h1>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-              Your trusted partner in luxury real estate, connecting dreams with reality since 2020.
+              Your trusted partner in luxury real estate, connecting dreams with reality since 2025.
             </p>
           </div>
         </div>
