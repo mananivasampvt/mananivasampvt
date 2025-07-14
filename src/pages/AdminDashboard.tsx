@@ -5,13 +5,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Plus, Edit, Trash2, Building, Home, Users, MapPin, Image as ImageIcon, Mail, BarChart3, Calendar, Settings, Menu, ChevronDown } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, Building, Home, Users, MapPin, Image as ImageIcon, Mail, BarChart3, Calendar, Settings, Menu, ChevronDown, Eye } from 'lucide-react';
 import AdminPropertyForm from '@/components/AdminPropertyForm';
 import TeamMemberForm from '@/components/TeamMemberForm';
 import StoryImageForm from '@/components/StoryImageForm';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminPropertyFilters from '@/components/AdminPropertyFilters';
 import { format, isValid, parseISO, startOfDay, endOfDay } from 'date-fns';
+import { getVisitorStats } from '@/utils/visitorTracker';
 
 interface AdminProperty {
   id: string;
@@ -77,11 +78,13 @@ const AdminDashboard = () => {
   const [propertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
   const { logout, currentUser, isAdmin, userRole } = useAuth();
   const { toast } = useToast();
+  const [visitorStats, setVisitorStats] = useState<{ count: number; lastVisit: Date | null }>({ count: 0, lastVisit: null });
 
   useEffect(() => {
     fetchProperties();
     fetchTeamMembers();
     fetchStoryImages();
+    fetchVisitorStats();
   }, []);
 
   const fetchProperties = async () => {
@@ -155,6 +158,11 @@ const AdminDashboard = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const fetchVisitorStats = async () => {
+    const stats = await getVisitorStats();
+    setVisitorStats(stats);
   };
 
   const getValidImage = (property: AdminProperty) => {
@@ -432,6 +440,17 @@ const AdminDashboard = () => {
       color: 'from-pink-500 to-purple-600',
       bgColor: 'bg-gradient-to-r from-pink-50 to-purple-50',
       iconBg: 'bg-gradient-to-r from-pink-500 to-purple-600'
+    },
+    {
+      title: 'Website Visitors',
+      value: visitorStats.count,
+      icon: Eye,
+      color: 'from-gray-500 to-blue-600',
+      bgColor: 'bg-gradient-to-r from-gray-50 to-blue-50',
+      iconBg: 'bg-gradient-to-r from-gray-500 to-blue-600',
+      extra: visitorStats.lastVisit
+        ? `Last visit: ${format(visitorStats.lastVisit, 'PPpp')}`
+        : 'No visits yet'
     }
   ];
 
@@ -671,7 +690,7 @@ const AdminDashboard = () => {
             {activeTab === 'properties' && (
               <>
                 {/* Stats Grid - Mobile: 2x2 grid, Desktop: 1x4 */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 w-full">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-6 w-full">
                   {stats.map((stat, index) => (
                     <Card 
                       key={index} 
@@ -683,6 +702,9 @@ const AdminDashboard = () => {
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium text-gray-700 mb-1 md:mb-2 truncate">{stat.title}</p>
                             <p className="text-xl md:text-4xl font-bold text-gray-900">{stat.value}</p>
+                            {stat.title === 'Website Visitors' && (
+                              <p className="text-xs text-gray-500 mt-1">{stat.extra}</p>
+                            )}
                           </div>
                           <div className={`w-8 h-8 md:w-16 md:h-16 rounded-xl md:rounded-2xl ${stat.iconBg} flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-110 hover:rotate-6 flex-shrink-0`}>
                             <stat.icon className="w-4 h-4 md:w-8 md:h-8 text-white" />
