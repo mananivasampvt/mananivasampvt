@@ -193,7 +193,7 @@ const Footer = () => {
                   <MapPin className="w-3 h-3 md:w-4 md:h-4" />
                 </div>
                 <div>
-                  <p className="text-gray-300 text-sm md:text-base">Kakinada</p>
+                  <p className="text-gray-300 text-sm md:text-base">Vishnayalam street, jagannaickpur, <br />Kakinada</p>
                   <p className="text-gray-300 text-sm md:text-base">Kakinada District, Andhra Pradesh</p>
                   <p className="text-gray-400 text-xs md:text-sm">533005, India</p>
                 </div>

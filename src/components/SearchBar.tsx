@@ -56,10 +56,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
   // Get locations based on category context
   const getFilteredLocations = () => {
     if (!categoryFilter) {
-      return locationData.locations;
+      return locationData.cities; // Use cities instead of locations
     }
-    // For now, return all locations but this could be enhanced with backend filtering
-    return locationData.locations;
+    // For now, return all cities but this could be enhanced with backend filtering
+    return locationData.cities;
   };
 
   // Get areas for selected city
@@ -68,6 +68,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
       return [];
     }
     return locationData.areas[city];
+  };
+
+  // Get all areas from all cities
+  const getAllAreas = () => {
+    const allAreas: string[] = [];
+    Object.values(locationData.areas).forEach(cityAreas => {
+      allAreas.push(...cityAreas);
+    });
+    return [...new Set(allAreas)].sort(); // Remove duplicates and sort
   };
 
   const handleInputChange = (field: keyof SearchFilters, value: string) => {
@@ -185,20 +194,30 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
               <Select 
                 value={filters.area || 'all-areas'} 
                 onValueChange={(value) => handleInputChange('area', value)}
-                disabled={loading || !filters.location || filters.location === 'all-locations'}
+                disabled={loading}
               >
                 <SelectTrigger className="w-full h-12 bg-gray-50/80 border border-gray-300 rounded-xl hover:bg-gray-100/80 disabled:opacity-50 backdrop-blur-sm">
-                  <SelectValue placeholder={!filters.location || filters.location === 'all-locations' ? "Select city first" : "Select Area"} />
+                  <SelectValue placeholder="Select Area" />
                 </SelectTrigger>
                 <SelectContent className="bg-white border border-gray-200 rounded-xl shadow-2xl z-[200] max-h-60">
                   <SelectItem value="all-areas" className="text-gray-600">
                     All Areas
                   </SelectItem>
-                  {filters.location && filters.location !== 'all-locations' && getAreasForCity(filters.location).map((area, index) => (
-                    <SelectItem key={index} value={area} className="text-gray-900">
-                      {area}
-                    </SelectItem>
-                  ))}
+                  {filters.location && filters.location !== 'all-locations' ? (
+                    // Show areas for selected city
+                    getAreasForCity(filters.location).map((area, index) => (
+                      <SelectItem key={index} value={area} className="text-gray-900">
+                        {area}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    // Show all areas from all cities
+                    getAllAreas().map((area, index) => (
+                      <SelectItem key={index} value={area} className="text-gray-900">
+                        {area}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -318,20 +337,30 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
               <Select 
                 value={filters.area || 'all-areas'} 
                 onValueChange={(value) => handleInputChange('area', value)}
-                disabled={loading || !filters.location || filters.location === 'all-locations'}
+                disabled={loading}
               >
                 <SelectTrigger className="w-full h-12 bg-gray-50/80 border border-gray-300 rounded-xl hover:bg-gray-100/80 disabled:opacity-50 backdrop-blur-sm">
-                  <SelectValue placeholder={!filters.location || filters.location === 'all-locations' ? "Select city first" : "Select Area"} />
+                  <SelectValue placeholder="Select Area" />
                 </SelectTrigger>
                 <SelectContent className="bg-white border border-gray-200 rounded-xl shadow-2xl z-[200] max-h-60">
                   <SelectItem value="all-areas" className="text-gray-600">
                     All Areas
                   </SelectItem>
-                  {filters.location && filters.location !== 'all-locations' && getAreasForCity(filters.location).map((area, index) => (
-                    <SelectItem key={index} value={area} className="text-gray-900">
-                      {area}
-                    </SelectItem>
-                  ))}
+                  {filters.location && filters.location !== 'all-locations' ? (
+                    // Show areas for selected city
+                    getAreasForCity(filters.location).map((area, index) => (
+                      <SelectItem key={index} value={area} className="text-gray-900">
+                        {area}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    // Show all areas from all cities
+                    getAllAreas().map((area, index) => (
+                      <SelectItem key={index} value={area} className="text-gray-900">
+                        {area}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>

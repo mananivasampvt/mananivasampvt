@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -45,6 +45,8 @@ const Profile = () => {
   const [shortlistedProperties, setShortlistedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProfilePopup, setShowProfilePopup] = useState(false);
+  const [showAccountInfoPopup, setShowAccountInfoPopup] = useState(false);
+  const accountInfoRef = useRef<HTMLDivElement>(null);
   const { handleContactOwner } = useContactOwner();
 
   useEffect(() => {
@@ -64,6 +66,22 @@ const Profile = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  // Effect to handle click outside popup
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (accountInfoRef.current && !accountInfoRef.current.contains(event.target as Node)) {
+        setShowAccountInfoPopup(false);
+      }
+    };
+
+    if (showAccountInfoPopup) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showAccountInfoPopup]);
 
   const fetchUserProfile = async () => {
     if (!currentUser) return;
@@ -137,6 +155,14 @@ const Profile = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleAccountInfoClick = () => {
+    setShowAccountInfoPopup(true);
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      setShowAccountInfoPopup(false);
+    }, 3000);
   };
 
   const handleSearchClick = () => {
@@ -315,7 +341,10 @@ const Profile = () => {
               <CardContent>
                 {/* Gallery Style Grid Cards - Compact */}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
-                  <Card className="bg-gradient-to-r from-red-50 to-pink-50 border-red-200/30 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                  <Card 
+                    className="bg-gradient-to-r from-red-50 to-pink-50 border-red-200/30 hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+                    onClick={() => navigate('/shortlist')}
+                  >
                     <CardContent className="p-3 md:p-4 text-center">
                       <Heart className="w-5 h-5 md:w-6 md:h-6 text-red-500 mx-auto mb-1" />
                       <div className="text-sm md:text-base font-bold text-gray-900">{shortlistedProperties.length}</div>
@@ -323,12 +352,42 @@ const Profile = () => {
                     </CardContent>
                   </Card>
                   
-                  <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200/30 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                  <Card 
+                    className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200/30 hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer relative"
+                    onClick={handleAccountInfoClick}
+                  >
                     <CardContent className="p-3 md:p-4 text-center">
                       <FileText className="w-5 h-5 md:w-6 md:h-6 text-blue-500 mx-auto mb-1" />
                       <div className="text-sm md:text-base font-bold text-gray-900">Account</div>
                       <div className="text-xs text-gray-600">Info</div>
                     </CardContent>
+                    
+                    {/* Account Info Popup */}
+                    {showAccountInfoPopup && (
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50 bg-white border border-gray-200 rounded-lg shadow-xl p-4 min-w-[200px] md:min-w-[250px] animate-fade-in">
+                        <div className="text-center space-y-2">
+                          <div className="flex items-center justify-center mb-2">
+                            <User className="w-5 h-5 text-blue-500 mr-2" />
+                            <h3 className="text-sm font-semibold text-gray-900">Account Details</h3>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="text-sm text-gray-600">
+                              <span className="font-medium">Username:</span>
+                              <p className="text-gray-900">{userProfile?.username || currentUser?.displayName || 'Not set'}</p>
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              <span className="font-medium">Email:</span>
+                              <p className="text-gray-900">{userProfile?.email || currentUser?.email || 'Not set'}</p>
+                            </div>
+                          </div>
+                        </div>
+                        {/* Arrow pointing up */}
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2">
+                          <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-b-[6px] border-l-transparent border-r-transparent border-b-gray-200"></div>
+                          <div className="absolute top-[1px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-b-[5px] border-l-transparent border-r-transparent border-b-white"></div>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                   
                   <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200/30 hover:shadow-lg transition-all duration-300 hover:scale-105">

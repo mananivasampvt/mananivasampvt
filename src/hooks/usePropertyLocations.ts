@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 
 interface LocationData {
   locations: string[];
+  cities: string[]; // Add cities array
   areas: { [city: string]: string[] };
   propertyTypes: string[];
   categories: string[];
@@ -13,6 +14,7 @@ interface LocationData {
 export const usePropertyLocations = () => {
   const [locationData, setLocationData] = useState<LocationData>({
     locations: [],
+    cities: [], // Add cities array
     areas: {},
     propertyTypes: [],
     categories: []
@@ -48,6 +50,7 @@ export const usePropertyLocations = () => {
           console.log('Real-time property search data update received');
           
           const locations = new Set<string>();
+          const cities = new Set<string>(); // Separate set for cities only
           const areas = new Map<string, Set<string>>();
           const propertyTypes = new Set<string>();
           const categories = new Set<string>();
@@ -69,17 +72,17 @@ export const usePropertyLocations = () => {
                   const city = locationParts[locationParts.length - 1].trim();
                   
                   if (area && city && area !== city) {
+                    // Add city to cities set
+                    cities.add(city);
+                    
                     if (!areas.has(city)) {
                       areas.set(city, new Set<string>());
                     }
                     areas.get(city)?.add(area);
-                    
-                    // Also add the city itself as a main location
-                    locations.add(city);
                   }
                 } else {
                   // If no separator found, treat the entire location as a city
-                  // and add it to areas for potential sub-area filtering
+                  cities.add(cleanLocation);
                   if (!areas.has(cleanLocation)) {
                     areas.set(cleanLocation, new Set<string>());
                   }
@@ -112,6 +115,7 @@ export const usePropertyLocations = () => {
 
           const result = {
             locations: Array.from(locations).sort(),
+            cities: Array.from(cities).sort(), // Add cities array
             areas: areasObject,
             propertyTypes: Array.from(propertyTypes).sort(),
             categories: Array.from(categories).sort()
@@ -134,6 +138,7 @@ export const usePropertyLocations = () => {
           // Fallback to empty arrays if database fetch fails
           setLocationData({
             locations: [],
+            cities: [],
             areas: {},
             propertyTypes: [],
             categories: []
@@ -150,6 +155,7 @@ export const usePropertyLocations = () => {
       // Fallback to empty arrays if database fetch fails
       setLocationData({
         locations: [],
+        cities: [],
         areas: {},
         propertyTypes: [],
         categories: []
