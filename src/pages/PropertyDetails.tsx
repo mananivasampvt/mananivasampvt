@@ -13,7 +13,7 @@ import SuggestedProperties from '@/components/SuggestedProperties';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, MapPin, Calendar, Home, ImageIcon, MapIcon, Phone } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Home, ImageIcon, MapIcon, Phone, CheckCircle } from 'lucide-react';
 
 interface Property {
   id: string;
@@ -28,6 +28,7 @@ interface Property {
   bedrooms?: number;
   bathrooms?: number;
   area: string;
+  areaAcres?: number;
   description: string;
   highlights?: string[];
   contactName?: string;
@@ -36,6 +37,8 @@ interface Property {
   createdAt?: any;
   facing?: string;
   amenities?: string[];
+  propertyAge?: number;
+  status?: string;
 }
 
 const PropertyDetails = () => {
@@ -277,6 +280,18 @@ const PropertyDetails = () => {
                       {property.category}
                     </span>
                   </div>
+                  {property.propertyAge !== undefined && property.propertyAge !== null && (
+                    <div className="flex items-center text-sm text-gray-600 bg-indigo-50 px-3 py-2 rounded-xl mb-2">
+                      <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
+                      Property Age: {property.propertyAge === 0 ? 'New Construction' : `${property.propertyAge} ${property.propertyAge === 1 ? 'Year' : 'Years'} Old`}
+                    </div>
+                  )}
+                  {property.status && property.category !== 'Land' && (
+                    <div className="flex items-center text-sm text-gray-600 bg-emerald-50 px-3 py-2 rounded-xl mb-2">
+                      <CheckCircle className="w-4 h-4 mr-2 text-emerald-600" />
+                      Status: {property.status}
+                    </div>
+                  )}
                   {property.createdAt && (
                     <div className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
                       <Calendar className="w-4 h-4 mr-2" />

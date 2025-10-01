@@ -33,6 +33,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
     bedrooms: '',
     bathrooms: '',
     area: '',
+    areaAcres: '',
     description: '',
     plotSize: '',
     landType: '',
@@ -41,6 +42,8 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
     legalClearances: false,
     furnishingStatus: '',
     amenities: [] as string[],
+    propertyAge: '',
+    status: '',
   });
   const [images, setImages] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
@@ -119,6 +122,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         bedrooms: property.bedrooms?.toString() || '',
         bathrooms: property.bathrooms?.toString() || '',
         area: property.area || '',
+        areaAcres: property.areaAcres?.toString() || '',
         description: property.description || '',
         plotSize: property.plotSize || '',
         landType: property.landType || '',
@@ -127,6 +131,8 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         legalClearances: property.legalClearances || false,
         furnishingStatus: property.furnishingStatus || '',
         amenities: property.amenities || [],
+        propertyAge: property.propertyAge?.toString() || '',
+        status: property.status || '',
       });
       
       // Set existing images - ensure they are valid
@@ -154,7 +160,37 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
       setFormData(prev => ({ ...prev, [name]: checked }));
     } else {
       setFormData(prev => {
-        const newFormData = { ...prev, [name]: value };
+        let newValue = value;
+        
+        // Validate Property Age input
+        if (name === 'propertyAge') {
+          // Allow empty string or valid numbers only
+          if (value !== '' && (isNaN(Number(value)) || Number(value) < 0 || Number(value) > 200)) {
+            // Don't update if invalid - show toast for user feedback
+            if (value !== '' && (isNaN(Number(value)) || Number(value) < 0)) {
+              toast.error('Property age must be a non-negative number');
+            } else if (Number(value) > 200) {
+              toast.error('Property age cannot exceed 200 years');
+            }
+            return prev; // Return previous state without update
+          }
+        }
+
+        // Validate Area Acres input
+        if (name === 'areaAcres') {
+          // Allow empty string or valid decimal numbers only
+          if (value !== '' && (isNaN(Number(value)) || Number(value) < 0 || Number(value) > 10000)) {
+            // Don't update if invalid - show toast for user feedback
+            if (value !== '' && (isNaN(Number(value)) || Number(value) < 0)) {
+              toast.error('Area in acres must be a non-negative number');
+            } else if (Number(value) > 10000) {
+              toast.error('Area in acres cannot exceed 10,000 acres');
+            }
+            return prev; // Return previous state without update
+          }
+        }
+        
+        const newFormData = { ...prev, [name]: newValue };
         
         // Reset subCategory when category changes
         if (name === 'category' && value !== 'PG/Hostels') {
@@ -242,6 +278,13 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         return;
       }
 
+      // Validate Status for non-Land properties
+      if (!isLandCategory && !formData.status) {
+        toast.error('Please select a status for this property');
+        setLoading(false);
+        return;
+      }
+
       // Filter out any blob URLs before saving
       const validImages = images.filter(img => 
         img && typeof img === 'string' && !img.startsWith('blob:')
@@ -263,6 +306,9 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         videos: validVideos.length > 0 ? validVideos : undefined,
         bedrooms: (!isLandCategory && formData.bedrooms) ? parseInt(formData.bedrooms) : undefined,
         bathrooms: (!isLandCategory && formData.bathrooms) ? parseInt(formData.bathrooms) : undefined,
+        propertyAge: formData.propertyAge ? parseInt(formData.propertyAge) : undefined,
+        areaAcres: formData.areaAcres ? parseFloat(formData.areaAcres) : undefined,
+        status: (!isLandCategory && formData.status) ? formData.status : undefined,
         featured: property?.featured || false,
         createdAt: property?.createdAt || new Date(),
         updatedAt: new Date(),
@@ -458,18 +504,85 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
                 </select>
               </div>
 
+              {/* Property Area Section - Grouped Fields */}
+              <div className="md:col-span-2">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Area</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="area">Area (sq.ft)</Label>
+                    <Input
+                      id="area"
+                      name="area"
+                      value={formData.area}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="e.g., 2500 sq ft"
+                      className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="areaAcres">Area (acres)</Label>
+                    <Input
+                      id="areaAcres"
+                      name="areaAcres"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="10000"
+                      value={formData.areaAcres}
+                      onChange={handleInputChange}
+                      placeholder="e.g., 1.5 acres"
+                      className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Optional: Enter area in acres (decimal values allowed)
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div>
-                <Label htmlFor="area">Area</Label>
+                <Label htmlFor="propertyAge">Property Age (in years)</Label>
                 <Input
-                  id="area"
-                  name="area"
-                  value={formData.area}
+                  id="propertyAge"
+                  name="propertyAge"
+                  type="number"
+                  min="0"
+                  max="200"
+                  value={formData.propertyAge}
                   onChange={handleInputChange}
-                  required
-                  placeholder={isLandCategory ? "e.g., 2.5 acres or 2400 sq ft" : "e.g., 2500 sq ft"}
+                  placeholder="Enter age in years (0 for new construction)"
                   className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Leave empty if age is not specified. Enter 0 for new construction.
+                </p>
               </div>
+
+              {/* Property Status - Required for all except Land */}
+              {!isLandCategory && (
+                <div>
+                  <Label htmlFor="status">
+                    Status <span className="text-red-500">*</span>
+                  </Label>
+                  <select
+                    id="status"
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    required={!isLandCategory}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    title="Select current construction status of the property"
+                  >
+                    <option value="">Select Status</option>
+                    <option value="Under Construction">Under Construction</option>
+                    <option value="Ready to Move">Ready to Move</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Select the current construction status of the property
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Dynamic Amenities Section - Disabled for Land */}

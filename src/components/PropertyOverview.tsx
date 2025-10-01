@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bed, Bath, Square, Compass, Home, Building } from 'lucide-react';
+import { Bed, Bath, Square, Compass, Home, Building, Calendar, CheckCircle } from 'lucide-react';
 
 interface Property {
   id: string;
@@ -13,8 +13,11 @@ interface Property {
   bedrooms?: number;
   bathrooms?: number;
   area: string;
+  areaAcres?: number;
   description: string;
   facing?: string;
+  propertyAge?: number;
+  status?: string;
 }
 
 interface PropertyOverviewProps {
@@ -53,7 +56,14 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({ property }) => {
           <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-green-600 rounded-md sm:rounded-xl flex items-center justify-center">
             <Square className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
           </div>
-          <div className="text-xs sm:text-xl font-bold text-gray-900 font-premium">{property.area}</div>
+          <div className="text-xs sm:text-xl font-bold text-gray-900 font-premium">
+            {property.area}
+            {property.areaAcres && (
+              <div className="text-xs sm:text-sm text-gray-600 font-normal">
+                ({property.areaAcres} acres)
+              </div>
+            )}
+          </div>
           <div className="text-xs sm:text-sm text-gray-600 font-medium">Area</div>
         </div>
         {property.facing && (
@@ -63,6 +73,28 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({ property }) => {
             </div>
             <div className="text-xs sm:text-lg font-bold text-gray-900 font-premium">{property.facing}</div>
             <div className="text-xs sm:text-sm text-gray-600 font-medium">Facing</div>
+          </div>
+        )}
+        {property.propertyAge !== undefined && property.propertyAge !== null && (
+          <div className="text-center p-2 sm:p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg sm:rounded-2xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
+            <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-indigo-600 rounded-md sm:rounded-xl flex items-center justify-center">
+              <Calendar className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
+            </div>
+            <div className="text-xs sm:text-lg font-bold text-gray-900 font-premium">
+              {property.propertyAge === 0 ? 'New' : `${property.propertyAge} ${property.propertyAge === 1 ? 'Year' : 'Years'}`}
+            </div>
+            <div className="text-xs sm:text-sm text-gray-600 font-medium">Property Age</div>
+          </div>
+        )}
+        {property.status && property.category !== 'Land' && (
+          <div className="text-center p-2 sm:p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg sm:rounded-2xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
+            <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-emerald-600 rounded-md sm:rounded-xl flex items-center justify-center">
+              <CheckCircle className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
+            </div>
+            <div className="text-xs sm:text-lg font-bold text-gray-900 font-premium">
+              {property.status}
+            </div>
+            <div className="text-xs sm:text-sm text-gray-600 font-medium">Status</div>
           </div>
         )}
       </div>

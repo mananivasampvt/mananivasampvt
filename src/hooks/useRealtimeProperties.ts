@@ -17,10 +17,12 @@ interface Property {
   bedrooms?: number;
   bathrooms?: number;
   area: string;
+  areaAcres?: number;
   description: string;
   featured?: boolean;
   status?: string;
   approved?: boolean;
+  propertyAge?: number;
 }
 
 interface UseRealtimePropertiesOptions {

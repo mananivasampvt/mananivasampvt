@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MapPin, Bed, Bath, Square, Phone, ChevronLeft, ChevronRight, Send, Play } from 'lucide-react';
+import { Heart, MapPin, Bed, Bath, Square, Phone, ChevronLeft, ChevronRight, Send, Play, Calendar, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -20,9 +20,12 @@ interface PropertyCardProps {
     bedrooms?: number;
     bathrooms?: number;
     area: string;
+    areaAcres?: number;
     description: string;
     featured?: boolean;
     category?: string;
+    propertyAge?: number;
+    status?: string;
   };
 }
 
@@ -300,7 +303,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             )}
             <div className="flex items-center transition-colors duration-300 hover:text-gray-800">
               <Square className="w-4 h-4 mr-1" />
-              <span className="text-sm">{property.area}</span>
+              <div className="text-sm">
+                {property.area}
+                {property.areaAcres && (
+                  <div className="text-xs text-gray-500">({property.areaAcres} acres)</div>
+                )}
+              </div>
             </div>
             {isLandProperty && (
               <div className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full transition-all duration-300 ease-in-out hover:bg-green-200 hover:scale-105 transform">
@@ -308,6 +316,30 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               </div>
             )}
           </div>
+
+          {/* Property Age Display */}
+          {property.propertyAge !== undefined && property.propertyAge !== null && (
+            <div className="flex items-center text-sm text-gray-600 mb-2 transition-colors duration-300 hover:text-gray-800">
+              <Calendar className="w-4 h-4 mr-2 text-indigo-500" />
+              <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">
+                {property.propertyAge === 0 ? 'New Construction' : `${property.propertyAge} ${property.propertyAge === 1 ? 'Year' : 'Years'} Old`}
+              </span>
+            </div>
+          )}
+
+          {/* Property Status Display */}
+          {property.status && property.category !== 'Land' && (
+            <div className="flex items-center text-sm text-gray-600 mb-2 transition-colors duration-300 hover:text-gray-800">
+              <CheckCircle className="w-4 h-4 mr-2 text-emerald-500" />
+              <span className={`text-xs px-2 py-1 rounded-full ${
+                property.status === 'Ready to Move' 
+                  ? 'bg-emerald-50 text-emerald-700' 
+                  : 'bg-amber-50 text-amber-700'
+              }`}>
+                {property.status}
+              </span>
+            </div>
+          )}
 
           <p className="text-gray-600 text-sm mb-4 sm:mb-6 line-clamp-2 leading-relaxed transition-colors duration-300 hover:text-gray-800">
             {property.description}

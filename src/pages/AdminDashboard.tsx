@@ -12,7 +12,8 @@ import StoryImageForm from '@/components/StoryImageForm';
 import AdminSidebar from '@/components/AdminSidebar';
 import AdminPropertyFilters from '@/components/AdminPropertyFilters';
 import { format, isValid, parseISO, startOfDay, endOfDay } from 'date-fns';
-import { getVisitorStats } from '@/utils/visitorTracker';
+import { VisitorStatsCard } from '@/components/VisitorStatsCard';
+import { VisitorDataMigrationPanel } from '@/components/VisitorDataMigrationPanel';
 
 interface AdminProperty {
   id: string;
@@ -23,6 +24,7 @@ interface AdminProperty {
   category: string;
   images: string[];
   area: string;
+  areaAcres?: number;
   description: string;
   featured?: boolean;
   createdAt?: any;
@@ -37,6 +39,8 @@ interface AdminProperty {
   contactName: string;
   contactPhone: string;
   contactEmail: string;
+  propertyAge?: number;
+  status?: string;
 }
 
 interface TeamMember {
@@ -78,13 +82,13 @@ const AdminDashboard = () => {
   const [propertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
   const { logout, currentUser, isAdmin, userRole } = useAuth();
   const { toast } = useToast();
-  const [visitorStats, setVisitorStats] = useState<{ count: number; lastVisit: Date | null }>({ count: 0, lastVisit: null });
+
 
   useEffect(() => {
     fetchProperties();
     fetchTeamMembers();
     fetchStoryImages();
-    fetchVisitorStats();
+
   }, []);
 
   const fetchProperties = async () => {
@@ -105,7 +109,10 @@ const AdminDashboard = () => {
           amenities: data.amenities || [],
           contactName: data.contactName || 'Not Provided',
           contactPhone: data.contactPhone || 'Not Provided',
-          contactEmail: data.contactEmail || 'Not Provided'
+          contactEmail: data.contactEmail || 'Not Provided',
+          propertyAge: data.propertyAge,
+          areaAcres: data.areaAcres,
+          status: data.status
         };
       }) as AdminProperty[];
       
@@ -160,10 +167,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchVisitorStats = async () => {
-    const stats = await getVisitorStats();
-    setVisitorStats(stats);
-  };
+
 
   const getValidImage = (property: AdminProperty) => {
     const defaultImage = 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?q=80&w=200';
@@ -440,17 +444,6 @@ const AdminDashboard = () => {
       color: 'from-pink-500 to-purple-600',
       bgColor: 'bg-gradient-to-r from-pink-50 to-purple-50',
       iconBg: 'bg-gradient-to-r from-pink-500 to-purple-600'
-    },
-    {
-      title: 'Website Visitors',
-      value: visitorStats.count,
-      icon: Eye,
-      color: 'from-gray-500 to-blue-600',
-      bgColor: 'bg-gradient-to-r from-gray-50 to-blue-50',
-      iconBg: 'bg-gradient-to-r from-gray-500 to-blue-600',
-      extra: visitorStats.lastVisit
-        ? `Last visit: ${format(visitorStats.lastVisit, 'PPpp')}`
-        : 'No visits yet'
     }
   ];
 
@@ -569,6 +562,15 @@ const AdminDashboard = () => {
                 </div>
                 
                 {/* Other Menu Items */}
+                <Button
+                  variant="ghost"
+                  onClick={() => handleMobileNavClick('analytics')}
+                  className={`w-full justify-start hover:bg-blue-50 ${activeTab === 'analytics' ? 'bg-blue-50 text-blue-600 font-medium' : ''}`}
+                >
+                  <BarChart3 className="w-4 h-4 mr-3" />
+                  Analytics
+                </Button>
+                
                 <Button
                   variant="ghost"
                   onClick={() => handleMobileNavClick('team')}
@@ -702,9 +704,7 @@ const AdminDashboard = () => {
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium text-gray-700 mb-1 md:mb-2 truncate">{stat.title}</p>
                             <p className="text-xl md:text-4xl font-bold text-gray-900">{stat.value}</p>
-                            {stat.title === 'Website Visitors' && (
-                              <p className="text-xs text-gray-500 mt-1">{stat.extra}</p>
-                            )}
+
                           </div>
                           <div className={`w-8 h-8 md:w-16 md:h-16 rounded-xl md:rounded-2xl ${stat.iconBg} flex items-center justify-center shadow-xl transition-transform duration-300 hover:scale-110 hover:rotate-6 flex-shrink-0`}>
                             <stat.icon className="w-4 h-4 md:w-8 md:h-8 text-white" />
@@ -1012,6 +1012,33 @@ const AdminDashboard = () => {
                   )}
                 </CardContent>
               </Card>
+            )}
+
+            {activeTab === 'analytics' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    Visitor Analytics
+                  </h2>
+                  <div className="px-3 py-1 bg-gradient-to-r from-green-100 to-blue-100 rounded-full">
+                    <span className="text-sm font-medium text-green-800">Real-time Data</span>
+                  </div>
+                </div>
+                
+                <VisitorStatsCard className="w-full" />
+                
+                {/* Migration Panel - Only show for admins */}
+                <Card className="border-2 border-dashed border-gray-300 bg-gray-50/50">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-gray-700">
+                      System Migration
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <VisitorDataMigrationPanel />
+                  </CardContent>
+                </Card>
+              </div>
             )}
 
             {/* Contact Section - hidden on mobile */}

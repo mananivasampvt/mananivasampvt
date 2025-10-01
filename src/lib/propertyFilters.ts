@@ -16,11 +16,13 @@ export interface Property {
   bedrooms?: number;
   bathrooms?: number;
   area?: string;
+  areaAcres?: number;
   description?: string;
   featured?: boolean;
   status?: string;
   approved?: boolean;
   subCategory?: string;
+  propertyAge?: number;
 }
 
 /**
