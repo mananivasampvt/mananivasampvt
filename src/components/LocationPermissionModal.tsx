@@ -265,9 +265,11 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
   // Function to convert coordinates to city using geocoding API
   const getCityFromCoordinates = async (lat: number, lng: number): Promise<string> => {
     try {
-      // Using OpenStreetMap Nominatim API (free alternative to Google Maps)
+      console.log('Fetching city for coordinates:', { lat, lng });
+      
+      // Using OpenStreetMap Nominatim API with higher zoom for accuracy
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
       );
       
       if (!response.ok) {
@@ -275,17 +277,22 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
       }
       
       const data = await response.json();
+      console.log('Geocoding API response:', data);
       
-      // Extract city name from response
+      // Prioritize city, then town, then other location types
       const city = data.address?.city || 
                    data.address?.town || 
+                   data.address?.municipality ||
                    data.address?.village || 
-                   data.address?.suburb ||
+                   data.address?.county ||
                    data.address?.state_district ||
                    data.address?.state ||
                    'Unknown Location';
       
-      return city;
+      console.log('Detected city:', city);
+      
+      // Ensure we return only a clean string, not the entire data object
+      return String(city).trim();
     } catch (error) {
       console.error('Geocoding error:', error);
       // Fallback to a generic location
