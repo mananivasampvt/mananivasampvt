@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Plus, Edit, Trash2, Building, Home, Users, MapPin, Image as ImageIcon, Mail, BarChart3, Calendar, Settings, Menu, ChevronDown, Eye } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, Building, Home, Users, MapPin, Image as ImageIcon, Mail, BarChart3, Calendar, Settings, Menu, ChevronDown, Eye, Database } from 'lucide-react';
 import AdminPropertyForm from '@/components/AdminPropertyForm';
 import TeamMemberForm from '@/components/TeamMemberForm';
 import StoryImageForm from '@/components/StoryImageForm';
@@ -14,6 +14,15 @@ import AdminPropertyFilters from '@/components/AdminPropertyFilters';
 import { format, isValid, parseISO, startOfDay, endOfDay } from 'date-fns';
 import { VisitorStatsCard } from '@/components/VisitorStatsCard';
 import { VisitorDataMigrationPanel } from '@/components/VisitorDataMigrationPanel';
+import UserManagementPanel from '@/components/UserManagementPanel';
+import UserAnalyticsDashboard from '@/components/UserAnalyticsDashboard';
+import RealtimeUserSignups from '@/components/RealtimeUserSignups';
+import UserSettingsPanel from '@/components/UserSettingsPanel';
+import SimpleUserDashboard from '@/components/SimpleUserDashboard';
+import FirebaseAuthUserManagement from '@/components/FirebaseAuthUserManagement';
+import FirebaseAuthDashboard from '@/components/FirebaseAuthDashboard';
+import FirebaseAuthSummary from '@/components/FirebaseAuthSummary';
+import { useRealtimeUsers } from '@/hooks/useRealtimeUsers';
 
 interface AdminProperty {
   id: string;
@@ -82,6 +91,7 @@ const AdminDashboard = () => {
   const [propertiesDropdownOpen, setPropertiesDropdownOpen] = useState(false);
   const { logout, currentUser, isAdmin, userRole } = useAuth();
   const { toast } = useToast();
+  const { users: realtimeUsers } = useRealtimeUsers();
 
 
   useEffect(() => {
@@ -589,6 +599,69 @@ const AdminDashboard = () => {
                   Story Images
                 </Button>
 
+                <Button
+                  variant="ghost"
+                  onClick={() => handleMobileNavClick('simple-users')}
+                  className={`w-full justify-start hover:bg-blue-50 ${activeTab === 'simple-users' ? 'bg-blue-50 text-blue-600 font-medium' : ''}`}
+                >
+                  <Users className="w-4 h-4 mr-3" />
+                  Real-Time Users
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => handleMobileNavClick('users')}
+                  className={`w-full justify-start hover:bg-blue-50 ${activeTab === 'users' ? 'bg-blue-50 text-blue-600 font-medium' : ''}`}
+                >
+                  <Users className="w-4 h-4 mr-3" />
+                  User Management
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => handleMobileNavClick('user-analytics')}
+                  className={`w-full justify-start hover:bg-blue-50 ${activeTab === 'user-analytics' ? 'bg-blue-50 text-blue-600 font-medium' : ''}`}
+                >
+                  <BarChart3 className="w-4 h-4 mr-3" />
+                  User Analytics
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => handleMobileNavClick('live-signups')}
+                  className={`w-full justify-start hover:bg-blue-50 ${activeTab === 'live-signups' ? 'bg-blue-50 text-blue-600 font-medium' : ''}`}
+                >
+                  <Eye className="w-4 h-4 mr-3" />
+                  Live Signups
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => handleMobileNavClick('user-settings')}
+                  className={`w-full justify-start hover:bg-blue-50 ${activeTab === 'user-settings' ? 'bg-blue-50 text-blue-600 font-medium' : ''}`}
+                >
+                  <Settings className="w-4 h-4 mr-3" />
+                  User Settings
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => handleMobileNavClick('firebase-auth')}
+                  className={`w-full justify-start hover:bg-blue-50 ${activeTab === 'firebase-auth' ? 'bg-blue-50 text-blue-600 font-medium' : ''}`}
+                >
+                  <Database className="w-4 h-4 mr-3" />
+                  Firebase Auth
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => handleMobileNavClick('firebase-users')}
+                  className={`w-full justify-start hover:bg-blue-50 ${activeTab === 'firebase-users' ? 'bg-blue-50 text-blue-600 font-medium' : ''}`}
+                >
+                  <Users className="w-4 h-4 mr-3" />
+                  Firebase Users
+                </Button>
+
                 {/* Logout Button in Mobile Menu */}
                 <div className="pt-2 border-t border-gray-200">
                   <Button 
@@ -641,7 +714,7 @@ const AdminDashboard = () => {
                   </div>
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                      Prime Vista Dashboard
+                       Mana Nivasam Dashboard
                     </h1>
                     <p className="text-sm sm:text-base text-gray-600 flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
@@ -1027,6 +1100,9 @@ const AdminDashboard = () => {
                 
                 <VisitorStatsCard className="w-full" />
                 
+                {/* Firebase Auth Summary */}
+                <FirebaseAuthSummary className="w-full" />
+                
                 {/* Migration Panel - Only show for admins */}
                 <Card className="border-2 border-dashed border-gray-300 bg-gray-50/50">
                   <CardHeader>
@@ -1038,6 +1114,124 @@ const AdminDashboard = () => {
                     <VisitorDataMigrationPanel />
                   </CardContent>
                 </Card>
+              </div>
+            )}
+
+            {/* Simple Real-Time Users Tab */}
+            {activeTab === 'simple-users' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                    Real-Time Users from Firestore
+                  </h2>
+                  <div className="px-3 py-1 bg-gradient-to-r from-green-100 to-blue-100 rounded-full">
+                    <span className="text-sm font-medium text-green-800">Live Data • Firebase</span>
+                  </div>
+                </div>
+                
+                <SimpleUserDashboard className="w-full" />
+              </div>
+            )}
+
+            {/* User Management Tab */}
+            {activeTab === 'users' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    User Management
+                  </h2>
+                  <div className="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full">
+                    <span className="text-sm font-medium text-blue-800">Real-time Data</span>
+                  </div>
+                </div>
+                
+                <UserManagementPanel className="w-full" />
+              </div>
+            )}
+
+            {/* User Analytics Tab */}
+            {activeTab === 'user-analytics' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                    User Analytics Dashboard
+                  </h2>
+                  <div className="px-3 py-1 bg-gradient-to-r from-green-100 to-blue-100 rounded-full">
+                    <span className="text-sm font-medium text-green-800">Live Analytics</span>
+                  </div>
+                </div>
+                
+                <UserAnalyticsDashboard className="w-full" />
+              </div>
+            )}
+
+            {/* Live User Signups Tab */}
+            {activeTab === 'live-signups' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                    Live User Signups
+                  </h2>
+                  <div className="px-3 py-1 bg-gradient-to-r from-orange-100 to-red-100 rounded-full">
+                    <span className="text-sm font-medium text-orange-800">Real-time</span>
+                  </div>
+                </div>
+                
+                <RealtimeUserSignups 
+                  className="w-full" 
+                  onUserClick={(user) => {
+                    // You can add logic here to show user details or switch to user management tab
+                    setActiveTab('users');
+                  }}
+                />
+              </div>
+            )}
+
+            {/* User Settings Tab */}
+            {activeTab === 'user-settings' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-600 to-blue-600 bg-clip-text text-transparent">
+                    User Management Settings
+                  </h2>
+                  <div className="px-3 py-1 bg-gradient-to-r from-gray-100 to-blue-100 rounded-full">
+                    <span className="text-sm font-medium text-gray-800">Configuration</span>
+                  </div>
+                </div>
+                
+                <UserSettingsPanel users={realtimeUsers} className="w-full" />
+              </div>
+            )}
+
+            {/* Firebase Auth Dashboard Tab */}
+            {activeTab === 'firebase-auth' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                    Firebase Authentication Dashboard
+                  </h2>
+                  <div className="px-3 py-1 bg-gradient-to-r from-red-100 to-orange-100 rounded-full">
+                    <span className="text-sm font-medium text-red-800">Firebase Auth</span>
+                  </div>
+                </div>
+                
+                <FirebaseAuthDashboard className="w-full" />
+              </div>
+            )}
+
+            {/* Firebase Users Management Tab */}
+            {activeTab === 'firebase-users' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    Firebase Users Management
+                  </h2>
+                  <div className="px-3 py-1 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full">
+                    <span className="text-sm font-medium text-indigo-800">Direct Auth Integration</span>
+                  </div>
+                </div>
+                
+                <FirebaseAuthUserManagement className="w-full" />
               </div>
             )}
 

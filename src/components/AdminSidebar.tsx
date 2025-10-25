@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Building, Users, Image as ImageIcon, BarChart3, X, TrendingUp } from 'lucide-react';
+import { Building, Users, Image as ImageIcon, BarChart3, X, TrendingUp, Eye, Settings, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -57,6 +57,48 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       id: 'story',
       label: 'Story Images',
       icon: ImageIcon,
+      hasDropdown: false,
+    },
+    {
+      id: 'simple-users',
+      label: 'Real-Time Users',
+      icon: Users,
+      hasDropdown: false,
+    },
+    {
+      id: 'users',
+      label: 'User Management',
+      icon: Users,
+      hasDropdown: false,
+    },
+    {
+      id: 'user-analytics',
+      label: 'User Analytics',
+      icon: BarChart3,
+      hasDropdown: false,
+    },
+    {
+      id: 'live-signups',
+      label: 'Live Signups',
+      icon: Eye,
+      hasDropdown: false,
+    },
+    {
+      id: 'user-settings',
+      label: 'User Settings',
+      icon: Settings,
+      hasDropdown: false,
+    },
+    {
+      id: 'firebase-auth',
+      label: 'Firebase Auth',
+      icon: Database,
+      hasDropdown: false,
+    },
+    {
+      id: 'firebase-users',
+      label: 'Firebase Users',
+      icon: Users,
       hasDropdown: false,
     },
   ];

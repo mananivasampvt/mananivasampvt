@@ -64,13 +64,30 @@ const Signup = () => {
         displayName: username
       });
 
-      // Store user data in Firestore with default role
+      // Get user's device and location information for analytics
+      const deviceInfo = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screenResolution: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        cookieEnabled: navigator.cookieEnabled,
+        onlineStatus: navigator.onLine
+      };
+
+      // Store user data in Firestore with enhanced analytics data
       await setDoc(doc(db, 'users', user.uid), {
         uid: user.uid,
         username: username,
         email: email,
         role: 'user', // Default role for new users
-        createdAt: serverTimestamp()
+        status: 'active', // Default status
+        createdAt: serverTimestamp(),
+        lastLogin: serverTimestamp(),
+        deviceInfo: JSON.stringify(deviceInfo),
+        signupSource: 'website',
+        signupPage: window.location.pathname,
+        referrer: document.referrer || 'direct'
       });
 
       toast({

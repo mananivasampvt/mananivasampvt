@@ -28,7 +28,17 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
     if (storedLocation && storedCoordinates) {
       try {
         const coords = JSON.parse(storedCoordinates);
-        setUserLocationState(storedLocation);
+        // Ensure location is a string, not an object
+        let locationString = storedLocation;
+        try {
+          const parsedLocation = JSON.parse(storedLocation);
+          if (typeof parsedLocation === 'object' && parsedLocation.city) {
+            locationString = parsedLocation.city;
+          }
+        } catch {
+          // If it's not JSON, use it as is
+        }
+        setUserLocationState(locationString);
         setUserCoordinatesState(coords);
         return;
       } catch (error) {
@@ -43,7 +53,17 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
     if (sessionLocation && sessionCoordinates) {
       try {
         const coords = JSON.parse(sessionCoordinates);
-        setUserLocationState(sessionLocation);
+        // Ensure location is a string, not an object
+        let locationString = sessionLocation;
+        try {
+          const parsedLocation = JSON.parse(sessionLocation);
+          if (typeof parsedLocation === 'object' && parsedLocation.city) {
+            locationString = parsedLocation.city;
+          }
+        } catch {
+          // If it's not JSON, use it as is
+        }
+        setUserLocationState(locationString);
         setUserCoordinatesState(coords);
       } catch (error) {
         console.error('Error parsing session coordinates:', error);
