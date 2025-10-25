@@ -15,6 +15,7 @@ interface LocationPermissionModalState {
   hasBeenShown: boolean;
   selectedOption: 'allow' | 'session' | 'deny' | null;
   isDetecting: boolean;
+  showSettingsButton: boolean;
 }
 
 const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
@@ -26,7 +27,8 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
     isVisible: false,
     hasBeenShown: false,
     selectedOption: null,
-    isDetecting: false
+    isDetecting: false,
+    showSettingsButton: false
   });
 
   const { toast } = useToast();
@@ -378,6 +380,38 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
     }
   };
 
+  // Open device location settings
+  const openLocationSettings = () => {
+    const deviceInfo = getDeviceInfo();
+    
+    if (deviceInfo.isAndroid) {
+      // Try multiple methods to open Android settings
+      try {
+        // Method 1: Try Android intent URL
+        window.location.href = 'intent://settings/location#Intent;scheme=android.settings;end';
+        
+        // Fallback after a delay
+        setTimeout(() => {
+          // Method 2: Try direct settings URL
+          try {
+            window.location.href = 'android.settings.LOCATION_SOURCE_SETTINGS';
+          } catch {
+            console.log('Direct settings URL failed, showing instructions');
+          }
+        }, 1000);
+      } catch (error) {
+        console.error('Failed to open settings:', error);
+      }
+    }
+    
+    // Show instructions as fallback
+    toast({
+      title: "Enable Location Services",
+      description: "Please go to:\nSettings → Location → Turn ON\n\nThen return to the app and try again.",
+      duration: 10000,
+    });
+  };
+
   // Handle location detection process with enhanced error handling
   const handleLocationDetection = async (storageType: 'localStorage' | 'sessionStorage' | null) => {
     setModalState(prev => ({ ...prev, isDetecting: true }));
@@ -429,44 +463,77 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
     } catch (error) {
       console.error('Location detection failed:', error);
       
-      let errorTitle = "Location Detection Failed";
+      let errorTitle = "Location Access Required";
       let errorMessage = '';
-      let showSettings = false;
+      let shouldOpenSettings = false;
       
-      if (error instanceof Error) {
+      if (error instanceof GeolocationPositionError) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorTitle = "Location Permission Needed";
+            errorMessage = 'Location access was denied. Opening location settings...';
+            shouldOpenSettings = true;
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorTitle = "Location Unavailable";
+            errorMessage = 'Cannot detect location. Make sure location services are enabled.';
+            shouldOpenSettings = true;
+            break;
+          case error.TIMEOUT:
+            errorTitle = "Location Timeout";
+            errorMessage = 'Location detection took too long. Please ensure location services are enabled.';
+            shouldOpenSettings = true;
+            break;
+        }
+      } else if (error instanceof Error) {
         if (error.message.includes('denied') || error.message.includes('permission')) {
-          errorTitle = "Permission Denied";
-          errorMessage = 'Please enable location access in your device settings:\n\nSettings → Apps → Mana Nivasam → Permissions → Location → Allow';
-          showSettings = true;
+          errorTitle = "Location Permission Needed";
+          errorMessage = 'Location access was denied. Opening location settings...';
+          shouldOpenSettings = true;
         } else if (error.message.includes('unavailable')) {
           errorTitle = "Location Unavailable";
-          errorMessage = 'Please ensure:\n• Location services are enabled on your device\n• You have a stable internet connection\n• GPS signal is available';
-          showSettings = true;
+          errorMessage = 'Cannot detect location. Opening location settings...';
+          shouldOpenSettings = true;
         } else if (error.message.includes('timeout')) {
-          errorTitle = "Request Timed Out";
-          errorMessage = 'Location detection took too long. Please try again or check if:\n• Location services are enabled\n• You have good GPS signal';
+          errorTitle = "Location Timeout";
+          errorMessage = 'Location detection took too long. Please try again.';
         } else if (error.message.includes('not supported')) {
           errorTitle = "Not Supported";
-          errorMessage = 'Location services are not available on this device or browser.';
+          errorMessage = 'Location services are not available on this device.';
         } else {
-          errorMessage = error.message || 'An unknown error occurred. Please try again.';
+          errorMessage = error.message || 'Unable to detect location. Please try again.';
         }
       } else {
-        errorMessage = 'Unable to detect your location. Please try again or enter your location manually.';
+        errorMessage = 'Unable to detect your location. Please enable location services.';
+        shouldOpenSettings = true;
       }
       
       toast({
         title: errorTitle,
         description: errorMessage,
         variant: "destructive",
-        duration: showSettings ? 8000 : 5000,
+        duration: 5000,
       });
 
-      // Don't call onLocationDenied immediately, give user a chance to retry
+      // Auto-open settings if permission was denied or location unavailable
+      if (shouldOpenSettings) {
+        // Show the settings button
+        setModalState(prev => ({ 
+          ...prev, 
+          showSettingsButton: true
+        }));
+        
+        setTimeout(() => {
+          openLocationSettings();
+        }, 1500); // Give user time to read the message
+      }
+
+      // Reset state so user can try again
       setModalState(prev => ({ 
         ...prev, 
         isDetecting: false,
-        selectedOption: null // Reset so user can try again
+        selectedOption: null,
+        showSettingsButton: shouldOpenSettings
       }));
       
     } finally {
@@ -596,6 +663,18 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
               )}
             </Button>
             
+            {/* Open Settings Button - Shows after location fails */}
+            {modalState.showSettingsButton && (
+              <Button
+                onClick={openLocationSettings}
+                variant="outline"
+                className="w-full h-10 border-2 border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 transform hover:scale-[1.02] text-sm animate-pulse"
+              >
+                <MapPin className="w-3 h-3" />
+                <span>Open Location Settings</span>
+              </Button>
+            )}
+            
             {/* Don't Allow */}
             <Button
               onClick={handleDontAllow}
@@ -610,7 +689,15 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
           {/* Footer Note */}
           <div className="px-4 pb-3">
             <p className="text-[10px] text-gray-500 text-center leading-relaxed">
-              
+              {modalState.showSettingsButton ? (
+                <span className="text-orange-600 font-medium">
+                  ⚠️ Please enable location services in your device settings
+                </span>
+              ) : (
+                <span>
+                  Your location helps us show relevant properties in your area
+                </span>
+              )}
             </p>
           </div>
         </div>
