@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Shield, Clock, X, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { getDeviceInfo, logDeviceInfo, isAndroidWebView } from '@/utils/deviceDetection';
 
 interface LocationPermissionModalProps {
   onLocationDetected: (city: string) => void;
@@ -15,7 +14,6 @@ interface LocationPermissionModalState {
   hasBeenShown: boolean;
   selectedOption: 'allow' | 'session' | 'deny' | null;
   isDetecting: boolean;
-  showSettingsButton: boolean;
 }
 
 const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
@@ -27,27 +25,26 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
     isVisible: false,
     hasBeenShown: false,
     selectedOption: null,
-    isDetecting: false,
-    showSettingsButton: false
+    isDetecting: false
   });
 
   const { toast } = useToast();
 
   // Check if modal should be shown on component mount
   useEffect(() => {
-    // Log device information for debugging
-    logDeviceInfo();
-    
     const hasShownLocationModal = sessionStorage.getItem('hasShownLocationModal');
     const hasExistingLocation = localStorage.getItem('userLocation') || sessionStorage.getItem('userLocation');
     
-    // Get device info
-    const deviceInfo = getDeviceInfo();
+    // Function to check if device is mobile
+    const isMobileDevice = () => {
+      return window.innerWidth <= 1024 || 
+             /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
     
     console.log('Location modal debug:', {
       hasShownLocationModal,
       hasExistingLocation,
-      deviceInfo,
+      isMobile: isMobileDevice(),
       windowWidth: window.innerWidth,
       userAgent: navigator.userAgent
     });
@@ -64,7 +61,7 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
     };
     
     // Show modal if not shown in this session, no existing location, and on mobile (or all devices if configured)
-    if (!hasShownLocationModal && !hasExistingLocation && (showOnAllDevices || deviceInfo.isMobile)) {
+    if (!hasShownLocationModal && !hasExistingLocation && (showOnAllDevices || isMobileDevice())) {
       console.log('Modal conditions met, setting up logo detection...');
       
       const showModalAfterLogo = () => {
@@ -247,7 +244,7 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
     return cleanup;
   }, [showOnAllDevices]);
 
-  // Function to get user's location coordinates with Android WebView support
+  // Function to get user's location coordinates
   const getCurrentPosition = (): Promise<GeolocationPosition> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
@@ -255,188 +252,56 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
         return;
       }
 
-      const isAndroid = isAndroidWebView();
-      
-      // Different configurations for Android WebView vs regular browsers
-      const highAccuracyOptions: PositionOptions = {
+      const options: PositionOptions = {
         enableHighAccuracy: true,
-        timeout: isAndroid ? 20000 : 10000, // Longer timeout for Android
+        timeout: 10000,
         maximumAge: 0
       };
 
-      const lowAccuracyOptions: PositionOptions = {
-        enableHighAccuracy: false,
-        timeout: isAndroid ? 15000 : 8000,
-        maximumAge: 5000
-      };
-
-      console.log('Attempting location detection...', { isAndroid, userAgent: navigator.userAgent });
-
-      // Try high accuracy first
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('High accuracy location success:', position);
-          resolve(position);
-        },
-        (error) => {
-          console.warn('High accuracy failed, trying low accuracy...', error);
-          
-          // If high accuracy fails, try low accuracy (network-based)
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              console.log('Low accuracy location success:', position);
-              resolve(position);
-            },
-            (finalError) => {
-              console.error('Both location attempts failed:', finalError);
-              
-              // Provide more specific error messages
-              let errorMessage = 'Geolocation failed';
-              switch (finalError.code) {
-                case finalError.PERMISSION_DENIED:
-                  errorMessage = 'Location permission denied. Please enable location access in your device settings.';
-                  break;
-                case finalError.POSITION_UNAVAILABLE:
-                  errorMessage = 'Location information unavailable. Please check your device location settings.';
-                  break;
-                case finalError.TIMEOUT:
-                  errorMessage = 'Location request timed out. Please try again.';
-                  break;
-              }
-              
-              reject(new Error(errorMessage));
-            },
-            lowAccuracyOptions
-          );
-        },
-        highAccuracyOptions
-      );
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
     });
   };
 
-  // Function to convert coordinates to city using geocoding API with fallbacks
+  // Function to convert coordinates to city using geocoding API
   const getCityFromCoordinates = async (lat: number, lng: number): Promise<string> => {
-    console.log('Geocoding coordinates:', { lat, lng });
-    
     try {
       // Using OpenStreetMap Nominatim API (free alternative to Google Maps)
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
-      
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`,
-        { 
-          signal: controller.signal,
-          headers: {
-            'User-Agent': 'ManaNavasam/1.0'
-          }
-        }
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`
       );
-      
-      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error('Geocoding service unavailable');
       }
       
       const data = await response.json();
-      console.log('Geocoding response:', data);
       
-      // Extract city name from response with multiple fallbacks
+      // Extract city name from response
       const city = data.address?.city || 
                    data.address?.town || 
                    data.address?.village || 
-                   data.address?.municipality ||
                    data.address?.suburb ||
-                   data.address?.county ||
                    data.address?.state_district ||
                    data.address?.state ||
                    'Unknown Location';
       
-      console.log('Extracted city:', city);
       return city;
     } catch (error) {
       console.error('Geocoding error:', error);
-      
-      // Try alternative geocoding service as fallback
-      try {
-        console.log('Trying alternative geocoding service...');
-        const altResponse = await fetch(
-          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
-        );
-        
-        if (altResponse.ok) {
-          const altData = await altResponse.json();
-          const city = altData.city || altData.locality || altData.principalSubdivision || 'Current Location';
-          console.log('Alternative geocoding success:', city);
-          return city;
-        }
-      } catch (altError) {
-        console.error('Alternative geocoding also failed:', altError);
-      }
-      
-      // Final fallback - use coordinates
-      return `Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+      // Fallback to a generic location
+      return 'Current Location';
     }
   };
 
-  // Open device location settings
-  const openLocationSettings = () => {
-    const deviceInfo = getDeviceInfo();
-    
-    if (deviceInfo.isAndroid) {
-      // Try multiple methods to open Android settings
-      try {
-        // Method 1: Try Android intent URL
-        window.location.href = 'intent://settings/location#Intent;scheme=android.settings;end';
-        
-        // Fallback after a delay
-        setTimeout(() => {
-          // Method 2: Try direct settings URL
-          try {
-            window.location.href = 'android.settings.LOCATION_SOURCE_SETTINGS';
-          } catch {
-            console.log('Direct settings URL failed, showing instructions');
-          }
-        }, 1000);
-      } catch (error) {
-        console.error('Failed to open settings:', error);
-      }
-    }
-    
-    // Show instructions as fallback
-    toast({
-      title: "Enable Location Services",
-      description: "Please go to:\nSettings → Location → Turn ON\n\nThen return to the app and try again.",
-      duration: 10000,
-    });
-  };
-
-  // Handle location detection process with enhanced error handling
+  // Handle location detection process
   const handleLocationDetection = async (storageType: 'localStorage' | 'sessionStorage' | null) => {
     setModalState(prev => ({ ...prev, isDetecting: true }));
 
     try {
-      console.log('Starting location detection process...');
-      
-      // Check if location services are available
-      if (!navigator.geolocation) {
-        throw new Error('Geolocation is not supported on this device');
-      }
-
-      // Check if running in secure context (HTTPS or localhost)
-      if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-        console.warn('Not running in secure context, location may not work');
-      }
-
       const position = await getCurrentPosition();
       const { latitude, longitude } = position.coords;
       
-      console.log('Location detected successfully:', { 
-        latitude, 
-        longitude, 
-        accuracy: position.coords.accuracy 
-      });
+      console.log('Location detected:', { latitude, longitude });
       
       const city = await getCityFromCoordinates(latitude, longitude);
       
@@ -444,15 +309,13 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
       if (storageType === 'localStorage') {
         localStorage.setItem('userLocation', city);
         localStorage.setItem('userCoordinates', JSON.stringify({ latitude, longitude }));
-        console.log('Location saved to localStorage');
       } else if (storageType === 'sessionStorage') {
         sessionStorage.setItem('userLocation', city);
         sessionStorage.setItem('userCoordinates', JSON.stringify({ latitude, longitude }));
-        console.log('Location saved to sessionStorage');
       }
       
       toast({
-        title: "Location Detected ✓",
+        title: "Location Detected",
         description: `Your location has been set to ${city}. Showing properties in your area.`,
         duration: 4000,
       });
@@ -463,79 +326,27 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
     } catch (error) {
       console.error('Location detection failed:', error);
       
-      let errorTitle = "Location Access Required";
-      let errorMessage = '';
-      let shouldOpenSettings = false;
-      
-      if (error instanceof GeolocationPositionError) {
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorTitle = "Location Permission Needed";
-            errorMessage = 'Location access was denied. Opening location settings...';
-            shouldOpenSettings = true;
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorTitle = "Location Unavailable";
-            errorMessage = 'Cannot detect location. Make sure location services are enabled.';
-            shouldOpenSettings = true;
-            break;
-          case error.TIMEOUT:
-            errorTitle = "Location Timeout";
-            errorMessage = 'Location detection took too long. Please ensure location services are enabled.';
-            shouldOpenSettings = true;
-            break;
-        }
-      } else if (error instanceof Error) {
-        if (error.message.includes('denied') || error.message.includes('permission')) {
-          errorTitle = "Location Permission Needed";
-          errorMessage = 'Location access was denied. Opening location settings...';
-          shouldOpenSettings = true;
+      let errorMessage = 'Unable to detect your location. ';
+      if (error instanceof Error) {
+        if (error.message.includes('denied')) {
+          errorMessage += 'Location access was denied.';
         } else if (error.message.includes('unavailable')) {
-          errorTitle = "Location Unavailable";
-          errorMessage = 'Cannot detect location. Opening location settings...';
-          shouldOpenSettings = true;
+          errorMessage += 'Location service is unavailable.';
         } else if (error.message.includes('timeout')) {
-          errorTitle = "Location Timeout";
-          errorMessage = 'Location detection took too long. Please try again.';
-        } else if (error.message.includes('not supported')) {
-          errorTitle = "Not Supported";
-          errorMessage = 'Location services are not available on this device.';
+          errorMessage += 'Location request timed out.';
         } else {
-          errorMessage = error.message || 'Unable to detect location. Please try again.';
+          errorMessage += 'Please enable location services and try again.';
         }
-      } else {
-        errorMessage = 'Unable to detect your location. Please enable location services.';
-        shouldOpenSettings = true;
       }
       
       toast({
-        title: errorTitle,
+        title: "Location Detection Failed",
         description: errorMessage,
         variant: "destructive",
-        duration: 5000,
       });
 
-      // Auto-open settings if permission was denied or location unavailable
-      if (shouldOpenSettings) {
-        // Show the settings button
-        setModalState(prev => ({ 
-          ...prev, 
-          showSettingsButton: true
-        }));
-        
-        setTimeout(() => {
-          openLocationSettings();
-        }, 1500); // Give user time to read the message
-      }
-
-      // Reset state so user can try again
-      setModalState(prev => ({ 
-        ...prev, 
-        isDetecting: false,
-        selectedOption: null,
-        showSettingsButton: shouldOpenSettings
-      }));
-      
+      onLocationDenied();
+      closeModal();
     } finally {
       setModalState(prev => ({ ...prev, isDetecting: false }));
     }
@@ -663,18 +474,6 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
               )}
             </Button>
             
-            {/* Open Settings Button - Shows after location fails */}
-            {modalState.showSettingsButton && (
-              <Button
-                onClick={openLocationSettings}
-                variant="outline"
-                className="w-full h-10 border-2 border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 transform hover:scale-[1.02] text-sm animate-pulse"
-              >
-                <MapPin className="w-3 h-3" />
-                <span>Open Location Settings</span>
-              </Button>
-            )}
-            
             {/* Don't Allow */}
             <Button
               onClick={handleDontAllow}
@@ -689,15 +488,7 @@ const LocationPermissionModal: React.FC<LocationPermissionModalProps> = ({
           {/* Footer Note */}
           <div className="px-4 pb-3">
             <p className="text-[10px] text-gray-500 text-center leading-relaxed">
-              {modalState.showSettingsButton ? (
-                <span className="text-orange-600 font-medium">
-                  ⚠️ Please enable location services in your device settings
-                </span>
-              ) : (
-                <span>
-                  Your location helps us show relevant properties in your area
-                </span>
-              )}
+              
             </p>
           </div>
         </div>

@@ -39,17 +39,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
   // Auto-fill location when user location is detected
   useEffect(() => {
     if (userLocation && isLocationSet) {
-      // Ensure userLocation is a string, not an object
-      let locationString = userLocation;
-      if (typeof userLocation === 'object') {
-        locationString = (userLocation as any).city || (userLocation as any).area || '';
-      }
-      
       setFilters(prev => ({
         ...prev,
-        location: locationString,
+        location: userLocation,
         area: '', // Reset area when location changes
-        manualLocation: locationString
+        manualLocation: userLocation
       }));
     }
   }, [userLocation, isLocationSet]);
@@ -278,7 +272,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
             <Input
               id="search-anything-input"
               placeholder="Enter anything related to properties to search…"
-              value={typeof filters.manualLocation === 'string' ? filters.manualLocation : ''}
+              value={filters.manualLocation || ''}
               onChange={(e) => handleInputChange('manualLocation', e.target.value)}
               className="w-full h-12 bg-gray-50/80 border border-gray-300 rounded-xl hover:bg-gray-100/80 backdrop-blur-sm"
             />
@@ -378,7 +372,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
             <Input
               id="search-anything-input-mobile"
               placeholder="Enter anything related to properties to search…"
-              value={typeof filters.manualLocation === 'string' ? filters.manualLocation : ''}
+              value={filters.manualLocation || ''}
               onChange={(e) => handleInputChange('manualLocation', e.target.value)}
               className="w-full h-12 bg-gray-50/80 border border-gray-300 rounded-xl hover:bg-gray-100/80 backdrop-blur-sm"
             />
