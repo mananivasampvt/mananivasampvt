@@ -158,13 +158,13 @@ const Buy = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900">
+      <section className="relative pt-20 lg:pt-32 pb-16 bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=2070')] bg-cover bg-center opacity-20"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white mb-12">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               Properties for
-              <span className="block bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent">
+              <span className="block lg:inline bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent">
                 Sale
               </span>
             </h1>
@@ -508,7 +508,9 @@ const Buy = () => {
         </div>
       </section>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
 
       {/* Enhanced Share Menu */}
       {shareMenuState.propertyId && getSelectedProperty() && (

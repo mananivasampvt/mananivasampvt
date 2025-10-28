@@ -52,7 +52,7 @@ const About = () => {
       }) as TeamMember[];
       
       console.log('Processed team members data:', teamData);
-      setTeamMembers(teamData);
+      setTeamMembers(teamData.reverse()); // Reverse to show most recently added first
       
       if (teamData.length === 0) {
         console.log('No team members found in the database');
@@ -115,13 +115,13 @@ const About = () => {
       <Header />
       
       {/* Hero Section */}
-      <section id="hero" className="relative pt-20 pb-16 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
+      <section id="hero" className="relative pt-20 lg:pt-32 pb-16 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497604401993-f2e922e5cb0a?q=80&w=2070')] bg-cover bg-center opacity-20"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               About
-              <span className="block bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent">
+              <span className="block lg:inline bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent">
                 Mana Nivasam
               </span>
             </h1>

@@ -58,54 +58,11 @@ const Footer = () => {
             <h4 className="text-base md:text-lg font-semibold mb-4 md:mb-6">Get the App</h4>
             <div className="space-y-3 md:space-y-4">
               <div className="group">
-                <div 
-                  onClick={(e) => {
-                    // Get the button's position for relative tooltip placement
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    
-                    // Create tooltip with better styling
-                    const tooltip = document.createElement('div');
-                    tooltip.innerHTML = `
-                      <div class="flex items-center space-x-2">
-                        <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span>App coming soon to Google Play!</span>
-                      </div>
-                    `;
-                    
-                    tooltip.className = 'fixed bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 py-3 rounded-xl text-sm z-[9999] pointer-events-none shadow-2xl border border-gray-600 backdrop-blur-sm';
-                    
-                    // Position tooltip above the button
-                    tooltip.style.left = `${rect.left + rect.width / 2}px`;
-                    tooltip.style.top = `${rect.top - 10}px`;
-                    tooltip.style.transform = 'translate(-50%, -100%)';
-                    tooltip.style.opacity = '0';
-                    tooltip.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-                    tooltip.style.animation = 'none';
-                    
-                    document.body.appendChild(tooltip);
-                    
-                    // Trigger animation
-                    requestAnimationFrame(() => {
-                      tooltip.style.opacity = '1';
-                      tooltip.style.transform = 'translate(-50%, -100%) translateY(-8px) scale(1)';
-                    });
-                    
-                    // Remove tooltip with fade out
-                    setTimeout(() => {
-                      if (document.body.contains(tooltip)) {
-                        tooltip.style.opacity = '0';
-                        tooltip.style.transform = 'translate(-50%, -100%) translateY(-4px) scale(0.95)';
-                        setTimeout(() => {
-                          if (document.body.contains(tooltip)) {
-                            document.body.removeChild(tooltip);
-                          }
-                        }, 300);
-                      }
-                    }, 2500);
-                  }}
-                  className="relative transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer select-none group"
+                <a 
+                  href="https://play.google.com/store/apps/details?id=co.median.android.mpynbb&pcampaignid=web_share"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block transition-all duration-300 hover:scale-105 hover:shadow-lg select-none"
                   style={{ minHeight: '48px', minWidth: '48px' }}
                 >
                   {/* Official Google Play Badge */}
@@ -115,20 +72,12 @@ const Footer = () => {
                       alt="Get it on Google Play"
                       className="h-[60px] md:h-[72px] w-auto opacity-90 hover:opacity-100 transition-opacity duration-300"
                     />
-                    
-                    {/* Coming Soon Badge - Hidden on mobile */}
-                    <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg border-2 border-white hidden md:block">
-                      Coming Soon
-                    </div>
                   </div>
-                </div>
+                </a>
                 
                 <div className="mt-2 md:mt-3 text-center">
                   <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
                     Download our mobile app for a better property browsing experience
-                  </p>
-                  <p className="text-gray-500 text-xs mt-1 font-medium hidden md:block">
-                    Coming Soon
                   </p>
                 </div>
               </div>

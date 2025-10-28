@@ -29,6 +29,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import PropertyDetails from "./pages/PropertyDetails";
 import EMICalculator from "./pages/EMICalculator";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import NewListings from "./pages/NewListings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -87,6 +88,7 @@ const App = () => {
                     <Route path="/pg-hostels" element={<PGHostels />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/newlistings" element={<NewListings />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/profile" element={<Profile />} />

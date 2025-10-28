@@ -112,8 +112,8 @@ const EnhancedShareMenu: React.FC<EnhancedShareMenuProps> = ({
         onClick={onClose}
       />
       
-      {/* Share Menu - Enhanced responsive design */}
-      <div className="fixed bottom-0 left-0 right-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:bottom-auto md:w-auto bg-white rounded-t-3xl md:rounded-3xl p-4 md:p-8 z-50 animate-in slide-in-from-bottom md:slide-in-from-bottom-0 duration-300 shadow-2xl border-t md:border border-gray-100 max-h-[90vh] overflow-y-auto">
+      {/* Share Menu - Bottom slide-up design for all screens */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl p-4 md:p-8 z-50 animate-in slide-in-from-bottom duration-300 shadow-2xl border-t border-gray-100 max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between mb-4 md:mb-6">

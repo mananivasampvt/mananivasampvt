@@ -309,7 +309,7 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ searchFilters }) => {
 
         {/* Properties Display */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-white rounded-2xl p-6 animate-pulse hover:shadow-lg transition-shadow duration-300">
                 <div className="h-48 lg:h-56 bg-gray-200 rounded-lg mb-4"></div>
@@ -535,7 +535,7 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ searchFilters }) => {
             </div>
 
             {/* Desktop Grid View - Enhanced with Mobile Tap Support */}
-            <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
               {filteredProperties.map((property, index) => (
                 <div 
                   key={property.id} 

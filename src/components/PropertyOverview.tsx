@@ -30,33 +30,33 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({ property }) => {
 
   return (
     <div className="font-body">
-      <h2 className="text-sm sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-8 font-premium mt-2 sm:mt-0">Property Overview</h2>
+      <h2 className="text-sm sm:text-2xl lg:text-xl font-bold text-gray-900 mb-3 sm:mb-8 lg:mb-5 font-premium mt-2 sm:mt-0">Property Overview</h2>
       
       {/* Key Metrics with Compact Mobile Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-10">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-3 mb-6 sm:mb-10 lg:mb-6">
         {!isLandProperty && property.bedrooms && (
-          <div className="text-center p-2 sm:p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg sm:rounded-2xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
-            <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-blue-600 rounded-md sm:rounded-xl flex items-center justify-center">
-              <Bed className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
+          <div className="text-center p-2 sm:p-6 lg:p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg sm:rounded-2xl lg:rounded-xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
+            <div className="w-6 h-6 sm:w-12 sm:h-12 lg:w-10 lg:h-10 mx-auto mb-1 sm:mb-3 lg:mb-2 bg-blue-600 rounded-md sm:rounded-xl lg:rounded-lg flex items-center justify-center">
+              <Bed className="w-3 h-3 sm:w-6 sm:h-6 lg:w-5 lg:h-5 text-white" />
             </div>
-            <div className="text-sm sm:text-2xl font-bold text-gray-900 font-premium">{property.bedrooms}</div>
+            <div className="text-sm sm:text-2xl lg:text-xl font-bold text-gray-900 font-premium">{property.bedrooms}</div>
             <div className="text-xs sm:text-sm text-gray-600 font-medium">Bedrooms</div>
           </div>
         )}
         {!isLandProperty && property.bathrooms && (
-          <div className="text-center p-2 sm:p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg sm:rounded-2xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
-            <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-purple-600 rounded-md sm:rounded-xl flex items-center justify-center">
-              <Bath className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
+          <div className="text-center p-2 sm:p-6 lg:p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg sm:rounded-2xl lg:rounded-xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
+            <div className="w-6 h-6 sm:w-12 sm:h-12 lg:w-10 lg:h-10 mx-auto mb-1 sm:mb-3 lg:mb-2 bg-purple-600 rounded-md sm:rounded-xl lg:rounded-lg flex items-center justify-center">
+              <Bath className="w-3 h-3 sm:w-6 sm:h-6 lg:w-5 lg:h-5 text-white" />
             </div>
-            <div className="text-sm sm:text-2xl font-bold text-gray-900 font-premium">{property.bathrooms}</div>
+            <div className="text-sm sm:text-2xl lg:text-xl font-bold text-gray-900 font-premium">{property.bathrooms}</div>
             <div className="text-xs sm:text-sm text-gray-600 font-medium">Bathrooms</div>
           </div>
         )}
-        <div className="text-center p-2 sm:p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-lg sm:rounded-2xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
-          <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-green-600 rounded-md sm:rounded-xl flex items-center justify-center">
-            <Square className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
+        <div className="text-center p-2 sm:p-6 lg:p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg sm:rounded-2xl lg:rounded-xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
+          <div className="w-6 h-6 sm:w-12 sm:h-12 lg:w-10 lg:h-10 mx-auto mb-1 sm:mb-3 lg:mb-2 bg-green-600 rounded-md sm:rounded-xl lg:rounded-lg flex items-center justify-center">
+            <Square className="w-3 h-3 sm:w-6 sm:h-6 lg:w-5 lg:h-5 text-white" />
           </div>
-          <div className="text-xs sm:text-xl font-bold text-gray-900 font-premium">
+          <div className="text-xs sm:text-xl lg:text-lg font-bold text-gray-900 font-premium">
             {property.area}
             {property.areaAcres && (
               <div className="text-xs sm:text-sm text-gray-600 font-normal">
@@ -67,31 +67,31 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({ property }) => {
           <div className="text-xs sm:text-sm text-gray-600 font-medium">Area</div>
         </div>
         {property.facing && (
-          <div className="text-center p-2 sm:p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg sm:rounded-2xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
-            <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-orange-600 rounded-md sm:rounded-xl flex items-center justify-center">
-              <Compass className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
+          <div className="text-center p-2 sm:p-6 lg:p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg sm:rounded-2xl lg:rounded-xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
+            <div className="w-6 h-6 sm:w-12 sm:h-12 lg:w-10 lg:h-10 mx-auto mb-1 sm:mb-3 lg:mb-2 bg-orange-600 rounded-md sm:rounded-xl lg:rounded-lg flex items-center justify-center">
+              <Compass className="w-3 h-3 sm:w-6 sm:h-6 lg:w-5 lg:h-5 text-white" />
             </div>
-            <div className="text-xs sm:text-lg font-bold text-gray-900 font-premium">{property.facing}</div>
+            <div className="text-xs sm:text-lg lg:text-base font-bold text-gray-900 font-premium">{property.facing}</div>
             <div className="text-xs sm:text-sm text-gray-600 font-medium">Facing</div>
           </div>
         )}
         {property.propertyAge !== undefined && property.propertyAge !== null && (
-          <div className="text-center p-2 sm:p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg sm:rounded-2xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
-            <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-indigo-600 rounded-md sm:rounded-xl flex items-center justify-center">
-              <Calendar className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
+          <div className="text-center p-2 sm:p-6 lg:p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg sm:rounded-2xl lg:rounded-xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
+            <div className="w-6 h-6 sm:w-12 sm:h-12 lg:w-10 lg:h-10 mx-auto mb-1 sm:mb-3 lg:mb-2 bg-indigo-600 rounded-md sm:rounded-xl lg:rounded-lg flex items-center justify-center">
+              <Calendar className="w-3 h-3 sm:w-6 sm:h-6 lg:w-5 lg:h-5 text-white" />
             </div>
-            <div className="text-xs sm:text-lg font-bold text-gray-900 font-premium">
+            <div className="text-xs sm:text-lg lg:text-base font-bold text-gray-900 font-premium">
               {property.propertyAge === 0 ? 'New' : `${property.propertyAge} ${property.propertyAge === 1 ? 'Year' : 'Years'}`}
             </div>
             <div className="text-xs sm:text-sm text-gray-600 font-medium">Property Age</div>
           </div>
         )}
         {property.status && property.category !== 'Land' && (
-          <div className="text-center p-2 sm:p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg sm:rounded-2xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
-            <div className="w-6 h-6 sm:w-12 sm:h-12 mx-auto mb-1 sm:mb-3 bg-emerald-600 rounded-md sm:rounded-xl flex items-center justify-center">
-              <CheckCircle className="w-3 h-3 sm:w-6 sm:h-6 text-white" />
+          <div className="text-center p-2 sm:p-6 lg:p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg sm:rounded-2xl lg:rounded-xl shadow-sm sm:shadow-elegant transition-all duration-200 hover:shadow-soft">
+            <div className="w-6 h-6 sm:w-12 sm:h-12 lg:w-10 lg:h-10 mx-auto mb-1 sm:mb-3 lg:mb-2 bg-emerald-600 rounded-md sm:rounded-xl lg:rounded-lg flex items-center justify-center">
+              <CheckCircle className="w-3 h-3 sm:w-6 sm:h-6 lg:w-5 lg:h-5 text-white" />
             </div>
-            <div className="text-xs sm:text-lg font-bold text-gray-900 font-premium">
+            <div className="text-xs sm:text-lg lg:text-base font-bold text-gray-900 font-premium">
               {property.status}
             </div>
             <div className="text-xs sm:text-sm text-gray-600 font-medium">Status</div>

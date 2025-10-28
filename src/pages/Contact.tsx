@@ -1,14 +1,16 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageCircle, PlusCircle } from 'lucide-react';
 
 const Contact = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -46,13 +48,13 @@ Message: ${formData.message}`;
       <Header />
       
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 bg-gradient-to-br from-teal-900 via-blue-900 to-purple-900">
+      <section className="relative pt-20 lg:pt-32 pb-16 bg-gradient-to-br from-teal-900 via-blue-900 to-purple-900">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1721322800607-8c38375eef04?q=80&w=2070')] bg-cover bg-center opacity-20"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white mb-12">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               Contact
-              <span className="block bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent">
+              <span className="block lg:inline bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent">
                 Us
               </span>
             </h1>
@@ -220,12 +222,29 @@ Message: ${formData.message}`;
                   </Button>
                 </CardContent>
               </Card>
+
+              {/* Add Your Property Button */}
+              <Card className="hover-lift bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+                <CardContent className="p-6 text-center">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">Want to List Your Property?</h3>
+                  <p className="text-gray-600 mb-4">Submit your property details and reach thousands of potential buyers</p>
+                  <Button
+                    onClick={() => navigate('/newlistings')}
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 mx-auto"
+                  >
+                    <PlusCircle className="w-5 h-5" />
+                    Add Your Property
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
       </section>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 };

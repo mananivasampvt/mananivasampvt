@@ -121,8 +121,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         className="property-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] transform cursor-pointer"
         onClick={handleCardClick}
       >
-        {/* Image Carousel - Reduced height for mobile */}
-        <div className="relative h-48 sm:h-64 lg:h-56 xl:h-64 overflow-hidden group">
+        {/* Image Carousel - Reduced height for desktop */}
+        <div className="relative h-48 sm:h-56 lg:h-48 xl:h-52 overflow-hidden group">
           
           
           <div className="relative w-full h-full">
@@ -261,13 +261,24 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           </div>
         </div>
 
-        {/* Content - Reduced padding for mobile */}
-        <div className="p-4 sm:p-6">
+        {/* Content - Reduced padding for compact cards */}
+        <div className="p-4 sm:p-5 lg:p-4 xl:p-5">
           
           
           <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent transition-all duration-300 hover:from-purple-700 hover:to-blue-700">
-              {property.price}
+            <div className="flex items-center gap-2">
+              <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent transition-all duration-300 hover:from-purple-700 hover:to-blue-700">
+                {property.price}
+              </div>
+              {/* Phone Icon - Only visible on mobile */}
+              <a 
+                href="tel:9849834102"
+                onClick={(e) => e.stopPropagation()}
+                className="md:hidden flex-shrink-0 w-8 h-8 bg-gray-50 border border-gray-300 rounded-lg flex items-center justify-center shadow-sm hover:shadow-md hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                aria-label="Call property contact"
+              >
+                <Phone className="w-4 h-4 text-gray-800" />
+              </a>
             </div>
             {mediaItems.length > 1 && (
               <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full transition-all duration-300 ease-in-out hover:bg-gray-200 hover:scale-105 transform">
@@ -281,16 +292,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             )}
           </div>
 
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 line-clamp-2 leading-tight transition-colors duration-300 hover:text-purple-700">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 line-clamp-2 md:line-clamp-1 leading-tight transition-colors duration-300 hover:text-purple-700">
             {property.title}
           </h3>
 
-          <div className="flex items-center text-gray-600 mb-3 sm:mb-4 transition-colors duration-300 hover:text-gray-800">
+          <div className="flex items-center text-gray-600 mb-2 sm:mb-3 transition-colors duration-300 hover:text-gray-800">
             <MapPin className="w-4 h-4 mr-2 text-gray-400" />
             <span className="text-sm truncate">{property.location}</span>
           </div>
 
-          <div className="flex items-center space-x-4 mb-3 sm:mb-4 text-gray-600">
+          <div className="flex items-center space-x-4 mb-2 sm:mb-3 text-gray-600">
             {!isLandProperty && property.bedrooms && (
               <div className="flex items-center transition-colors duration-300 hover:text-gray-800">
                 <Bed className="w-4 h-4 mr-1" />
@@ -317,6 +328,18 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
                 Land
               </div>
             )}
+            {/* Property Status Badge - Desktop inline */}
+            {property.status && property.category !== 'Land' && (
+              <div className="hidden lg:flex items-center">
+                <span className={`text-xs px-2 py-1 rounded-full ${
+                  property.status === 'Ready to Move' 
+                    ? 'bg-emerald-50 text-emerald-700' 
+                    : 'bg-amber-50 text-amber-700'
+                }`}>
+                  {property.status}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Property Age Display */}
@@ -329,9 +352,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             </div>
           )}
 
-          {/* Property Status Display */}
+          {/* Property Status Display - Mobile only */}
           {property.status && property.category !== 'Land' && (
-            <div className="flex items-center text-sm text-gray-600 mb-2 transition-colors duration-300 hover:text-gray-800">
+            <div className="flex lg:hidden items-center text-sm text-gray-600 mb-2 transition-colors duration-300 hover:text-gray-800">
               <CheckCircle className="w-4 h-4 mr-2 text-emerald-500" />
               <span className={`text-xs px-2 py-1 rounded-full ${
                 property.status === 'Ready to Move' 

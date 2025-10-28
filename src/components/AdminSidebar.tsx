@@ -42,6 +42,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       hasDropdown: true,
     },
     {
+      id: 'user-listings',
+      label: 'User Listings',
+      icon: Building,
+      hasDropdown: false,
+    },
+    {
       id: 'analytics',
       label: 'Analytics',
       icon: TrendingUp,

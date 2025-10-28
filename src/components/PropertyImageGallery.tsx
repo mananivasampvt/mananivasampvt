@@ -15,6 +15,7 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [swipeOffset, setSwipeOffset] = useState(0);
 
   // Minimum swipe distance (in px) to trigger navigation
   const minSwipeDistance = 50;
@@ -55,10 +56,15 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
+    setSwipeOffset(0);
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    const currentTouch = e.targetTouches[0].clientX;
+    setTouchEnd(currentTouch);
+    if (touchStart) {
+      setSwipeOffset(currentTouch - touchStart);
+    }
   };
 
   const onTouchEnd = () => {
@@ -74,17 +80,27 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
     if (isRightSwipe) {
       prevMedia();
     }
+    
+    // Reset swipe offset
+    setSwipeOffset(0);
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 lg:space-y-2">
       {/* Main Media Display */}
       <div 
-        className="relative aspect-[16/10] rounded-lg overflow-hidden bg-gray-100 group cursor-pointer"
+        className="relative aspect-[16/10] lg:aspect-[16/9] rounded-lg overflow-hidden bg-gray-100 group cursor-pointer"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
+        <div 
+          className="w-full h-full transition-transform"
+          style={{ 
+            transform: `translateX(${swipeOffset}px)`,
+            transitionDuration: swipeOffset === 0 ? '300ms' : '0ms'
+          }}
+        >
         {currentMedia?.type === 'video' ? (
           // Video Display
           <div className="relative w-full h-full">
@@ -126,6 +142,7 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
             }}
           />
         )}
+        </div>
         
         {/* Navigation Arrows */}
         {mediaItems.length > 1 && (
@@ -135,18 +152,20 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
                 e.stopPropagation();
                 prevMedia();
               }}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:bg-black/50 active:scale-95"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110 active:scale-95 z-10"
+              aria-label="Previous image"
             >
-              <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-white" />
+              <ChevronLeft className="w-5 h-5 md:w-5 md:h-5 text-gray-800" />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 nextMedia();
               }}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:bg-black/50 active:scale-95"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110 active:scale-95 z-10"
+              aria-label="Next image"
             >
-              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
+              <ChevronRight className="w-5 h-5 md:w-5 md:h-5 text-gray-800" />
             </button>
           </>
         )}
@@ -164,16 +183,37 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
         <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white px-2 py-1 rounded-md text-xs">
           {selectedMediaIndex + 1} / {mediaItems.length}
         </div>
+
+        {/* Dot Indicators for Mobile */}
+        {mediaItems.length > 1 && mediaItems.length <= 10 && (
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1.5 md:hidden">
+            {mediaItems.map((_, index) => (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedMediaIndex(index);
+                }}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  index === selectedMediaIndex 
+                    ? 'bg-white w-4' 
+                    : 'bg-white/50 hover:bg-white/75'
+                }`}
+                aria-label={`Go to image ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Compact Thumbnail Strip */}
       {mediaItems.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex gap-2 lg:gap-1.5 overflow-x-auto pb-1">
           {mediaItems.slice(0, 6).map((media, index) => (
             <button
               key={index}
               onClick={() => setSelectedMediaIndex(index)}
-              className={`flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all duration-200 ${
+              className={`flex-shrink-0 w-16 h-12 lg:w-14 lg:h-10 rounded-md overflow-hidden border-2 transition-all duration-200 ${
                 index === selectedMediaIndex 
                   ? 'border-blue-500 ring-1 ring-blue-200' 
                   : 'border-gray-200 hover:border-blue-300'

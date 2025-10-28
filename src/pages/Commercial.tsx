@@ -152,13 +152,13 @@ const Commercial = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <section id="hero" className="relative pt-20 pb-16 bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
+      <section id="hero" className="relative pt-20 lg:pt-32 pb-16 bg-gradient-to-br from-slate-900 via-gray-900 to-blue-900">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070')] bg-cover bg-center opacity-20"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white mb-12">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               Commercial
-              <span className="block bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+              <span className="block lg:inline bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
                 Properties
               </span>
             </h1>
@@ -489,7 +489,9 @@ const Commercial = () => {
         </div>
       </section>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
 
       {shareMenuState.propertyId && getSelectedProperty() && (
         <EnhancedShareMenu

@@ -99,7 +99,9 @@ const PropertyDetails = () => {
             <div className="h-4 bg-gray-200 rounded-xl w-full sm:w-2/3"></div>
           </div>
         </div>
-        <Footer />
+        <div className="hidden md:block">
+          <Footer />
+        </div>
       </div>
     );
   }
@@ -120,7 +122,9 @@ const PropertyDetails = () => {
             </CardContent>
           </Card>
         </div>
-        <Footer />
+        <div className="hidden md:block">
+          <Footer />
+        </div>
       </div>
     );
   }
@@ -145,13 +149,13 @@ const PropertyDetails = () => {
 
       {/* Main Content Layout */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-1 sm:py-8">
-        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 sm:gap-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-5">
           {/* Main Content Area - Mobile First Order */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-8">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-4">
             
             {/* 1. Image Gallery - First on Mobile */}
             <Card className="overflow-hidden shadow-soft-lg rounded-2xl">
-              <CardContent className="p-1 sm:p-6">
+              <CardContent className="p-1 sm:p-6 lg:p-3">
                 <PropertyImageGallery 
                   images={property.images} 
                   videos={property.videos} 
@@ -164,27 +168,25 @@ const PropertyDetails = () => {
             <Card className="shadow-soft-lg rounded-2xl lg:hidden">
               <CardContent className="p-4 sm:p-5">
                 <div className="space-y-2 sm:space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <h1 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight font-premium line-clamp-2 flex-1">
-                      {property.title}
-                    </h1>
-                    {/* Mobile Phone Icon Button */}
-                    {property.contactPhone && (
-                      <a 
-                        href={`tel:${property.contactPhone}`}
-                        className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 transform hover:scale-110"
-                        aria-label="Call property contact"
-                      >
-                        <Phone className="w-5 h-5 text-white" />
-                      </a>
-                    )}
-                  </div>
+                  <h1 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight font-premium line-clamp-2">
+                    {property.title}
+                  </h1>
                   <div className="flex items-start gap-1 text-gray-600">
                     <MapPin className="w-3 h-3 mr-0.5 mt-0.5 flex-shrink-0 text-blue-600" />
                     <span className="text-sm sm:text-sm font-medium">{property.location}</span>
                   </div>
-                  <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-premium">
-                    {property.price}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-premium">
+                      {property.price}
+                    </div>
+                    {/* Mobile Icon in Price Box - White background with black icon */}
+                    <a 
+                      href={`tel:${property.contactPhone || '9849834102'}`}
+                      className="flex-shrink-0 w-10 h-10 bg-white border border-gray-300 rounded-lg flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 transform hover:scale-105 active:scale-95"
+                      aria-label="Call property contact"
+                    >
+                      <Phone className="w-5 h-5 text-gray-900" />
+                    </a>
                   </div>
                   <div className="flex flex-wrap gap-2 pt-1">
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 sm:px-2 sm:py-1 rounded-lg text-xs font-semibold shadow-elegant">
@@ -208,7 +210,7 @@ const PropertyDetails = () => {
             <Card className="shadow-soft-lg rounded-2xl overflow-hidden">
               <CardContent className="p-0">
                 <Tabs defaultValue="overview" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-gray-50/50 p-1 m-3 sm:m-6 mb-0 rounded-xl">
+                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-gray-50/50 p-1 m-3 sm:m-6 lg:m-4 mb-0 rounded-xl">
                     <TabsTrigger value="overview" className="flex items-center gap-1 sm:gap-2 rounded-lg font-medium text-xs sm:text-sm">
                       <Home className="w-3 h-3 sm:w-4 sm:h-4" />
                       <span className="hidden sm:inline">Overview</span>
@@ -230,23 +232,23 @@ const PropertyDetails = () => {
                     </TabsTrigger>
                   </TabsList>
                   
-                  <TabsContent value="overview" className="p-4 sm:p-6 pt-3 sm:pt-4 mt-3 sm:mt-2">
+                  <TabsContent value="overview" className="p-4 sm:p-6 lg:p-4 pt-3 sm:pt-4 lg:pt-3 mt-3 sm:mt-2">
                     <PropertyOverview property={property} />
                   </TabsContent>
                   
-                  <TabsContent value="amenities" className="p-4 sm:p-6 pt-3 sm:pt-4 mt-3 sm:mt-2">
+                  <TabsContent value="amenities" className="p-4 sm:p-6 lg:p-4 pt-3 sm:pt-4 lg:pt-3 mt-3 sm:mt-2">
                     {property.amenities && property.amenities.length > 0 ? (
                       <PropertyAmenities amenities={property.amenities} />
                     ) : (
-                      <div className="text-center py-8 sm:py-12">
-                        <ImageIcon className="w-8 h-8 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-3 sm:mb-4" />
+                      <div className="text-center py-8 sm:py-12 lg:py-8">
+                        <ImageIcon className="w-8 h-8 sm:w-12 sm:h-12 lg:w-10 lg:h-10 text-gray-300 mx-auto mb-3 sm:mb-4" />
                         <p className="text-sm sm:text-base text-gray-500 font-medium">No amenities listed for this property.</p>
                       </div>
                     )}
                   </TabsContent>
                   
                   <TabsContent value="map" className="p-0 mt-3 sm:mt-2">
-                    <div className="min-h-[300px] sm:h-80 lg:h-96">
+                    <div className="min-h-[300px] sm:h-80 lg:h-72">
                       <PropertyMap 
                         location={property.location} 
                         title={property.title} 
@@ -255,7 +257,7 @@ const PropertyDetails = () => {
                     </div>
                   </TabsContent>
                   
-                  <TabsContent value="contact" className="p-4 sm:p-6 pt-3 sm:pt-4 mt-3 sm:mt-2">
+                  <TabsContent value="contact" className="p-4 sm:p-6 lg:p-4 pt-3 sm:pt-4 lg:pt-3 mt-3 sm:mt-2">
                     <PropertyContact 
                       contactName={property.contactName}
                       contactPhone={property.contactPhone}
@@ -324,7 +326,9 @@ const PropertyDetails = () => {
         location={property.location}
       />
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 };

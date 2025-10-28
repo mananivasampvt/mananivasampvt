@@ -155,7 +155,7 @@ const Shortlist = () => {
       </div>
 
       {/* Desktop Header */}
-      <section className="pt-20 pb-12 relative overflow-hidden hidden md:block">
+      <section className="pt-20 lg:pt-32 pb-12 relative overflow-hidden hidden md:block">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center">
@@ -270,7 +270,9 @@ const Shortlist = () => {
         </div>
       </section>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 };

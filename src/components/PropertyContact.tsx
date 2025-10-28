@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Phone, Mail, MessageCircle, User, Send } from 'lucide-react';
+import { Phone, MessageCircle, User, Send } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface PropertyContactProps {
@@ -43,13 +43,10 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleEmailContact = () => {
-    // Use the specified email: snsnarayanac@gmail.com
-    const emailAddress = 'snsnarayanac@gmail.com';
-    const subject = encodeURIComponent('Property Inquiry – Sent via Website');
-    const body = encodeURIComponent('Property Inquiry – Sent via Website');
-    const emailUrl = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
-    window.location.href = emailUrl;
+  const handlePhoneCall = () => {
+    // Use the specified phone number: 9849834102
+    const phoneNumber = '9849834102';
+    window.location.href = `tel:${phoneNumber}`;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -85,14 +82,7 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
                 <span className="font-medium">{contactPhone}</span>
               </div>
             )}
-            {contactEmail && (
-              <div className="flex items-center gap-3 text-gray-700">
-                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-                  <Mail className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-medium truncate">{contactEmail}</span>
-              </div>
-            )}
+
           </div>
         </div>
       )}
@@ -107,12 +97,12 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
           WhatsApp
         </Button>
         <Button
-          onClick={handleEmailContact}
+          onClick={handlePhoneCall}
           variant="outline"
           className="rounded-xl py-2 px-3 text-sm border-gray-200 hover:bg-gray-50 shadow-elegant transition-all duration-200 transform hover:scale-105"
         >
-          <Mail className="w-4 h-4 mr-2" />
-          Email
+          <Phone className="w-4 h-4 mr-2" />
+          Call Now
         </Button>
       </div>
 
@@ -136,14 +126,7 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
             required
             className="rounded-xl border-gray-200 focus:border-blue-500 transition-colors"
           />
-          <Input
-            name="email"
-            type="email"
-            placeholder="Your Email"
-            value={formData.email}
-            onChange={handleInputChange}
-            className="rounded-xl border-gray-200 focus:border-blue-500 transition-colors"
-          />
+
           <Textarea
             name="message"
             placeholder="Your Message"
