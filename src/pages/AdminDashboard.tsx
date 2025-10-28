@@ -1976,19 +1976,19 @@ Need help? Contact our support team anytime.`;
               {/* Contact Information */}
               <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                 <h3 className="text-lg font-semibold mb-3 text-yellow-900">Contact Information</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Contact Name:</span>
-                    <span className="font-semibold">{selectedUserListing.contactName}</span>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <span className="text-gray-600 block mb-1">Contact Name:</span>
+                    <span className="font-semibold break-words">{selectedUserListing.contactName}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Phone:</span>
-                    <span className="font-semibold">{selectedUserListing.contactPhone}</span>
+                  <div>
+                    <span className="text-gray-600 block mb-1">Phone:</span>
+                    <span className="font-semibold break-words">{selectedUserListing.contactPhone}</span>
                   </div>
                   {selectedUserListing.contactEmail && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Email:</span>
-                      <span className="font-semibold">{selectedUserListing.contactEmail}</span>
+                    <div>
+                      <span className="text-gray-600 block mb-1">Email:</span>
+                      <span className="font-semibold break-all">{selectedUserListing.contactEmail}</span>
                     </div>
                   )}
                 </div>
@@ -1997,15 +1997,15 @@ Need help? Contact our support team anytime.`;
               {/* Submission Information */}
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="text-lg font-semibold mb-3 text-blue-900">Submission Details</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Submitted By:</span>
-                    <span className="font-semibold">{selectedUserListing.submittedByEmail}</span>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <span className="text-gray-600 block mb-1">Submitted By:</span>
+                    <span className="font-semibold break-all">{selectedUserListing.submittedByEmail}</span>
                   </div>
                   {selectedUserListing.submittedAt && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Submitted On:</span>
-                      <span className="font-semibold">
+                    <div>
+                      <span className="text-gray-600 block mb-1">Submitted On:</span>
+                      <span className="font-semibold break-words">
                         {(() => {
                           try {
                             let date: Date;
