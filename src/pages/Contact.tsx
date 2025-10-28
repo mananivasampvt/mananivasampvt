@@ -28,7 +28,7 @@ Phone: ${formData.phone}
 Message: ${formData.message}`;
     
     const encodedMessage = encodeURIComponent(whatsappMessage);
-    const whatsappUrl = `https://wa.me/918985816481?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/919849834102?text=${encodedMessage}`;
     
     // Open WhatsApp
     window.open(whatsappUrl, '_blank');
@@ -159,7 +159,7 @@ Message: ${formData.message}`;
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">Phone</p>
-                        <p className="text-gray-600">+91 8985816481</p>
+                        <p className="text-gray-600">+91 9849834102</p>
                       </div>
                     </div>
                     
@@ -212,7 +212,7 @@ Message: ${formData.message}`;
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">Quick WhatsApp Chat</h3>
                   <p className="text-gray-600 mb-4">Need immediate assistance? Chat with us directly on WhatsApp</p>
                   <Button
-                    onClick={() => window.open('https://wa.me/918985816481?text=Hi%20I%20would%20like%20to%20inquire%20about%20a%20property%20on%20your%20website.', '_blank')}
+                    onClick={() => window.open('https://wa.me/919849834102?text=Hi%20I%20would%20like%20to%20inquire%20about%20a%20property%20on%20your%20website.', '_blank')}
                     className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 mx-auto"
                   >
                     <MessageCircle className="w-5 h-5" />

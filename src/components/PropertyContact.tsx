@@ -36,8 +36,8 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
   };
 
   const handleWhatsAppContact = () => {
-    // Use the specified phone number: 8985816481
-    const phoneNumber = '8985816481';
+    // Use the specified phone number: 9849834102
+    const phoneNumber = '9849834102';
     const message = encodeURIComponent('Hello, I\'m interested in your property listed on the site.');
     const whatsappUrl = `https://wa.me/91${phoneNumber}?text=${message}`;
     window.open(whatsappUrl, '_blank');

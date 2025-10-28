@@ -164,9 +164,21 @@ const PropertyDetails = () => {
             <Card className="shadow-soft-lg rounded-2xl lg:hidden">
               <CardContent className="p-4 sm:p-5">
                 <div className="space-y-2 sm:space-y-2">
-                  <h1 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight font-premium line-clamp-2">
-                    {property.title}
-                  </h1>
+                  <div className="flex items-start justify-between gap-2">
+                    <h1 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight font-premium line-clamp-2 flex-1">
+                      {property.title}
+                    </h1>
+                    {/* Mobile Phone Icon Button */}
+                    {property.contactPhone && (
+                      <a 
+                        href={`tel:${property.contactPhone}`}
+                        className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 transform hover:scale-110"
+                        aria-label="Call property contact"
+                      >
+                        <Phone className="w-5 h-5 text-white" />
+                      </a>
+                    )}
+                  </div>
                   <div className="flex items-start gap-1 text-gray-600">
                     <MapPin className="w-3 h-3 mr-0.5 mt-0.5 flex-shrink-0 text-blue-600" />
                     <span className="text-sm sm:text-sm font-medium">{property.location}</span>

@@ -93,12 +93,12 @@ const About = () => {
   ];
 
   const handlePhoneCall = () => {
-    window.location.href = 'tel:8985816481';
+    window.location.href = 'tel:9849834102';
   };
 
   const handleWhatsAppContact = () => {
     const message = encodeURIComponent("Hello, I'm interested in real estate services.");
-    const whatsappUrl = `https://wa.me/918985816481?text=${message}`;
+    const whatsappUrl = `https://wa.me/919849834102?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
 

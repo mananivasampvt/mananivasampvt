@@ -13,6 +13,11 @@ interface PropertyImageGalleryProps {
 const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, videos = [], title }) => {
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Minimum swipe distance (in px) to trigger navigation
+  const minSwipeDistance = 50;
 
   // Combine images and videos into media items
   const getMediaItems = (): MediaItem[] => {
@@ -46,10 +51,40 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
     setIsLightboxOpen(false);
   };
 
+  // Touch event handlers for swipe functionality
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      nextMedia();
+    }
+    if (isRightSwipe) {
+      prevMedia();
+    }
+  };
+
   return (
     <div className="space-y-3">
       {/* Main Media Display */}
-      <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-gray-100 group cursor-pointer">
+      <div 
+        className="relative aspect-[16/10] rounded-lg overflow-hidden bg-gray-100 group cursor-pointer"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         {currentMedia?.type === 'video' ? (
           // Video Display
           <div className="relative w-full h-full">
@@ -100,18 +135,18 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
                 e.stopPropagation();
                 prevMedia();
               }}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black/40"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:bg-black/50 active:scale-95"
             >
-              <ChevronLeft className="w-4 h-4 text-white" />
+              <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 nextMedia();
               }}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black/40"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:bg-black/50 active:scale-95"
             >
-              <ChevronRight className="w-4 h-4 text-white" />
+              <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </button>
           </>
         )}
@@ -175,7 +210,12 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
       {/* Lightbox */}
       {isLightboxOpen && (
         <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-          <div className="relative max-w-7xl max-h-full w-full">
+          <div 
+            className="relative max-w-7xl max-h-full w-full"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             {currentMedia?.type === 'video' ? (
               // Video Lightbox
               <div className="aspect-video w-full bg-black rounded-lg overflow-hidden">
@@ -226,17 +266,17 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
                   onClick={prevMedia}
                   variant="outline"
                   size="icon"
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/40"
+                  className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/40 active:scale-95 w-10 h-10 md:w-12 md:h-12"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
                 </Button>
                 <Button
                   onClick={nextMedia}
                   variant="outline"
                   size="icon"
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/40"
+                  className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/40 active:scale-95 w-10 h-10 md:w-12 md:h-12"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
                 </Button>
               </>
             )}

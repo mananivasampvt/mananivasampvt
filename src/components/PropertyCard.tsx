@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useShortlist } from '@/hooks/useShortlist';
+import { useContactOwner } from '@/hooks/useContactOwner';
 import EnhancedShareMenu from '@/components/EnhancedShareMenu';
 import { combineMediaItems, MediaItem, isVideoUrl, getVideoThumbnail } from '@/lib/mediaUtils';
 
@@ -33,6 +34,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { isShortlisted, toggleShortlist, isLoading: shortlistLoading } = useShortlist();
+  const { handleContactOwner } = useContactOwner({ propertyId: property.id });
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
@@ -355,8 +357,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             </Button>
             <Button 
               variant="outline" 
-              className="p-3 border-gray-300 hover:border-purple-500 hover:text-purple-600 hover:bg-purple-50 transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-md"
-              onClick={(e) => e.stopPropagation()}
+              className="p-3 border-gray-300 hover:border-green-500 hover:text-green-600 hover:bg-green-50 transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-md active:scale-95"
+              onClick={handleContactOwner}
+              title="Contact Owner"
             >
               <Phone className="w-4 h-4" />
             </Button>

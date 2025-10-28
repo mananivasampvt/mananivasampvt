@@ -58,9 +58,18 @@ export const usePropertyLocations = () => {
           querySnapshot.docs.forEach(doc => {
             const data = doc.data();
             
+            // Helper function to normalize location strings
+            const normalizeLocation = (loc: string): string => {
+              return loc
+                .trim()
+                .replace(/[.,;!?]+$/g, '') // Remove trailing punctuation
+                .replace(/\s+/g, ' ') // Normalize whitespace
+                .trim();
+            };
+            
             // Extract and clean location data
             if (data.location && typeof data.location === 'string') {
-              const cleanLocation = data.location.trim();
+              const cleanLocation = normalizeLocation(data.location);
               if (cleanLocation) {
                 locations.add(cleanLocation);
                 
@@ -68,23 +77,39 @@ export const usePropertyLocations = () => {
                 // Enhanced patterns: "Area, City" or "Area - City" or "Area in City" or "Area | City"
                 const locationParts = cleanLocation.split(/[,\-|]|in\s+|near\s+/i);
                 if (locationParts.length > 1) {
-                  const area = locationParts[0].trim();
-                  const city = locationParts[locationParts.length - 1].trim();
+                  const area = normalizeLocation(locationParts[0]);
+                  const city = normalizeLocation(locationParts[locationParts.length - 1]);
                   
-                  if (area && city && area !== city) {
-                    // Add city to cities set
-                    cities.add(city);
+                  if (area && city && area.toLowerCase() !== city.toLowerCase()) {
+                    // Add city to cities set (with proper capitalization)
+                    // Capitalize first letter of each word for display
+                    const capitalizedCity = city
+                      .split(' ')
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                      .join(' ');
+                    cities.add(capitalizedCity);
                     
-                    if (!areas.has(city)) {
-                      areas.set(city, new Set<string>());
+                    if (!areas.has(capitalizedCity)) {
+                      areas.set(capitalizedCity, new Set<string>());
                     }
-                    areas.get(city)?.add(area);
+                    
+                    // Capitalize area name as well
+                    const capitalizedArea = area
+                      .split(' ')
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                      .join(' ');
+                    areas.get(capitalizedCity)?.add(capitalizedArea);
                   }
                 } else {
                   // If no separator found, treat the entire location as a city
-                  cities.add(cleanLocation);
-                  if (!areas.has(cleanLocation)) {
-                    areas.set(cleanLocation, new Set<string>());
+                  // Capitalize first letter of each word for display
+                  const capitalizedCity = cleanLocation
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                    .join(' ');
+                  cities.add(capitalizedCity);
+                  if (!areas.has(capitalizedCity)) {
+                    areas.set(capitalizedCity, new Set<string>());
                   }
                 }
               }

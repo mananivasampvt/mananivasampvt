@@ -45,7 +45,7 @@ export const useContactOwner = (options?: UseContactOwnerOptions) => {
     }
 
     // User is authenticated, proceed with contact functionality
-    const phoneNumber = '8985816481';
+    const phoneNumber = '9849834102';
     if (navigator.userAgent.match(/iPhone|iPad|iPod|Android/i)) {
       window.location.href = `tel:${phoneNumber}`;
     } else {

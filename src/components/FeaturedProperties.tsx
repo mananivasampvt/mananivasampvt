@@ -4,8 +4,9 @@ import { collection, getDocs, query, where, orderBy, limit, onSnapshot } from 'f
 import { db } from '@/lib/firebase';
 import PropertyCard from '@/components/PropertyCard';
 import { Button } from '@/components/ui/button';
-import { Heart, Send } from 'lucide-react';
+import { Heart, Send, Phone } from 'lucide-react';
 import { useShortlist } from '@/hooks/useShortlist';
+import { useContactOwner } from '@/hooks/useContactOwner';
 import { useNavigate } from 'react-router-dom';
 
 interface Property {
@@ -32,6 +33,7 @@ const FeaturedProperties = () => {
   
   // Add shortlist functionality
   const { isShortlisted, toggleShortlist, isLoading: shortlistLoading } = useShortlist();
+  const { handleContactOwner } = useContactOwner();
   const navigate = useNavigate();
 
   const categories = ['All', 'For Sale', 'For Rent', 'Commercial', 'PG/Hostels', 'Land'];
@@ -205,6 +207,12 @@ const FeaturedProperties = () => {
     await toggleShortlist(propertyId);
   };
 
+  // Add contact owner handler
+  const handleCallClick = (e: React.MouseEvent, propertyId: string) => {
+    e.stopPropagation();
+    handleContactOwner(e);
+  };
+
   // Add view details handler
   const handleViewDetails = (e: React.MouseEvent, propertyId: string) => {
     e.stopPropagation();
@@ -291,9 +299,10 @@ const FeaturedProperties = () => {
           </div>
         ) : filteredProperties.length > 0 ? (
           <div>
-            {/* Mobile: 2-Column Grid */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:hidden">
-              {filteredProperties.map((property, index) => (
+            {/* Mobile & Tablet: 2-Column Grid - Shows from 200px to 767px */}
+            <div className="block md:hidden">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                {filteredProperties.map((property, index) => (
                 <div 
                   key={property.id} 
                   className="fade-in-up" 
@@ -321,20 +330,31 @@ const FeaturedProperties = () => {
                         </div>
                       )}
 
-                      {/* Heart Icon - Top Right */}
-                      <button 
-                        onClick={(e) => handleShortlistClick(e, property.id)}
-                        disabled={shortlistLoading}
-                        className="absolute top-2 right-2 w-5 h-5 flex items-center justify-center transition-all duration-200 hover:scale-110"
-                      >
-                        <Heart 
-                          className={`w-4 h-4 transition-all duration-200 ${
-                            isShortlisted(property.id) 
-                              ? 'text-red-500 fill-red-500' 
-                              : 'text-white hover:text-red-400 drop-shadow-md'
-                          }`} 
-                        />
-                      </button>
+                      {/* Top Right Icons - Heart and Call */}
+                      <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
+                        {/* Call Icon */}
+                        <button 
+                          onClick={(e) => handleCallClick(e, property.id)}
+                          className="w-8 h-8 bg-green-600 hover:bg-green-700 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-md active:scale-95"
+                        >
+                          <Phone className="w-4 h-4 text-white" />
+                        </button>
+
+                        {/* Heart Icon */}
+                        <button 
+                          onClick={(e) => handleShortlistClick(e, property.id)}
+                          disabled={shortlistLoading}
+                          className="w-8 h-8 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                        >
+                          <Heart 
+                            className={`w-4 h-4 transition-all duration-200 ${
+                              isShortlisted(property.id) 
+                                ? 'text-red-500 fill-red-500' 
+                                : 'text-white hover:text-red-400'
+                            }`} 
+                          />
+                        </button>
+                      </div>
 
                       {/* Property Type Tag */}
                       <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm text-gray-800 px-2 py-1 rounded-full text-xs">
@@ -352,27 +372,20 @@ const FeaturedProperties = () => {
                         {property.title}
                       </h3>
 
+                      {/* Area */}
+                      <div className="flex items-center text-gray-600 mb-1">
+                        <span className="text-xs">{property.area}</span>
+                      </div>
+                      
                       {/* Location */}
-                      <div className="flex items-center text-gray-600 mb-2">
+                      <div className="flex items-center text-gray-500">
                         <span className="text-xs truncate">{property.location}</span>
                       </div>
-
-                      {/* Area */}
-                      <div className="text-xs text-gray-500 mb-3">
-                        {property.area}
-                      </div>
-
-                      {/* Action Button */}
-                      <Button 
-                        onClick={(e) => handleViewDetails(e, property.id)}
-                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-300 text-xs py-2 transform hover:scale-105 hover:shadow-md"
-                      >
-                        View Details
-                      </Button>
                     </div>
                   </div>
                 </div>
               ))}
+              </div>
             </div>
             
             {/* Desktop: Wider 2-Column Grid for larger cards, 3-Column on XL screens */}

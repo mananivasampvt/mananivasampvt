@@ -122,21 +122,30 @@ const PGHostels = () => {
   const filterProperties = () => {
     let filtered = properties;
 
+    // Helper function to normalize strings for comparison
+    const normalizeString = (str: string): string => {
+      return str
+        .trim()
+        .replace(/[.,;!?]+$/g, '') // Remove trailing punctuation
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .toLowerCase();
+    };
+
     // Apply location search filter - check both dropdown search query and manual search query
     const effectiveSearchQuery = manualSearchQuery.trim() || searchQuery;
     
     if (effectiveSearchQuery) {
-      const searchTerm = effectiveSearchQuery.toLowerCase();
+      const searchTerm = normalizeString(effectiveSearchQuery);
       filtered = filtered.filter(property =>
-        property.title.toLowerCase().includes(searchTerm) ||
-        property.location.toLowerCase().includes(searchTerm) ||
-        property.category.toLowerCase().includes(searchTerm) ||
-        property.type.toLowerCase().includes(searchTerm) ||
-        property.description?.toLowerCase().includes(searchTerm) ||
-        property.area?.toLowerCase().includes(searchTerm) ||
+        normalizeString(property.title).includes(searchTerm) ||
+        normalizeString(property.location).includes(searchTerm) ||
+        normalizeString(property.category).includes(searchTerm) ||
+        normalizeString(property.type).includes(searchTerm) ||
+        normalizeString(property.description || '').includes(searchTerm) ||
+        normalizeString(property.area || '').includes(searchTerm) ||
         (property.bedrooms && property.bedrooms.toString().includes(searchTerm)) ||
         (property.bathrooms && property.bathrooms.toString().includes(searchTerm)) ||
-        property.price.toLowerCase().includes(searchTerm)
+        normalizeString(property.price).includes(searchTerm)
       );
     }
 

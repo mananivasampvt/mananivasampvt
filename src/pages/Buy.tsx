@@ -130,7 +130,7 @@ const Buy = () => {
 
   const handleContactOwnerClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.location.href = 'tel:8985816481';
+    window.location.href = 'tel:9849834102';
   };
 
   const handleShareClick = (e: React.MouseEvent, propertyId: string) => {

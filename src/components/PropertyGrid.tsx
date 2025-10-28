@@ -67,6 +67,15 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ searchFilters }) => {
   const filterProperties = () => {
     let filtered = properties;
 
+    // Helper function to normalize strings for comparison
+    const normalizeString = (str: string): string => {
+      return str
+        .trim()
+        .replace(/[.,;!?]+$/g, '') // Remove trailing punctuation
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .toLowerCase();
+    };
+
     // Apply search filters first if they exist
     if (searchFilters) {
       setSearchActive(true);
@@ -76,25 +85,28 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ searchFilters }) => {
 
         // Enhanced comprehensive search - search across multiple property fields
         if (searchFilters.location && searchFilters.location.trim() !== '') {
-          const searchTerm = searchFilters.location.toLowerCase();
+          const searchTerm = normalizeString(searchFilters.location);
+          const normalizedPropertyLocation = normalizeString(property.location);
+          
           const propertyMatches = 
-            property.title.toLowerCase().includes(searchTerm) ||
-            property.location.toLowerCase().includes(searchTerm) ||
-            property.category.toLowerCase().includes(searchTerm) ||
-            property.type.toLowerCase().includes(searchTerm) ||
-            property.description?.toLowerCase().includes(searchTerm) ||
-            property.area?.toLowerCase().includes(searchTerm) ||
+            normalizeString(property.title).includes(searchTerm) ||
+            normalizedPropertyLocation.includes(searchTerm) ||
+            normalizeString(property.category).includes(searchTerm) ||
+            normalizeString(property.type).includes(searchTerm) ||
+            normalizeString(property.description || '').includes(searchTerm) ||
+            normalizeString(property.area || '').includes(searchTerm) ||
             (property.bedrooms && property.bedrooms.toString().includes(searchTerm)) ||
             (property.bathrooms && property.bathrooms.toString().includes(searchTerm)) ||
-            property.price.toLowerCase().includes(searchTerm);
+            normalizeString(property.price).includes(searchTerm);
           
           matches = matches && propertyMatches;
         }
 
         // Area-specific filter (if area is selected, filter by specific area within the location)
         if (searchFilters.area && searchFilters.area.trim() !== '') {
-          const areaTerm = searchFilters.area.toLowerCase();
-          const areaMatches = property.location.toLowerCase().includes(areaTerm);
+          const areaTerm = normalizeString(searchFilters.area);
+          const normalizedPropertyLocation = normalizeString(property.location);
+          const areaMatches = normalizedPropertyLocation.includes(areaTerm);
           matches = matches && areaMatches;
         }
 
