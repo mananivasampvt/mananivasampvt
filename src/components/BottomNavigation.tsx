@@ -194,8 +194,8 @@ const BottomNavigation = () => {
           onClick={handleHomeClick}
           className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 ${
             isActive('/') 
-              ? 'text-red-600 bg-red-50' 
-              : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
+              ? 'text-emerald-600 bg-emerald-50' 
+              : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50'
           }`}
         >
           <Home className="w-5 h-5 mb-1" />
@@ -204,7 +204,7 @@ const BottomNavigation = () => {
 
         <button
           onClick={handleSearchClick}
-          className="flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-red-600 hover:bg-gray-50"
+          className="flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-emerald-600 hover:bg-gray-50"
         >
           <Search className="w-5 h-5 mb-1" />
           <span className="text-xs font-medium">Search</span>
@@ -214,8 +214,8 @@ const BottomNavigation = () => {
           onClick={handleEMICalculatorClick}
           className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 ${
             isActive('/emi-calculator') 
-              ? 'text-red-600 bg-red-50' 
-              : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
+              ? 'text-emerald-600 bg-emerald-50' 
+              : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50'
           }`}
         >
           <Calculator className="w-5 h-5 mb-1" />
@@ -226,8 +226,8 @@ const BottomNavigation = () => {
           onClick={handleShortlistClick}
           className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 ${
             isActive('/shortlist') 
-              ? 'text-red-600 bg-red-50' 
-              : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
+              ? 'text-emerald-600 bg-emerald-50' 
+              : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50'
           }`}
         >
           <Heart className="w-5 h-5 mb-1" />
@@ -238,8 +238,8 @@ const BottomNavigation = () => {
           onClick={handleProfileClick}
           className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 ${
             isActive('/profile') 
-              ? 'text-red-600 bg-red-50' 
-              : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
+              ? 'text-emerald-600 bg-emerald-50' 
+              : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50'
           }`}
         >
           <User className="w-5 h-5 mb-1" />

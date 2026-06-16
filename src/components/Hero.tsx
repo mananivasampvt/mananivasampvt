@@ -1,6 +1,7 @@
 
 import React from 'react';
 import SearchBar, { SearchFilters } from './SearchBar';
+import { Shield, CheckCircle2, Headphones } from 'lucide-react';
 
 interface HeroProps {
   onSearch?: (filters: SearchFilters) => void;
@@ -10,7 +11,6 @@ const Hero: React.FC<HeroProps> = ({ onSearch }) => {
   const handleSearch = (filters: SearchFilters) => {
     console.log('Search initiated with filters:', filters);
     
-    // If no onSearch prop provided, scroll to properties section
     if (!onSearch) {
       const propertiesSection = document.querySelector('#properties');
       if (propertiesSection) {
@@ -22,87 +22,133 @@ const Hero: React.FC<HeroProps> = ({ onSearch }) => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* High-Quality Background Image with Overlay */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 bg-white">
+      {/* Background with Image and Overlay */}
       <div className="absolute inset-0">
+        {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')`
+            backgroundImage: `url('/hero-house.jpg')`,
+            backgroundPosition: 'center right'
           }}
         />
-        {/* Dark Overlay for Text Contrast */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/40"></div>
-        {/* Additional Subtle Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-repeat" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-          }}></div>
-        </div>
+        {/* Premium Gradient Overlay - Left to Right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/30"></div>
+        
+        {/* Subtle organic blob shapes */}
+        <div className="absolute top-20 right-1/4 w-96 h-96 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+        <div className="absolute -top-40 right-1/2 w-80 h-80 bg-gradient-to-br from-teal-100/20 to-emerald-100/20 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-        {/* Header Section */}
-        <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-6 font-display">
-            <span className="block mb-2 drop-shadow-lg">Find Your Perfect</span>
-            <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-300 bg-clip-text text-transparent drop-shadow-lg">
-              Property
-            </span>
-          </h1>
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-100 max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-md">
-            Discover premium real estate opportunities with our comprehensive platform
-          </p>
-        </div>
-
-        {/* Search Section */}
-        <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          <SearchBar onSearch={handleSearch} />
-        </div>
-
-        {/* Trust Indicators - Mobile Optimized with White Text */}
-        <div className="text-center mt-8 sm:mt-12 lg:mt-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          {/* Mobile: Stacked in 2 rows with white text */}
-          <div className="flex sm:hidden flex-col items-center gap-3">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-2 border border-white/20">
-                <div className="w-2 h-2 bg-green-400 rounded-full shadow-lg"></div>
-                <span className="font-medium text-sm text-white">Verified Properties</span>
+      {/* Content Container */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Mobile Layout - Form First */}
+        <div className="lg:hidden space-y-8">
+          {/* Mobile Search Card - At Top */}
+          <div className="relative mx-auto max-w-2xl animate-fade-in-up">
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-lg border border-white/40 p-6">
+              {/* Subtle gradient background inside card */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 to-transparent rounded-3xl pointer-events-none"></div>
+              
+              <div className="relative z-10">
+                <SearchBar onSearch={handleSearch} />
               </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-2 border border-white/20">
-                <div className="w-2 h-2 bg-blue-400 rounded-full shadow-lg"></div>
-                <span className="font-medium text-sm text-white">Trusted Listings</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-2 border border-white/20">
-              <div className="w-2 h-2 bg-purple-400 rounded-full shadow-lg"></div>
-              <span className="font-medium text-sm text-white">Expert Support</span>
             </div>
           </div>
+
+          {/* Main Heading */}
+          <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <h1 className="text-4xl font-bold text-slate-900 leading-tight tracking-tight">
+              Find Your <br />
+              <span className="bg-gradient-to-r from-teal-600 via-emerald-600 to-emerald-500 bg-clip-text text-transparent">
+                Perfect Property
+              </span>
+            </h1>
+          </div>
+
+          {/* Trust Indicators - Small Horizontal */}
+          <div className="flex flex-row gap-3 pt-2 justify-start">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-7 h-7 bg-emerald-50 rounded-lg">
+                <Shield className="w-3.5 h-3.5 text-emerald-600" strokeWidth={1.5} />
+              </div>
+              <span className="text-xs font-medium text-slate-700">Verified</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-7 h-7 bg-emerald-50 rounded-lg">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" strokeWidth={1.5} />
+              </div>
+              <span className="text-xs font-medium text-slate-700">Trusted</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-7 h-7 bg-emerald-50 rounded-lg">
+                <Headphones className="w-3.5 h-3.5 text-emerald-600" strokeWidth={1.5} />
+              </div>
+              <span className="text-xs font-medium text-slate-700">Support</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Layout - Original */}
+        <div className="hidden lg:grid grid-cols-2 gap-8 lg:gap-12 items-start pt-8">
           
-          {/* Desktop: Single row */}
-          <div className="hidden sm:flex flex-wrap justify-center items-center gap-6 sm:gap-8 text-sm text-gray-200">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-              <div className="w-2 h-2 bg-green-400 rounded-full shadow-lg"></div>
-              <span className="font-medium">Verified Properties</span>
+          {/* Left Content Section */}
+          <div className="space-y-8 animate-fade-in-up">
+            {/* Welcome Text - Handwritten style */}
+            <div className="relative">
+              <p className="text-teal-600 text-xl font-light italic tracking-widest mb-3" style={{ fontFamily: "'Allura', 'Brush Script MT', cursive" }}>Welcome to Mana Nivasam</p>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-              <div className="w-2 h-2 bg-blue-400 rounded-full shadow-lg"></div>
-              <span className="font-medium">Trusted Listings</span>
+            
+            {/* Main Heading */}
+            <div className="space-y-4">
+              <h1 className="text-6xl lg:text-7xl font-bold text-slate-900 leading-tight tracking-tight">
+                Find Your <br />
+                <span className="bg-gradient-to-r from-teal-600 via-emerald-600 to-emerald-500 bg-clip-text text-transparent">
+                  Perfect Property
+                </span>
+              </h1>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-              <div className="w-2 h-2 bg-purple-400 rounded-full shadow-lg"></div>
-              <span className="font-medium">Expert Support</span>
+            
+            {/* Subheading */}
+            <p className="text-lg text-slate-600 leading-relaxed max-w-md font-light">
+              Discover premium real estate opportunities with our comprehensive platform
+            </p>
+
+            {/* Trust Indicators - Three Pills */}
+            <div className="flex flex-col sm:flex-row gap-6 pt-6">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-10 h-10 bg-emerald-50 rounded-lg">
+                  <Shield className="w-5 h-5 text-emerald-600" strokeWidth={1.5} />
+                </div>
+                <span className="text-sm font-medium text-slate-700">Verified Properties</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-10 h-10 bg-emerald-50 rounded-lg">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" strokeWidth={1.5} />
+                </div>
+                <span className="text-sm font-medium text-slate-700">Trusted Listings</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-10 h-10 bg-emerald-50 rounded-lg">
+                  <Headphones className="w-5 h-5 text-emerald-600" strokeWidth={1.5} />
+                </div>
+                <span className="text-sm font-medium text-slate-700">Expert Support</span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 hidden sm:block animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-        <div className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center backdrop-blur-sm">
-          <div className="w-1 h-3 bg-white/80 rounded-full mt-2 animate-bounce"></div>
+          {/* Right Side - Search Card */}
+          <div className="animate-fade-in-up relative" style={{ animationDelay: '0.3s' }}>
+            <div className="w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-lg border border-white/40 p-8">
+              {/* Subtle gradient background inside card */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 to-transparent rounded-3xl pointer-events-none"></div>
+              
+              <div className="relative z-10">
+                <SearchBar onSearch={handleSearch} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

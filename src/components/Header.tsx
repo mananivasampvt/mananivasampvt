@@ -224,10 +224,16 @@ const Header = () => {
   };
 
   const getHeaderBgClass = () => {
+    // Property Details pages get white background
     if (isPropertyDetailsPage) {
       return 'border-gray-200/30 bg-white/95 backdrop-blur-md';
     }
-    return isOnHeroSection ? 'border-white/20 bg-black/40 backdrop-blur-md' : 'border-white/20';
+    // Mobile hero section gets transparent background
+    if (isMobile && isOnHeroSection) {
+      return 'border-transparent bg-transparent backdrop-blur-none';
+    }
+    // All other pages get light transparent background
+    return 'border-white/10 bg-white/20 backdrop-blur-md';
   };
 
   const textColorClass = getTextColorClass();
@@ -240,7 +246,7 @@ const Header = () => {
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 glass border-b ${getHeaderBgClass()}`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-12">
             {/* Logo */}
             <div 
               className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px] py-2 -ml-2 pl-2 rounded-lg transition-colors duration-200 hover:bg-white/10"
@@ -249,10 +255,10 @@ const Header = () => {
               <img 
                 src="https://i.ibb.co/n8rMxsmw/IMG-20250707-184211.webp"
                 alt="Mana Nivasam Logo"
-                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+                className="w-12 h-12 sm:w-16 sm:h-16 lg:w-10 lg:h-10 object-contain"
               />
               <div className="flex flex-col justify-center items-start mt-1">
-                <h1 className={`text-sm sm:text-base ${logoTextClass} drop-shadow-lg leading-tight`}>Mana Nivasam</h1>
+                <h1 className={`text-sm sm:text-base lg:text-sm ${logoTextClass} drop-shadow-lg leading-tight hidden sm:block`}>Mana Nivasam</h1>
                 <p className={`text-xs ${subtitleTextClass} hidden sm:block drop-shadow-md`}></p>
               </div>
             </div>

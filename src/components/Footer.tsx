@@ -55,28 +55,46 @@ const Footer = () => {
 
           {/* Get the App Section */}
           <div>
-            <h4 className="text-base md:text-lg font-semibold mb-4 md:mb-6">Get the App</h4>
-            <div className="space-y-3 md:space-y-4">
-              <div className="group">
+            <h4 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Get the App</h4>
+            <div className="space-y-2 md:space-y-2">
+              {/* Mobile Image */}
+              <div className="lg:hidden group flex flex-col items-start">
+                <a 
+                  href="https://play.google.com/store/apps/details?id=co.median.android.mpynbb&pcampaignid=web_share"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-all duration-300 hover:scale-110 hover:opacity-80"
+                >
+                  <img 
+                    src="/app-image.png"
+                    alt="Mana Nivasam Mobile App"
+                    className="h-[80px] w-auto object-contain"
+                  />
+                </a>
+                
+                <div className="mt-2 text-left">
+                  <p className="text-gray-400 text-xs leading-relaxed">
+                    Download our mobile app for a better property browsing experience
+                  </p>
+                </div>
+              </div>
+
+              {/* Desktop Google Play Badge */}
+              <div className="hidden lg:flex lg:flex-col lg:items-center">
                 <a 
                   href="https://play.google.com/store/apps/details?id=co.median.android.mpynbb&pcampaignid=web_share"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block transition-all duration-300 hover:scale-105 hover:shadow-lg select-none"
-                  style={{ minHeight: '48px', minWidth: '48px' }}
                 >
-                  {/* Official Google Play Badge */}
-                  <div className="relative">
-                    <img 
-                      src="https://camo.githubusercontent.com/899b11c87da7fe33fedafd4a4cf80f9e63831b91b298465c28c411871591e7aa/68747470733a2f2f706c61792e676f6f676c652e636f6d2f696e746c2f656e5f67622f6261646765732f696d616765732f67656e657269632f656e5f62616467655f7765625f67656e657269632e706e67"
-                      alt="Get it on Google Play"
-                      className="h-[60px] md:h-[72px] w-auto opacity-90 hover:opacity-100 transition-opacity duration-300"
-                    />
-                  </div>
+                  <img 
+                    src="https://camo.githubusercontent.com/899b11c87da7fe33fedafd4a4cf80f9e63831b91b298465c28c411871591e7aa/68747470733a2f2f706c61792e676f6f676c652e636f6d2f696e746c2f656e5f67622f6261646765732f696d616765732f67656e657269632f656e5f62616467655f7765625f67656e657269632e706e67"
+                    alt="Get it on Google Play"
+                    className="h-[72px] w-auto opacity-90 hover:opacity-100 transition-opacity duration-300"
+                  />
                 </a>
-                
-                <div className="mt-2 md:mt-3 text-center">
-                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed">
+                <div className="mt-3 text-center">
+                  <p className="text-gray-400 text-sm leading-relaxed">
                     Download our mobile app for a better property browsing experience
                   </p>
                 </div>
