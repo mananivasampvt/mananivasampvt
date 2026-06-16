@@ -185,7 +185,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                         <SelectValue placeholder="Select City" />
                       </div>
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-slate-200 rounded-full shadow-xl z-[200] max-h-60">
+                    <SelectContent className="bg-white border border-slate-200 rounded-lg shadow-xl z-[200] max-h-60">
                       <SelectItem value="all-locations" className="text-slate-600">
                         All Cities
                       </SelectItem>
@@ -209,7 +209,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                     <SelectTrigger className="w-full h-14 bg-slate-50 border border-slate-200 rounded-full hover:bg-slate-100 disabled:opacity-50 backdrop-blur-sm">
                       <SelectValue placeholder="Select Area" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-slate-200 rounded-full shadow-2xl z-[200] max-h-60">
+                    <SelectContent className="bg-white border border-slate-200 rounded-lg shadow-2xl z-[200] max-h-60">
                       <SelectItem value="all-areas" className="text-gray-600">
                         All Areas
                       </SelectItem>
@@ -244,7 +244,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                     <SelectTrigger className="w-full h-14 bg-slate-50 border border-slate-200 rounded-full hover:bg-slate-100 disabled:opacity-50 backdrop-blur-sm">
                       <SelectValue placeholder={filteredPropertyTypes.length > 0 ? "Select Type" : "No types available"} />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-slate-200 rounded-full shadow-2xl z-[200] max-h-60">
+                    <SelectContent className="bg-white border border-slate-200 rounded-lg shadow-2xl z-[200] max-h-60">
                       <SelectItem value="all-types" className="text-gray-600">All Types</SelectItem>
                       {filteredPropertyTypes.map((type, index) => (
                         <SelectItem key={index} value={type} className="text-slate-900">{type}</SelectItem>
@@ -264,7 +264,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                     <SelectTrigger className="w-full h-14 bg-slate-50 border border-slate-200 rounded-full hover:bg-slate-100 disabled:opacity-50 backdrop-blur-sm">
                       <SelectValue placeholder={locationData.categories.length > 0 ? "Select Category" : "No categories available"} />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-slate-200 rounded-full shadow-2xl z-[200] max-h-60">
+                    <SelectContent className="bg-white border border-slate-200 rounded-lg shadow-2xl z-[200] max-h-60">
                       <SelectItem value="all-categories" className="text-gray-600">All Categories</SelectItem>
                       {locationData.categories.map((category, index) => (
                         <SelectItem key={index} value={category} className="text-slate-900">{category}</SelectItem>
@@ -350,7 +350,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                   <SelectValue placeholder="Apartments" />
                   <span className="ml-auto text-gray-400">▼</span>
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-300 rounded-full shadow-lg z-[200] max-h-60">
+                <SelectContent className="bg-white border border-gray-300 rounded-lg shadow-lg z-[200] max-h-60">
                   <SelectItem value="all-types" className="text-gray-600">All Types</SelectItem>
                   {filteredPropertyTypes.map((type, index) => (
                     <SelectItem key={index} value={type} className="text-slate-900">
@@ -380,7 +380,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                     </div>
                     <span className="ml-auto text-gray-400">▼</span>
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 rounded-full shadow-lg z-[200] max-h-60">
+                  <SelectContent className="bg-white border border-gray-300 rounded-lg shadow-lg z-[200] max-h-60">
                     <SelectItem value="all-locations" className="text-slate-600">
                       All Cities
                     </SelectItem>
@@ -405,7 +405,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                     <SelectValue placeholder="Area" />
                     <span className="ml-auto text-gray-400">▼</span>
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 rounded-full shadow-lg z-[200] max-h-60">
+                  <SelectContent className="bg-white border border-gray-300 rounded-lg shadow-lg z-[200] max-h-60">
                     <SelectItem value="all-areas" className="text-gray-600">
                       All Areas
                     </SelectItem>
@@ -441,7 +441,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                     <SelectValue placeholder="Category" />
                     <span className="ml-auto text-gray-400">▼</span>
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-300 rounded-full shadow-lg z-[200] max-h-60">
+                  <SelectContent className="bg-white border border-gray-300 rounded-lg shadow-lg z-[200] max-h-60">
                     <SelectItem value="all-categories" className="text-gray-600">All Categories</SelectItem>
                     {locationData.categories.map((category, index) => (
                       <SelectItem key={index} value={category} className="text-slate-900">
@@ -464,7 +464,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
                       <SelectValue placeholder="Hostel Type" />
                       <span className="ml-auto text-gray-400">▼</span>
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-gray-300 rounded-full shadow-lg z-[200] max-h-60">
+                    <SelectContent className="bg-white border border-gray-300 rounded-lg shadow-lg z-[200] max-h-60">
                       <SelectItem value="all-hostel-types" className="text-gray-600">All Hostel Types</SelectItem>
                       <SelectItem value="Boys" className="text-slate-900">Boys</SelectItem>
                       <SelectItem value="Girls" className="text-slate-900">Girls</SelectItem>
@@ -493,18 +493,22 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, categoryFilter }) => {
               <div className="flex gap-3 items-center">
                 <Input
                   type="number"
-                  placeholder="Min Price"
+                  placeholder="Min"
+                  step="0.01"
+                  min="0"
                   value={filters.minPrice || ''}
-                  onChange={(e) => setFilters(prev => ({ ...prev, minPrice: e.target.value ? parseInt(e.target.value) : undefined }))}
-                  className="flex-1 h-12 bg-white border border-gray-300 rounded-full hover:bg-gray-50 text-gray-700"
+                  onChange={(e) => setFilters(prev => ({ ...prev, minPrice: e.target.value ? parseFloat(e.target.value) : undefined }))}
+                  className="flex-1 h-12 bg-white border border-gray-300 rounded-full hover:bg-gray-50 text-gray-700 text-center"
                 />
                 <span className="text-gray-400">-</span>
                 <Input
                   type="number"
-                  placeholder="Max Price"
+                  placeholder="Max"
+                  step="0.01"
+                  min="0"
                   value={filters.maxPrice || ''}
-                  onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: e.target.value ? parseInt(e.target.value) : undefined }))}
-                  className="flex-1 h-12 bg-white border border-gray-300 rounded-full hover:bg-gray-50 text-gray-700"
+                  onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: e.target.value ? parseFloat(e.target.value) : undefined }))}
+                  className="flex-1 h-12 bg-white border border-gray-300 rounded-full hover:bg-gray-50 text-gray-700 text-center"
                 />
               </div>
             </div>
