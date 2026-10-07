@@ -769,6 +769,7 @@ Need help? Contact our support team anytime.`;
 
   const stats = [
     {
+      id: 'all',
       title: 'Total Properties',
       value: properties.length,
       icon: Building,
@@ -777,6 +778,7 @@ Need help? Contact our support team anytime.`;
       iconBg: 'bg-gradient-to-r from-blue-500 to-purple-600'
     },
     {
+      id: 'sell',
       title: 'For Sale',
       value: propertyCounts.sell,
       icon: Home,
@@ -785,6 +787,7 @@ Need help? Contact our support team anytime.`;
       iconBg: 'bg-gradient-to-r from-green-500 to-teal-600'
     },
     {
+      id: 'rent',
       title: 'For Rent',
       value: propertyCounts.rent,
       icon: MapPin,
@@ -793,6 +796,7 @@ Need help? Contact our support team anytime.`;
       iconBg: 'bg-gradient-to-r from-orange-500 to-red-600'
     },
     {
+      id: 'land',
       title: 'Land/PG',
       value: propertyCounts.land + propertyCounts.pg,
       icon: Users,
@@ -801,6 +805,7 @@ Need help? Contact our support team anytime.`;
       iconBg: 'bg-gradient-to-r from-pink-500 to-purple-600'
     },
     {
+      id: 'favourites',
       title: 'Favourites',
       value: propertyCounts.favourites,
       icon: Star,
@@ -1132,7 +1137,8 @@ Need help? Contact our support team anytime.`;
                   {stats.map((stat, index) => (
                     <Card 
                       key={index} 
-                      className={`${stat.bgColor} border-0 transition-all duration-500 ease-in-out transform hover:scale-105 hover:shadow-2xl animate-in fade-in-up backdrop-blur-sm bg-white/60 w-full`}
+                      onClick={() => handleCategorySelect(stat.id)}
+                      className={`${stat.bgColor} border-0 transition-all duration-500 ease-in-out transform hover:scale-105 hover:shadow-2xl animate-in fade-in-up backdrop-blur-sm bg-white/60 w-full cursor-pointer`}
                       style={{animationDelay: `${index * 100}ms`}}
                     >
                       <CardContent className="p-3 md:p-6">
