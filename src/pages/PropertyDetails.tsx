@@ -40,6 +40,11 @@ interface Property {
   amenities?: string[];
   propertyAge?: number;
   status?: string;
+  publicationHistory?: {
+    price: string;
+    date: string;
+    time: string;
+  }[];
 }
 
 const PropertyDetails = () => {
@@ -265,6 +270,92 @@ const PropertyDetails = () => {
                 </Tabs>
               </CardContent>
             </Card>
+
+            {/* 4. Publication History Section */}
+            {property.publicationHistory && property.publicationHistory.length > 0 && (
+              <Card className="shadow-soft-lg rounded-2xl overflow-hidden mt-4 sm:mt-6 lg:mt-4">
+                <CardContent className="p-4 sm:p-6 lg:p-4">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <Calendar className="w-5 h-5 mr-2 text-blue-600" />
+                    Publication History
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left text-gray-500 rounded-lg overflow-hidden">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                          <th scope="col" className="px-4 py-3">Date</th>
+                          <th scope="col" className="px-4 py-3">Time</th>
+                          <th scope="col" className="px-4 py-3">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[...property.publicationHistory]
+                          .sort((a, b) => {
+                            const dateA = new Date(`${a.date}T${a.time}`);
+                            const dateB = new Date(`${b.date}T${b.time}`);
+                            return dateB.getTime() - dateA.getTime();
+                          })
+                          .map((record, index) => {
+                            let formattedPrice = record.price;
+                            try {
+                              const cleanPrice = record.price.replace(/[^\d]/g, '');
+                              if (cleanPrice) {
+                                formattedPrice = new Intl.NumberFormat('en-IN', { 
+                                  style: 'currency', 
+                                  currency: 'INR', 
+                                  maximumFractionDigits: 0 
+                                }).format(Number(cleanPrice));
+                              } else {
+                                formattedPrice = record.price.includes('₹') ? record.price : `₹${record.price}`;
+                              }
+                            } catch (e) {
+                              formattedPrice = record.price.includes('₹') ? record.price : `₹${record.price}`;
+                            }
+                            
+                            let formattedDate = record.date;
+                            try {
+                              formattedDate = new Date(record.date).toLocaleDateString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                              });
+                            } catch (e) {
+                              // fallback
+                            }
+                            
+                            let formattedTime = record.time;
+                            try {
+                              formattedTime = new Date(`${record.date}T${record.time}`).toLocaleTimeString('en-IN', {
+                                timeZone: 'Asia/Kolkata',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                              });
+                            } catch (e) {
+                              // fallback
+                            }
+
+                            return (
+                              <tr key={index} className="bg-white border-b hover:bg-gray-50 transition-colors">
+                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
+                                  {formattedDate}
+                                </td>
+                                <td className="px-4 py-3">
+                                  {formattedTime}
+                                </td>
+                                <td className="px-4 py-3 font-bold text-blue-600">
+                                  {formattedPrice}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Desktop Sidebar - Hidden on mobile and simplified */}

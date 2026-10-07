@@ -11,6 +11,12 @@ import VideoUploader from './VideoUploader';
 import AdminMediaPreview from './AdminMediaPreview';
 import { toast } from 'sonner';
 
+export interface PublicationRecord {
+  price: string;
+  date: string;
+  time: string;
+}
+
 interface AdminPropertyFormProps {
   onClose?: () => void;
   onSuccess?: () => void;
@@ -49,6 +55,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
   const [images, setImages] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [publicationHistory, setPublicationHistory] = useState<PublicationRecord[]>([]);
 
   // Predefined property types for consistency
   const propertyTypes = [
@@ -147,6 +154,8 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
           return new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
         })(),
       });
+      
+      setPublicationHistory(property.publicationHistory || []);
       
       // Set existing images - ensure they are valid
       const existingImages = property.images || [];
@@ -325,6 +334,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         featured: property?.featured || false,
         createdAt: formData.addedDateTime ? new Date(formData.addedDateTime) : (property?.createdAt || new Date()),
         updatedAt: new Date(),
+        publicationHistory: publicationHistory.filter(r => r.price && r.date && r.time),
       };
 
       // Remove undefined/empty fields for cleaner data
@@ -828,6 +838,92 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
                 initialVideos={videos}
                 maxVideos={5}
               />
+            </div>
+
+            {/* Publication History */}
+            <div className="border-t pt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Publication History</h3>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setPublicationHistory([...publicationHistory, { price: '', date: '', time: '' }])}
+                  className="transition-all duration-300 ease-in-out transform hover:scale-105"
+                >
+                  + Add Record
+                </Button>
+              </div>
+              
+              {publicationHistory.length === 0 ? (
+                <p className="text-sm text-gray-500 mb-4">No publication history records. Click 'Add Record' to add one.</p>
+              ) : (
+                <div className="space-y-4 mb-4">
+                  {publicationHistory.map((record, index) => (
+                    <div key={index} className="flex flex-col md:flex-row gap-4 items-end p-4 border rounded-md relative bg-gray-50 transition-all duration-300 ease-in-out">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute top-2 right-2 h-6 w-6 p-0 text-gray-500 hover:text-red-500"
+                        onClick={() => {
+                          const newHistory = [...publicationHistory];
+                          newHistory.splice(index, 1);
+                          setPublicationHistory(newHistory);
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                      
+                      <div className="flex-1 w-full">
+                        <Label>Published Price</Label>
+                        <Input
+                          type="text"
+                          placeholder="e.g., ₹3,07,00,000"
+                          value={record.price}
+                          onChange={(e) => {
+                            const newHistory = [...publicationHistory];
+                            newHistory[index].price = e.target.value;
+                            setPublicationHistory(newHistory);
+                          }}
+                          required
+                          className="mt-1"
+                        />
+                      </div>
+                      
+                      <div className="flex-1 w-full">
+                        <Label>Published Date</Label>
+                        <Input
+                          type="date"
+                          value={record.date}
+                          onChange={(e) => {
+                            const newHistory = [...publicationHistory];
+                            newHistory[index].date = e.target.value;
+                            setPublicationHistory(newHistory);
+                          }}
+                          required
+                          className="mt-1"
+                        />
+                      </div>
+                      
+                      <div className="flex-1 w-full">
+                        <Label>Published Time</Label>
+                        <Input
+                          type="time"
+                          value={record.time}
+                          onChange={(e) => {
+                            const newHistory = [...publicationHistory];
+                            newHistory[index].time = e.target.value;
+                            setPublicationHistory(newHistory);
+                          }}
+                          required
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Media Preview - Shows all uploaded media after saving */}
