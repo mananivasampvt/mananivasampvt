@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 interface PropertyContactProps {
   contactName?: string;
   contactPhone?: string;
+  contactWhatsApp?: string;
   contactEmail?: string;
   propertyTitle: string;
   propertyLocation: string;
@@ -17,6 +18,7 @@ interface PropertyContactProps {
 const PropertyContact: React.FC<PropertyContactProps> = ({
   contactName,
   contactPhone,
+  contactWhatsApp,
   contactEmail,
   propertyTitle,
   propertyLocation,
@@ -36,16 +38,16 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
   };
 
   const handleWhatsAppContact = () => {
-    // Use the specified phone number: 9849834102
-    const phoneNumber = '9849834102';
+    // Use custom WhatsApp number, custom phone, or fallback to default
+    const phoneNumber = contactWhatsApp || contactPhone || '9849834102';
     const message = encodeURIComponent('Hello, I\'m interested in your property listed on the site.');
     const whatsappUrl = `https://wa.me/91${phoneNumber}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const handlePhoneCall = () => {
-    // Use the specified phone number: 9849834102
-    const phoneNumber = '9849834102';
+    // Use custom phone or fallback to default
+    const phoneNumber = contactPhone || '9849834102';
     window.location.href = `tel:${phoneNumber}`;
   };
 

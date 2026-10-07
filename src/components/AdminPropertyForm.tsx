@@ -51,6 +51,9 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
     propertyAge: '',
     status: '',
     addedDateTime: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
+    contactName: '',
+    contactPhone: '',
+    contactWhatsApp: '',
   });
   const [images, setImages] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
@@ -153,6 +156,9 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
           }
           return new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
         })(),
+        contactName: property.contactName || '',
+        contactPhone: property.contactPhone || '',
+        contactWhatsApp: property.contactWhatsApp || '',
       });
       
       setPublicationHistory(property.publicationHistory || []);
@@ -838,6 +844,47 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
                 initialVideos={videos}
                 maxVideos={5}
               />
+            </div>
+
+            {/* Contact Details */}
+            <div className="border-t pt-6 space-y-4">
+              <h3 className="text-lg font-semibold">Contact Details</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="contactName">Contact Person Name (Optional)</Label>
+                  <Input
+                    id="contactName"
+                    name="contactName"
+                    value={formData.contactName}
+                    onChange={handleInputChange}
+                    placeholder="e.g. John Doe"
+                    className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="contactPhone">Contact Phone Number</Label>
+                  <Input
+                    id="contactPhone"
+                    name="contactPhone"
+                    value={formData.contactPhone}
+                    onChange={handleInputChange}
+                    placeholder="9849834102 (Default)"
+                    className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="contactWhatsApp">WhatsApp Number (Optional)</Label>
+                  <Input
+                    id="contactWhatsApp"
+                    name="contactWhatsApp"
+                    value={formData.contactWhatsApp}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 9849834102"
+                    className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Publication History */}
