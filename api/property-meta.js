@@ -79,33 +79,49 @@ module.exports = async (req, res) => {
         image = property.fields.images.arrayValue.values[0].stringValue;
       }
 
+      const host = req.headers.host || 'mananivasam.in';
+      const protocol = req.headers['x-forwarded-proto'] || 'https';
+      const propertyUrl = `${protocol}://${host}/property/${id}`;
+
       // Replace the meta tags in HTML
       html = html.replace(
-        /<meta property="og:title" content="[^"]*" \/>/g,
+        /<meta[^>]*property="og:title"[^>]*>/i,
         `<meta property="og:title" content="${title}" />`
       );
       html = html.replace(
-        /<meta property="og:description" content="[^"]*" \/>/g,
+        /<meta[^>]*property="og:description"[^>]*>/i,
         `<meta property="og:description" content="${description}" />`
       );
       html = html.replace(
-        /<meta property="og:image" content="[^"]*" \/>/g,
+        /<meta[^>]*property="og:image"[^>]*>/i,
         `<meta property="og:image" content="${image}" />`
       );
       
+      if (/<meta[^>]*property="og:url"[^>]*>/i.test(html)) {
+        html = html.replace(
+          /<meta[^>]*property="og:url"[^>]*>/i,
+          `<meta property="og:url" content="${propertyUrl}" />`
+        );
+      } else {
+        html = html.replace(
+          '</head>',
+          `  <meta property="og:url" content="${propertyUrl}" />\n  </head>`
+        );
+      }
+      
       // Also replace Twitter tags
       html = html.replace(
-        /<meta name="twitter:image" content="[^"]*" \/>/g,
+        /<meta[^>]*name="twitter:image"[^>]*>/i,
         `<meta name="twitter:image" content="${image}" />`
       );
       
       // Update standard title and description for good measure
       html = html.replace(
-        /<title>.*<\/title>/,
+        /<title>.*?<\/title>/i,
         `<title>${title}</title>`
       );
       html = html.replace(
-        /<meta name="description" content="[^"]*" \/>/g,
+        /<meta[^>]*name="description"[^>]*>/i,
         `<meta name="description" content="${description}" />`
       );
     }
