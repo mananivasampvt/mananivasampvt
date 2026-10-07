@@ -321,7 +321,19 @@ const PropertyDetails = () => {
                             }
                             
                             let formattedDate = record.date;
-                            const dateObj = new Date(record.date);
+                            let dateObj = new Date(record.date);
+                            if (isNaN(dateObj.getTime()) && record.date) {
+                              const parts = record.date.split(/[\/\-]/);
+                              if (parts.length === 3) {
+                                const d = parseInt(parts[0], 10);
+                                const m = parseInt(parts[1], 10) - 1;
+                                const y = parseInt(parts[2], 10);
+                                if (!isNaN(d) && !isNaN(m) && !isNaN(y) && y > 1000) {
+                                  dateObj = new Date(y, m, d);
+                                }
+                              }
+                            }
+                            
                             if (!isNaN(dateObj.getTime())) {
                               formattedDate = dateObj.toLocaleDateString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
@@ -332,16 +344,27 @@ const PropertyDetails = () => {
                             }
                             
                             let formattedTime = record.time;
-                            const dateTimeString = `${record.date}T${record.time}`;
-                            const dateTimeObj = new Date(dateTimeString);
-                            // If Date parsing fails (e.g., manual "12:27 pm"), it will fallback to the raw text
-                            if (!isNaN(dateTimeObj.getTime())) {
-                              formattedTime = dateTimeObj.toLocaleTimeString('en-IN', {
-                                timeZone: 'Asia/Kolkata',
-                                hour: 'numeric',
-                                minute: '2-digit',
-                                hour12: true
-                              });
+                            if (record.time) {
+                              let timeObj = new Date(`2000-01-01T${record.time}`);
+                              if (isNaN(timeObj.getTime())) {
+                                timeObj = new Date(`2000-01-01 ${record.time}`);
+                              }
+                              if (isNaN(timeObj.getTime())) {
+                                const match = record.time.match(/^(\d{1,2}):(\d{2})$/);
+                                if (match) {
+                                  timeObj = new Date();
+                                  timeObj.setHours(parseInt(match[1], 10), parseInt(match[2], 10), 0, 0);
+                                }
+                              }
+                              
+                              if (!isNaN(timeObj.getTime())) {
+                                formattedTime = timeObj.toLocaleTimeString('en-IN', {
+                                  timeZone: 'Asia/Kolkata',
+                                  hour: 'numeric',
+                                  minute: '2-digit',
+                                  hour12: true
+                                }).toLowerCase();
+                              }
                             }
 
                             return (
