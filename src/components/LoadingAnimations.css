@@ -44,8 +44,7 @@
   animation: fade-scale-in 0.8s ease-out forwards;
 }
 
-/* Responsive font loading */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Responsive font loading handled in index.css */
 
 /* Performance optimizations */
 .loading-container {

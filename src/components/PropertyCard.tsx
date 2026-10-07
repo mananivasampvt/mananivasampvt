@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MapPin, Bed, Bath, Square, Phone, ChevronLeft, ChevronRight, Send, Play, Calendar, CheckCircle } from 'lucide-react';
+import { Heart, MapPin, Bed, Bath, Square, Phone, ChevronLeft, ChevronRight, Send, Play, Calendar, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -7,6 +7,7 @@ import { useShortlist } from '@/hooks/useShortlist';
 import { useContactOwner } from '@/hooks/useContactOwner';
 import EnhancedShareMenu from '@/components/EnhancedShareMenu';
 import { combineMediaItems, MediaItem, isVideoUrl, getVideoThumbnail } from '@/lib/mediaUtils';
+import { formatPropertyDate } from '@/lib/utils';
 
 interface PropertyCardProps {
   property: {
@@ -27,6 +28,7 @@ interface PropertyCardProps {
     category?: string;
     propertyAge?: number;
     status?: string;
+    createdAt?: any;
   };
 }
 
@@ -118,49 +120,33 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   return (
     <>
       <div 
-        className="property-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] transform cursor-pointer"
+        className="property-card flex flex-col gap-3 group cursor-pointer transition-all duration-300 hover:-translate-y-1"
         onClick={handleCardClick}
       >
-        {/* Image Carousel - Reduced height for desktop */}
-        <div className="relative h-48 sm:h-56 lg:h-48 xl:h-52 overflow-hidden group">
-          
-          
+        {/* Image Container */}
+        <div className="relative h-56 sm:h-64 lg:h-56 xl:h-64 w-full overflow-hidden rounded-2xl">
           <div className="relative w-full h-full">
             {currentMedia?.type === 'video' ? (
-              // Video Display
               <div className="relative w-full h-full">
                 <img 
                   src={currentMedia.thumbnail || getVideoThumbnail(currentMedia.url)}
                   alt={`${property.title} - Video ${currentMediaIndex + 1}`}
-                  className={`w-full h-full object-cover transition-all duration-700 transform ${
-                    imageLoading ? 'opacity-0' : 'opacity-100'
-                  } group-hover:scale-110`}
+                  className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
                   onLoad={handleImageLoad}
                   onError={handleImageError}
                   loading="lazy"
                 />
-                
-                {/* Video Play Button Overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-opacity-100 hover:scale-110">
-                    <Play className="w-8 h-8 text-gray-800 ml-1" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center">
+                    <Play className="w-6 h-6 text-gray-800 ml-1" />
                   </div>
-                </div>
-                
-                {/* Video Type Indicator */}
-                <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs flex items-center gap-1">
-                  <Play className="w-3 h-3" />
-                  Video
                 </div>
               </div>
             ) : (
-              // Image Display
               <img 
                 src={currentImageUrl}
                 alt={`${property.title} - Image ${currentMediaIndex + 1}`}
-                className={`w-full h-full object-cover transition-all duration-700 transform ${
-                  imageLoading ? 'opacity-0' : 'opacity-100'
-                } group-hover:scale-110`}
+                className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
                 loading="lazy"
@@ -168,229 +154,74 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             )}
             
             {imageLoading && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-              </div>
+              <div className="absolute inset-0 bg-gray-200 animate-pulse" />
             )}
-
             {imageError && (
-              <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                <div className="text-gray-500 text-sm text-center">
-                  <div className="text-2xl mb-2">🏠</div>
-                  <div>Media unavailable</div>
-                </div>
+              <div className="absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-500">
+                Media unavailable
               </div>
             )}
           </div>
           
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover: opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
-          {property.featured && (
-            <div className="absolute top-4 left-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-lg animate-pulse">
-              Featured
+          {/* Top Left Badge */}
+          {property.propertyAge === 0 && (
+            <div className="absolute top-3 left-3 bg-[#059669] text-white px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1 shadow-sm">
+              <span className="text-[10px]">✨</span> Newly Constructed
             </div>
           )}
 
-          {/* Top right icons - Heart and Share */}
-          <div className="absolute top-2 right-2 flex gap-1">
+          {/* Top Right Icons */}
+          <div className="absolute top-3 right-3 flex gap-2">
             <button 
               onClick={handleShortlistClick}
               disabled={shortlistLoading}
-              className="w-5 h-5 flex items-center justify-center transition-all duration-200 hover:scale-110"
+              className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:bg-black/60"
             >
               <Heart 
-                className={`w-4 h-4 transition-all duration-200 ${
-                  isPropertyShortlisted 
-                    ? 'text-red-500 fill-red-500' 
-                    : 'text-white hover:text-red-400 drop-shadow-md'
-                }`} 
+                className={`w-4 h-4 ${isPropertyShortlisted ? 'text-white fill-white' : 'text-white'}`} 
               />
             </button>
-            
             <button 
               onClick={handleShareClick}
-              className="w-5 h-5 flex items-center justify-center transition-all duration-200 hover:scale-110"
+              className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:bg-black/60"
             >
-              <Send 
-                className="w-4 h-4 text-white hover:text-blue-400 drop-shadow-md"
-              />
+              <Send className="w-4 h-4 text-white -ml-0.5 mt-0.5" />
             </button>
           </div>
 
-          {mediaItems.length > 1 && (
-            <>
-              <button 
-                onClick={prevImage}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-9 h-9 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out hover:bg-white/60 hover:scale-125 hover:-translate-x-1"
-              >
-                <ChevronLeft className="w-5 h-5 text-white" />
-              </button>
-              <button 
-                onClick={nextImage}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 w-9 h-9 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out hover:bg-white/60 hover:scale-125 hover:translate-x-1"
-              >
-                <ChevronRight className="w-5 h-5 text-white" />
-              </button>
-            </>
-          )}
-
-          {mediaItems.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {mediaItems.map((media, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => goToImage(index, e)}
-                  className={`transition-all duration-300 ease-in-out rounded-full hover:scale-125 transform ${
-                    index === currentMediaIndex 
-                      ? 'bg-white w-6 h-2' 
-                      : 'bg-white/50 hover:bg-white/90 w-2 h-2'
-                  } ${media.type === 'video' ? 'ring-2 ring-blue-400' : ''}`}
-                />
-              ))}
+          {/* Bottom Left Timestamp Badge */}
+          {property.createdAt && formatPropertyDate(property.createdAt) && (
+            <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 max-w-[90%] bg-white/20 backdrop-blur-md border border-white/30 text-white px-2 py-1 rounded-lg text-[9px] sm:text-[11px] leading-tight font-semibold flex items-start sm:items-center gap-1.5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] transition-all duration-300 hover:bg-white/30">
+              <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 mt-[1px] sm:mt-0 drop-shadow-md" />
+              <span className="drop-shadow-md tracking-wide line-clamp-2 sm:line-clamp-1">{formatPropertyDate(property.createdAt)}</span>
             </div>
           )}
-
-          {mediaItems.length > 1 && (
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/50 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {currentMediaIndex + 1} / {mediaItems.length}
-            </div>
-          )}
-
-          <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-in-out hover:bg-white/40">
-            {property.type}
-          </div>
         </div>
 
-        {/* Content - Reduced padding for compact cards */}
-        <div className="p-4 sm:p-5 lg:p-4 xl:p-5">
-          
-          
-          <div className="flex items-center justify-between mb-2 sm:mb-3">
-            <div className="flex items-center gap-2">
-              <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent transition-all duration-300 hover:from-purple-700 hover:to-blue-700">
-                {property.price}
-              </div>
-              {/* Phone Icon - Only visible on mobile */}
-              <a 
-                href="tel:9849834102"
-                onClick={(e) => e.stopPropagation()}
-                className="md:hidden flex-shrink-0 w-8 h-8 bg-gray-50 border border-gray-300 rounded-lg flex items-center justify-center shadow-sm hover:shadow-md hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 active:scale-95"
-                aria-label="Call property contact"
-              >
-                <Phone className="w-4 h-4 text-gray-800" />
-              </a>
-            </div>
-            {mediaItems.length > 1 && (
-              <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full transition-all duration-300 ease-in-out hover:bg-gray-200 hover:scale-105 transform">
-                {mediaItems.filter(m => m.type === 'image').length} photos
-                {mediaItems.filter(m => m.type === 'video').length > 0 && (
-                  <span className="text-blue-600 ml-1">
-                    + {mediaItems.filter(m => m.type === 'video').length} video{mediaItems.filter(m => m.type === 'video').length > 1 ? 's' : ''}
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 line-clamp-2 md:line-clamp-1 leading-tight transition-colors duration-300 hover:text-purple-700">
+        {/* Content Section */}
+        <div className="flex flex-col px-1">
+          <h3 className="text-[17px] font-bold text-gray-900 line-clamp-1">
             {property.title}
           </h3>
-
-          <div className="flex items-center text-gray-600 mb-2 sm:mb-3 transition-colors duration-300 hover:text-gray-800">
-            <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-            <span className="text-sm truncate">{property.location}</span>
+          
+          <div className="text-base font-bold text-[#16a34a] mt-1">
+            {property.price}
           </div>
-
-          <div className="flex items-center space-x-4 mb-2 sm:mb-3 text-gray-600">
-            {!isLandProperty && property.bedrooms && (
-              <div className="flex items-center transition-colors duration-300 hover:text-gray-800">
-                <Bed className="w-4 h-4 mr-1" />
-                <span className="text-sm">{property.bedrooms}</span>
-              </div>
-            )}
-            {!isLandProperty && property.bathrooms && (
-              <div className="flex items-center transition-colors duration-300 hover:text-gray-800">
-                <Bath className="w-4 h-4 mr-1" />
-                <span className="text-sm">{property.bathrooms}</span>
-              </div>
-            )}
-            <div className="flex items-center transition-colors duration-300 hover:text-gray-800">
-              <Square className="w-4 h-4 mr-1" />
-              <div className="text-sm">
-                {property.area}
-                {property.areaAcres && (
-                  <div className="text-xs text-gray-500">({property.areaAcres} acres)</div>
-                )}
-              </div>
+          
+          <div className="flex items-center justify-between text-[13px] text-gray-500 mt-2">
+            <div className="flex items-center truncate mr-2">
+              <MapPin className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
+              <span className="truncate">{property.location}</span>
             </div>
-            {isLandProperty && (
-              <div className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full transition-all duration-300 ease-in-out hover:bg-green-200 hover:scale-105 transform">
-                Land
-              </div>
-            )}
-            {/* Property Status Badge - Desktop inline */}
-            {property.status && property.category !== 'Land' && (
-              <div className="hidden lg:flex items-center">
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  property.status === 'Ready to Move' 
-                    ? 'bg-emerald-50 text-emerald-700' 
-                    : 'bg-amber-50 text-amber-700'
-                }`}>
-                  {property.status}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Property Age Display */}
-          {property.propertyAge !== undefined && property.propertyAge !== null && (
-            <div className="flex items-center text-sm text-gray-600 mb-2 transition-colors duration-300 hover:text-gray-800">
-              <Calendar className="w-4 h-4 mr-2 text-indigo-500" />
-              <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">
-                {property.propertyAge === 0 ? 'New Construction' : `${property.propertyAge} ${property.propertyAge === 1 ? 'Year' : 'Years'} Old`}
-              </span>
+            <div className="flex-shrink-0 whitespace-nowrap">
+              {property.area} {property.areaAcres ? `(${property.areaAcres} acres)` : ''}
             </div>
-          )}
-
-          {/* Property Status Display - Mobile only */}
-          {property.status && property.category !== 'Land' && (
-            <div className="flex lg:hidden items-center text-sm text-gray-600 mb-2 transition-colors duration-300 hover:text-gray-800">
-              <CheckCircle className="w-4 h-4 mr-2 text-emerald-500" />
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                property.status === 'Ready to Move' 
-                  ? 'bg-emerald-50 text-emerald-700' 
-                  : 'bg-amber-50 text-amber-700'
-              }`}>
-                {property.status}
-              </span>
-            </div>
-          )}
-
-          <p className="text-gray-600 text-sm mb-4 sm:mb-6 line-clamp-2 leading-relaxed transition-colors duration-300 hover:text-gray-800">
-            {property.description}
-          </p>
-
-          {/* Actions */}
-          <div className="flex space-x-3">
-            <Button 
-              onClick={handleViewDetails}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
-            >
-              View Details
-            </Button>
-            <Button 
-              variant="outline" 
-              className="p-3 border-gray-300 hover:border-green-500 hover:text-green-600 hover:bg-green-50 transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-md active:scale-95"
-              onClick={handleContactOwner}
-              title="Contact Owner"
-            >
-              <Phone className="w-4 h-4" />
-            </Button>
           </div>
         </div>
       </div>
 
-      {/* Enhanced Share Menu */}
       <EnhancedShareMenu
         isOpen={isShareMenuOpen}
         onClose={() => setIsShareMenuOpen(false)}

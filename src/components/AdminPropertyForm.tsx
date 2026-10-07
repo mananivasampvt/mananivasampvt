@@ -44,6 +44,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
     amenities: [] as string[],
     propertyAge: '',
     status: '',
+    addedDateTime: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
   });
   const [images, setImages] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
@@ -133,6 +134,18 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         amenities: property.amenities || [],
         propertyAge: property.propertyAge?.toString() || '',
         status: property.status || '',
+        addedDateTime: (function() {
+          if (property.createdAt) {
+            try {
+              const date = property.createdAt?.toDate ? property.createdAt.toDate() : new Date(property.createdAt);
+              const offset = date.getTimezoneOffset() * 60000;
+              return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+            } catch (e) {
+              console.error('Error parsing date', e);
+            }
+          }
+          return new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        })(),
       });
       
       // Set existing images - ensure they are valid
@@ -310,7 +323,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         areaAcres: formData.areaAcres ? parseFloat(formData.areaAcres) : undefined,
         status: (!isLandCategory && formData.status) ? formData.status : undefined,
         featured: property?.featured || false,
-        createdAt: property?.createdAt || new Date(),
+        createdAt: formData.addedDateTime ? new Date(formData.addedDateTime) : (property?.createdAt || new Date()),
         updatedAt: new Date(),
       };
 
@@ -502,6 +515,19 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div>
+                <Label htmlFor="addedDateTime">Property Added Date & Time</Label>
+                <Input
+                  id="addedDateTime"
+                  name="addedDateTime"
+                  type="datetime-local"
+                  value={formData.addedDateTime}
+                  onChange={handleInputChange}
+                  required
+                  className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                />
               </div>
 
               {/* Property Area Section - Grouped Fields */}

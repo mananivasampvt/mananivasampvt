@@ -13,7 +13,8 @@ import SuggestedProperties from '@/components/SuggestedProperties';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, MapPin, Calendar, Home, ImageIcon, MapIcon, Phone, CheckCircle } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Home, ImageIcon, MapIcon, Phone, CheckCircle, Clock } from 'lucide-react';
+import { formatPropertyDate } from '@/lib/utils';
 
 interface Property {
   id: string;
@@ -133,22 +134,16 @@ const PropertyDetails = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-body">
       <Header />
       
-      {/* Navigation - Back button with icon for mobile */}
-      <section className="pt-16 sm:pt-20 pb-1 sm:pb-4 bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Button 
-            variant="outline" 
-            onClick={handleBackClick}
-            className="mb-1 sm:mb-4 flex items-center gap-2 hover:bg-gray-100 rounded-xl border-gray-200 transition-all duration-200 text-sm sm:text-base font-semibold"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Back to Properties</span>
-          </Button>
-        </div>
-      </section>
-
       {/* Main Content Layout */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-1 sm:py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-[68px] sm:pt-[76px] lg:pt-[60px] pb-8">
+        <Button 
+          variant="outline" 
+          onClick={handleBackClick}
+          className="mb-4 w-10 h-10 p-0 flex items-center justify-center hover:bg-gray-100 rounded-full border border-gray-200 shadow-sm transition-all duration-200 bg-white group"
+          aria-label="Go back"
+        >
+          <ArrowLeft className="w-5 h-5 text-gray-700 group-hover:-translate-x-0.5 transition-transform" />
+        </Button>
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-5">
           {/* Main Content Area - Mobile First Order */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-4">
@@ -196,10 +191,10 @@ const PropertyDetails = () => {
                       {property.category}
                     </span>
                   </div>
-                  {property.createdAt && (
+                  {property.createdAt && formatPropertyDate(property.createdAt) && (
                     <div className="flex items-center text-xs text-gray-500 bg-gray-50 px-2 py-1 sm:px-2 sm:py-1 rounded-lg mt-2">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      Listed on {new Date(property.createdAt.toDate()).toLocaleDateString()}
+                      <Clock className="w-3 h-3 mr-1 text-gray-400" />
+                      {formatPropertyDate(property.createdAt)}
                     </div>
                   )}
                 </div>
@@ -306,10 +301,10 @@ const PropertyDetails = () => {
                       Status: {property.status}
                     </div>
                   )}
-                  {property.createdAt && (
+                  {property.createdAt && formatPropertyDate(property.createdAt) && (
                     <div className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Listed on {new Date(property.createdAt.toDate()).toLocaleDateString()}
+                      <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                      {formatPropertyDate(property.createdAt)}
                     </div>
                   )}
                 </div>

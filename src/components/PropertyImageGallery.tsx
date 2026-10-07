@@ -89,7 +89,7 @@ const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, vid
     <div className="space-y-3 lg:space-y-2">
       {/* Main Media Display */}
       <div 
-        className="relative aspect-[16/10] lg:aspect-[16/9] rounded-lg overflow-hidden bg-gray-100 group cursor-pointer"
+        className="relative h-[250px] sm:h-[320px] lg:h-[380px] w-full rounded-lg overflow-hidden bg-gray-100 group cursor-pointer"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}

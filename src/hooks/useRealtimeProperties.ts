@@ -23,6 +23,7 @@ interface Property {
   status?: string;
   approved?: boolean;
   propertyAge?: number;
+  createdAt?: any;
 }
 
 interface UseRealtimePropertiesOptions {
@@ -109,7 +110,8 @@ export const useRealtimeProperties = (options: UseRealtimePropertiesOptions = {}
               description: data.description || 'No description available.',
               featured: data.featured || false,
               status: data.status,
-              approved: data.approved
+              approved: data.approved,
+              createdAt: data.createdAt
             } as Property;
           });
 
