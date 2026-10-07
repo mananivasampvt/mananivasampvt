@@ -28,6 +28,7 @@ interface Property {
   featured?: boolean;
   status?: string;
   approved?: boolean;
+  createdAt?: any;
 }
 
 interface PropertyGridProps {

@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
 
 function fetchProperty(id) {
   return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ function truncateString(str, num) {
   return str.slice(0, num) + '...';
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Allow CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   
