@@ -78,10 +78,8 @@ module.exports = async (req, res) => {
       if (property.fields.images && property.fields.images.arrayValue && property.fields.images.arrayValue.values && property.fields.images.arrayValue.values.length > 0) {
         image = property.fields.images.arrayValue.values[0].stringValue;
       }
-
-      const host = req.headers.host || 'mananivasam.in';
-      const protocol = req.headers['x-forwarded-proto'] || 'https';
-      const propertyUrl = `${protocol}://${host}/property/${id}`;
+      
+      const propertyUrl = `https://mananivasam.in/property/${id}`;
 
       // Replace the meta tags in HTML
       html = html.replace(
