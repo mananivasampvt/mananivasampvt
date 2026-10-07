@@ -54,6 +54,9 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
     contactName: '',
     contactPhone: '',
     contactWhatsApp: '',
+    contactName2: '',
+    contactPhone2: '',
+    contactWhatsApp2: '',
   });
   const [images, setImages] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
@@ -159,6 +162,9 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         contactName: property.contactName || '',
         contactPhone: property.contactPhone || '',
         contactWhatsApp: property.contactWhatsApp || '',
+        contactName2: property.contactName2 || '',
+        contactPhone2: property.contactPhone2 || '',
+        contactWhatsApp2: property.contactWhatsApp2 || '',
       });
       
       setPublicationHistory(property.publicationHistory || []);
@@ -847,42 +853,82 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
             </div>
 
             {/* Contact Details */}
-            <div className="border-t pt-6 space-y-4">
-              <h3 className="text-lg font-semibold">Contact Details</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="contactName">Contact Person Name (Optional)</Label>
-                  <Input
-                    id="contactName"
-                    name="contactName"
-                    value={formData.contactName}
-                    onChange={handleInputChange}
-                    placeholder="e.g. John Doe"
-                    className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
-                  />
+            <div className="border-t pt-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Primary Contact Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="contactName">Contact Person Name (Optional)</Label>
+                    <Input
+                      id="contactName"
+                      name="contactName"
+                      value={formData.contactName}
+                      onChange={handleInputChange}
+                      placeholder="e.g. John Doe"
+                      className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contactPhone">Contact Phone Number</Label>
+                    <Input
+                      id="contactPhone"
+                      name="contactPhone"
+                      value={formData.contactPhone}
+                      onChange={handleInputChange}
+                      placeholder="9849834102 (Default)"
+                      className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contactWhatsApp">WhatsApp Number (Optional)</Label>
+                    <Input
+                      id="contactWhatsApp"
+                      name="contactWhatsApp"
+                      value={formData.contactWhatsApp}
+                      onChange={handleInputChange}
+                      placeholder="e.g. 9849834102"
+                      className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="contactPhone">Contact Phone Number</Label>
-                  <Input
-                    id="contactPhone"
-                    name="contactPhone"
-                    value={formData.contactPhone}
-                    onChange={handleInputChange}
-                    placeholder="9849834102 (Default)"
-                    className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="contactWhatsApp">WhatsApp Number (Optional)</Label>
-                  <Input
-                    id="contactWhatsApp"
-                    name="contactWhatsApp"
-                    value={formData.contactWhatsApp}
-                    onChange={handleInputChange}
-                    placeholder="e.g. 9849834102"
-                    className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
-                  />
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Secondary Contact Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="contactName2">Contact Person Name (Optional)</Label>
+                    <Input
+                      id="contactName2"
+                      name="contactName2"
+                      value={formData.contactName2}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Jane Doe"
+                      className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contactPhone2">Contact Phone Number (Optional)</Label>
+                    <Input
+                      id="contactPhone2"
+                      name="contactPhone2"
+                      value={formData.contactPhone2}
+                      onChange={handleInputChange}
+                      placeholder="Secondary Number"
+                      className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contactWhatsApp2">WhatsApp Number (Optional)</Label>
+                    <Input
+                      id="contactWhatsApp2"
+                      name="contactWhatsApp2"
+                      value={formData.contactWhatsApp2}
+                      onChange={handleInputChange}
+                      placeholder="Secondary WhatsApp"
+                      className="transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-md"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

@@ -35,6 +35,9 @@ interface Property {
   contactName?: string;
   contactPhone?: string;
   contactWhatsApp?: string;
+  contactName2?: string;
+  contactPhone2?: string;
+  contactWhatsApp2?: string;
   contactEmail?: string;
   createdAt?: any;
   facing?: string;
@@ -263,6 +266,9 @@ const PropertyDetails = () => {
                       contactName={property.contactName}
                       contactPhone={property.contactPhone}
                       contactWhatsApp={property.contactWhatsApp}
+                      contactName2={property.contactName2}
+                      contactPhone2={property.contactPhone2}
+                      contactWhatsApp2={property.contactWhatsApp2}
                       contactEmail={property.contactEmail}
                       propertyTitle={property.title}
                       propertyLocation={property.location}

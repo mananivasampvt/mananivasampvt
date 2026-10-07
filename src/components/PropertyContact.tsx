@@ -9,6 +9,9 @@ interface PropertyContactProps {
   contactName?: string;
   contactPhone?: string;
   contactWhatsApp?: string;
+  contactName2?: string;
+  contactPhone2?: string;
+  contactWhatsApp2?: string;
   contactEmail?: string;
   propertyTitle: string;
   propertyLocation: string;
@@ -19,6 +22,9 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
   contactName,
   contactPhone,
   contactWhatsApp,
+  contactName2,
+  contactPhone2,
+  contactWhatsApp2,
   contactEmail,
   propertyTitle,
   propertyLocation,
@@ -63,12 +69,12 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
 
   return (
     <div className="space-y-6 font-body">
-      {/* Contact Details */}
+      {/* Primary Contact Details */}
       {(contactName || contactPhone || contactEmail) && (
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-gray-100">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 font-premium">Property Agent</h4>
+          <h4 className="text-lg font-semibold text-gray-900 mb-4 font-premium">Primary Agent</h4>
           <div className="space-y-3">
-            {contactName && (
+            {contactName && contactName !== 'Not Provided' && (
               <div className="flex items-center gap-3 text-gray-700">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
@@ -76,7 +82,7 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
                 <span className="font-medium">{contactName}</span>
               </div>
             )}
-            {contactPhone && (
+            {contactPhone && contactPhone !== 'Not Provided' && (
               <div className="flex items-center gap-3 text-gray-700">
                 <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                   <Phone className="w-4 h-4 text-white" />
@@ -84,7 +90,31 @@ const PropertyContact: React.FC<PropertyContactProps> = ({
                 <span className="font-medium">{contactPhone}</span>
               </div>
             )}
+          </div>
+        </div>
+      )}
 
+      {/* Secondary Contact Details */}
+      {(contactName2 || contactPhone2) && (
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-gray-100">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4 font-premium">Secondary Agent</h4>
+          <div className="space-y-3">
+            {contactName2 && contactName2 !== 'Not Provided' && (
+              <div className="flex items-center gap-3 text-gray-700">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+                <span className="font-medium">{contactName2}</span>
+              </div>
+            )}
+            {contactPhone2 && contactPhone2 !== 'Not Provided' && (
+              <div className="flex items-center gap-3 text-gray-700">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <Phone className="w-4 h-4 text-white" />
+                </div>
+                <span className="font-medium">{contactPhone2}</span>
+              </div>
+            )}
           </div>
         </div>
       )}

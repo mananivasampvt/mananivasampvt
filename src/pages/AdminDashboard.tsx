@@ -46,9 +46,13 @@ interface AdminProperty {
   totalFloors: string;
   availableFrom: string;
   amenities: string[];
-  contactName: string;
-  contactPhone: string;
-  contactEmail: string;
+  contactName?: string;
+  contactPhone?: string;
+  contactWhatsApp?: string;
+  contactName2?: string;
+  contactPhone2?: string;
+  contactWhatsApp2?: string;
+  contactEmail?: string;
   propertyAge?: number;
   status?: string;
 }
