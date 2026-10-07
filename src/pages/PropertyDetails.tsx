@@ -304,7 +304,7 @@ const PropertyDetails = () => {
                                   style: 'currency', 
                                   currency: 'INR', 
                                   maximumFractionDigits: 0 
-                                }).format(Number(cleanPrice));
+                                }).format(Number(cleanPrice)) + '/-';
                               } else {
                                 formattedPrice = record.price.includes('₹') ? record.price : `₹${record.price}`;
                               }

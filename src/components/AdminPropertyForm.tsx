@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { X } from 'lucide-react';
+import { X, Calendar } from 'lucide-react';
 import ImageUploader from './ImageUploader';
 import VideoUploader from './VideoUploader';
 import AdminMediaPreview from './AdminMediaPreview';
@@ -879,11 +879,22 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
                         <Label>Published Price</Label>
                         <Input
                           type="text"
-                          placeholder="e.g., ₹3,07,00,000"
+                          placeholder="e.g., ₹3,07,00,000/-"
                           value={record.price}
                           onChange={(e) => {
+                            const rawValue = e.target.value;
+                            let numericValue = rawValue.replace(/[^\d]/g, '');
+                            let formattedValue = rawValue;
+                            
+                            if (numericValue) {
+                              const formattedNumber = new Intl.NumberFormat('en-IN').format(Number(numericValue));
+                              formattedValue = `₹${formattedNumber}/-`;
+                            } else {
+                              formattedValue = '';
+                            }
+                            
                             const newHistory = [...publicationHistory];
-                            newHistory[index].price = e.target.value;
+                            newHistory[index].price = formattedValue;
                             setPublicationHistory(newHistory);
                           }}
                           required
@@ -893,17 +904,43 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
                       
                       <div className="flex-1 w-full">
                         <Label>Published Date</Label>
-                        <Input
-                          type="date"
-                          value={record.date}
-                          onChange={(e) => {
-                            const newHistory = [...publicationHistory];
-                            newHistory[index].date = e.target.value;
-                            setPublicationHistory(newHistory);
-                          }}
-                          required
-                          className="mt-1"
-                        />
+                        <div className="relative mt-1">
+                          <Input
+                            type="text"
+                            placeholder="DD-MM-YYYY"
+                            value={record.date}
+                            onChange={(e) => {
+                              const newHistory = [...publicationHistory];
+                              newHistory[index].date = e.target.value;
+                              setPublicationHistory(newHistory);
+                            }}
+                            required
+                            className="pr-10"
+                          />
+                          <div className="absolute right-0 top-0 bottom-0 w-10 flex items-center justify-center">
+                            <Calendar className="w-4 h-4 text-gray-500 pointer-events-none" />
+                            <input
+                              type="date"
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              title="Open Calendar"
+                              value={
+                                /^\d{4}-\d{2}-\d{2}$/.test(record.date) 
+                                  ? record.date 
+                                  : /^\d{2}-\d{2}-\d{4}$/.test(record.date) 
+                                    ? record.date.split('-').reverse().join('-') 
+                                    : ''
+                              }
+                              onChange={(e) => {
+                                const newHistory = [...publicationHistory];
+                                const parts = e.target.value.split('-');
+                                if (parts.length === 3) {
+                                  newHistory[index].date = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                                  setPublicationHistory(newHistory);
+                                }
+                              }}
+                            />
+                          </div>
+                        </div>
                       </div>
                       
                       <div className="flex-1 w-full">
