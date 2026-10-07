@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/property/:id", "destination": "/api/property-meta" },
     { "source": "/(.*)", "destination": "/" }
   ],
   "buildCommand": "npm run build",
