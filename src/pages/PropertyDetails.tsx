@@ -321,27 +321,27 @@ const PropertyDetails = () => {
                             }
                             
                             let formattedDate = record.date;
-                            try {
-                              formattedDate = new Date(record.date).toLocaleDateString('en-IN', {
+                            const dateObj = new Date(record.date);
+                            if (!isNaN(dateObj.getTime())) {
+                              formattedDate = dateObj.toLocaleDateString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 year: 'numeric',
                                 month: 'short',
                                 day: 'numeric'
                               });
-                            } catch (e) {
-                              // fallback
                             }
                             
                             let formattedTime = record.time;
-                            try {
-                              formattedTime = new Date(`${record.date}T${record.time}`).toLocaleTimeString('en-IN', {
+                            const dateTimeString = `${record.date}T${record.time}`;
+                            const dateTimeObj = new Date(dateTimeString);
+                            // If Date parsing fails (e.g., manual "12:27 pm"), it will fallback to the raw text
+                            if (!isNaN(dateTimeObj.getTime())) {
+                              formattedTime = dateTimeObj.toLocaleTimeString('en-IN', {
                                 timeZone: 'Asia/Kolkata',
                                 hour: 'numeric',
                                 minute: '2-digit',
                                 hour12: true
                               });
-                            } catch (e) {
-                              // fallback
                             }
 
                             return (
