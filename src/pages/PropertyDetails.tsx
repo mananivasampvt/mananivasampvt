@@ -284,7 +284,7 @@ const PropertyDetails = () => {
                       <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
                           <th scope="col" className="px-4 py-3">Date</th>
-                          <th scope="col" className="px-4 py-3">Time</th>
+                          <th scope="col" className="px-4 py-3 hidden sm:table-cell">Time</th>
                           <th scope="col" className="px-4 py-3">Price</th>
                         </tr>
                       </thead>
@@ -339,9 +339,10 @@ const PropertyDetails = () => {
                             return (
                               <tr key={index} className="bg-white border-b hover:bg-gray-50 transition-colors">
                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
-                                  {formattedDate}
+                                  <div>{formattedDate}</div>
+                                  <div className="text-xs text-gray-500 sm:hidden mt-0.5 font-normal">{formattedTime}</div>
                                 </td>
-                                <td className="px-4 py-3">
+                                <td className="px-4 py-3 hidden sm:table-cell">
                                   {formattedTime}
                                 </td>
                                 <td className="px-4 py-3 font-bold text-blue-600">
