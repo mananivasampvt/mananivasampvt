@@ -799,6 +799,14 @@ Need help? Contact our support team anytime.`;
       color: 'from-pink-500 to-purple-600',
       bgColor: 'bg-gradient-to-r from-pink-50 to-purple-50',
       iconBg: 'bg-gradient-to-r from-pink-500 to-purple-600'
+    },
+    {
+      title: 'Favourites',
+      value: propertyCounts.favourites,
+      icon: Star,
+      color: 'from-yellow-500 to-amber-600',
+      bgColor: 'bg-gradient-to-r from-yellow-50 to-amber-50',
+      iconBg: 'bg-gradient-to-r from-yellow-500 to-amber-600'
     }
   ];
 
