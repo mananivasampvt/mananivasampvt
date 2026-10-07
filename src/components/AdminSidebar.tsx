@@ -22,6 +22,7 @@ interface AdminSidebarProps {
     rent: number;
     land: number;
     pg: number;
+    favourites: number;
   };
 }
 
@@ -111,6 +112,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   const categoryOptions = [
     { value: 'all', label: 'All', count: propertyCounts.all },
+    { value: 'favourites', label: 'Favourites', count: propertyCounts.favourites },
     { value: 'sell', label: 'Sell', count: propertyCounts.sell },
     { value: 'rent', label: 'Rent', count: propertyCounts.rent },
     { value: 'land', label: 'Land', count: propertyCounts.land },

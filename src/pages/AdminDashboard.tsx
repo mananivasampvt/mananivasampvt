@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Plus, Edit, Trash2, Building, Home, Users, MapPin, Image as ImageIcon, Mail, BarChart3, Calendar, Settings, Menu, ChevronDown, Eye, Database, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, Building, Home, Users, MapPin, Image as ImageIcon, Mail, BarChart3, Calendar, Settings, Menu, ChevronDown, Eye, Database, X, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import AdminPropertyForm from '@/components/AdminPropertyForm';
 import TeamMemberForm from '@/components/TeamMemberForm';
 import StoryImageForm from '@/components/StoryImageForm';
@@ -36,6 +36,7 @@ interface AdminProperty {
   areaAcres?: number;
   description: string;
   featured?: boolean;
+  adminFavorite?: boolean;
   createdAt?: any;
   subCategory: string;
   city: string;
@@ -585,6 +586,29 @@ Need help? Contact our support team anytime.`;
     setSwipeOffset(0);
   };
 
+  const handleToggleFavorite = async (property: AdminProperty) => {
+    try {
+      const propertyRef = doc(db, 'properties', property.id);
+      await updateDoc(propertyRef, {
+        adminFavorite: !property.adminFavorite
+      });
+      setProperties(properties.map(p => 
+        p.id === property.id ? { ...p, adminFavorite: !p.adminFavorite } : p
+      ));
+      toast({
+        title: "Success",
+        description: `Property ${!property.adminFavorite ? 'added to' : 'removed from'} favourites`,
+      });
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update property status",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleEditProperty = (property: AdminProperty) => {
     setEditingProperty(property);
     setShowPropertyForm(true);
@@ -715,6 +739,8 @@ Need help? Contact our support team anytime.`;
     
     return filteredProperties.filter(property => {
       switch (selectedCategory) {
+        case 'favourites':
+          return property.adminFavorite === true;
         case 'sell':
           return property.category.toLowerCase().includes('sale');
         case 'rent':
@@ -734,6 +760,7 @@ Need help? Contact our support team anytime.`;
   // Calculate property counts for sidebar (using original properties, not filtered)
   const propertyCounts = {
     all: properties.length,
+    favourites: properties.filter(p => p.adminFavorite === true).length,
     sell: properties.filter(p => p.category.toLowerCase().includes('sale')).length,
     rent: properties.filter(p => p.category.toLowerCase().includes('rent') && !p.category.toLowerCase().includes('pg')).length,
     land: properties.filter(p => p.category.toLowerCase().includes('land')).length,
@@ -869,6 +896,7 @@ Need help? Contact our support team anytime.`;
                     <div className="ml-6 mt-2 space-y-1">
                       {[
                         { value: 'all', label: 'All', count: propertyCounts.all },
+                        { value: 'favourites', label: 'Favourites', count: propertyCounts.favourites },
                         { value: 'sell', label: 'For Sale', count: propertyCounts.sell },
                         { value: 'rent', label: 'For Rent', count: propertyCounts.rent },
                         { value: 'land', label: 'Land', count: propertyCounts.land },
@@ -1204,6 +1232,14 @@ Need help? Contact our support team anytime.`;
                               </div>
                             </div>
                             <div className="flex items-center space-x-1 md:space-x-2 flex-shrink-0">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleToggleFavorite(property)}
+                                className={`p-1 md:p-2 h-8 w-8 md:h-auto md:w-auto transition-all duration-300 ease-in-out transform hover:scale-110 hover:shadow-lg rounded-lg md:rounded-xl bg-white/60 backdrop-blur-sm ${property.adminFavorite ? 'text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50 border-yellow-200' : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50 border-gray-200'}`}
+                              >
+                                <Star className={`w-3 h-3 md:w-4 md:h-4 ${property.adminFavorite ? 'fill-current' : ''}`} />
+                              </Button>
                               <Button 
                                 size="sm" 
                                 variant="outline"
