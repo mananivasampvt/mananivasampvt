@@ -25,6 +25,7 @@ interface Property {
   bedrooms?: number;
   bathrooms?: number;
   createdAt?: any;
+  showAddedDate?: boolean;
 }
 
 const FeaturedProperties = () => {
@@ -103,7 +104,8 @@ const FeaturedProperties = () => {
               featured: data.featured || false,
               bedrooms: data.bedrooms,
               bathrooms: data.bathrooms,
-              createdAt: data.createdAt
+              createdAt: data.createdAt,
+              showAddedDate: data.showAddedDate
             };
           }).filter(Boolean) as Property[];
           

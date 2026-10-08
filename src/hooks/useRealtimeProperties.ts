@@ -24,6 +24,7 @@ interface Property {
   approved?: boolean;
   propertyAge?: number;
   createdAt?: any;
+  showAddedDate?: boolean;
 }
 
 interface UseRealtimePropertiesOptions {
@@ -111,7 +112,8 @@ export const useRealtimeProperties = (options: UseRealtimePropertiesOptions = {}
               featured: data.featured || false,
               status: data.status,
               approved: data.approved,
-              createdAt: data.createdAt
+              createdAt: data.createdAt,
+              showAddedDate: data.showAddedDate
             } as Property;
           });
 

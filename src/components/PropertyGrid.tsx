@@ -29,6 +29,7 @@ interface Property {
   status?: string;
   approved?: boolean;
   createdAt?: any;
+  showAddedDate?: boolean;
 }
 
 interface PropertyGridProps {
