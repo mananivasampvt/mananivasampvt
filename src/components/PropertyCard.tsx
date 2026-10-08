@@ -192,7 +192,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           </div>
 
           {/* Bottom Left Timestamp Badge */}
-          {property.createdAt && formatPropertyDate(property.createdAt) && (
+          {property.showAddedDate !== false && property.createdAt && formatPropertyDate(property.createdAt) && (
             <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 max-w-[90%] bg-white/20 backdrop-blur-md border border-white/30 text-white px-2 py-1 rounded-lg text-[9px] sm:text-[11px] leading-tight font-semibold flex items-start sm:items-center gap-1.5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] transition-all duration-300 hover:bg-white/30">
               <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 mt-[1px] sm:mt-0 drop-shadow-md" />
               <span className="drop-shadow-md tracking-wide line-clamp-2 sm:line-clamp-1">{formatPropertyDate(property.createdAt)}</span>

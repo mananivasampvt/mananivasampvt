@@ -57,6 +57,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
     contactName2: '',
     contactPhone2: '',
     contactWhatsApp2: '',
+    showAddedDate: true,
   });
   const [images, setImages] = useState<string[]>([]);
   const [videos, setVideos] = useState<string[]>([]);
@@ -165,6 +166,7 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
         contactName2: property.contactName2 || '',
         contactPhone2: property.contactPhone2 || '',
         contactWhatsApp2: property.contactWhatsApp2 || '',
+        showAddedDate: property.showAddedDate !== false,
       });
       
       setPublicationHistory(property.publicationHistory || []);
@@ -540,7 +542,22 @@ const AdminPropertyForm: React.FC<AdminPropertyFormProps> = ({
               </div>
 
               <div>
-                <Label htmlFor="addedDateTime">Property Added Date & Time</Label>
+                <div className="flex items-center justify-between mb-2">
+                  <Label htmlFor="addedDateTime" className="mb-0">Property Added Date & Time</Label>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="showAddedDate"
+                      checked={formData.showAddedDate}
+                      onChange={handleInputChange}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                    <span className="ml-2 text-xs font-medium text-gray-700">
+                      {formData.showAddedDate ? 'Visible' : 'Hidden'}
+                    </span>
+                  </label>
+                </div>
                 <Input
                   id="addedDateTime"
                   name="addedDateTime"

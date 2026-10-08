@@ -335,7 +335,7 @@ const FeaturedProperties = () => {
                       )}
 
                       {/* Timestamp Badge */}
-                      {property.createdAt && formatPropertyDate(property.createdAt) && (
+                      {property.showAddedDate !== false && property.createdAt && formatPropertyDate(property.createdAt) && (
                         <div className="absolute bottom-1.5 left-1.5 max-w-[90%] bg-white/20 backdrop-blur-md border border-white/30 text-white px-1.5 py-1 rounded text-[8.5px] leading-tight font-semibold flex items-start gap-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.3)] transition-all duration-300">
                           <Clock className="w-2.5 h-2.5 flex-shrink-0 mt-[1px] drop-shadow-md" />
                           <span className="drop-shadow-md tracking-wide line-clamp-2">{formatPropertyDate(property.createdAt)}</span>

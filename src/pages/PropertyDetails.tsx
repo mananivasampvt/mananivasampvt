@@ -39,6 +39,7 @@ interface Property {
   contactPhone2?: string;
   contactWhatsApp2?: string;
   contactEmail?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createdAt?: any;
   facing?: string;
   amenities?: string[];
@@ -200,7 +201,7 @@ const PropertyDetails = () => {
                       {property.category}
                     </span>
                   </div>
-                  {property.createdAt && formatPropertyDate(property.createdAt) && (
+                  {property.showAddedDate !== false && property.createdAt && formatPropertyDate(property.createdAt) && (
                     <div className="flex items-center text-xs text-gray-500 bg-gray-50 px-2 py-1 sm:px-2 sm:py-1 rounded-lg mt-2">
                       <Clock className="w-3 h-3 mr-1 text-gray-400" />
                       {formatPropertyDate(property.createdAt)}
@@ -323,7 +324,7 @@ const PropertyDetails = () => {
                             let formattedDate = record.date;
                             let dateObj = new Date(record.date);
                             if (isNaN(dateObj.getTime()) && record.date) {
-                              const parts = record.date.split(/[\/\-]/);
+                              const parts = record.date.split(/[/-]/);
                               if (parts.length === 3) {
                                 const d = parseInt(parts[0], 10);
                                 const m = parseInt(parts[1], 10) - 1;
@@ -424,7 +425,7 @@ const PropertyDetails = () => {
                       Status: {property.status}
                     </div>
                   )}
-                  {property.createdAt && formatPropertyDate(property.createdAt) && (
+                  {property.showAddedDate !== false && property.createdAt && formatPropertyDate(property.createdAt) && (
                     <div className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
                       <Clock className="w-4 h-4 mr-2 text-gray-400" />
                       {formatPropertyDate(property.createdAt)}
